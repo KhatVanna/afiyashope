@@ -19,7 +19,7 @@ export function HeroSlider() {
   }, [playing]);
 
   return (
-    <section className="relative isolate min-h-[28rem] overflow-hidden bg-[#0F172A] text-white sm:min-h-[32rem] lg:min-h-[36rem]">
+    <section className="relative isolate min-h-[28rem] overflow-hidden bg-[#071A4A] text-white sm:min-h-[32rem] lg:min-h-[36rem]">
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover"
@@ -31,11 +31,11 @@ export function HeroSlider() {
         autoPlay
         aria-label="Afiya Shope promotional video"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0F172A]/90 via-[#0F172A]/55 to-[#0F172A]/25" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/55 via-transparent to-black/15" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#071A4A]/90 via-[#071A4A]/55 to-[#071A4A]/25" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#071A4A]/55 via-transparent to-black/15" />
 
       <div className="relative mx-auto flex h-full w-full max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:py-24">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-blue-200">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">
           New Season
         </p>
         <h1 className="max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">

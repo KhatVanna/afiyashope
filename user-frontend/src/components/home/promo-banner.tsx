@@ -74,7 +74,7 @@ export function PromoBanner() {
   }
 
   return (
-    <section className="bg-[#111111] text-white">
+    <section className="bg-[#071A4A] text-white">
       <div className="mx-auto grid w-full max-w-7xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:py-16">
         <div className="relative aspect-square overflow-hidden rounded-[1.75rem] bg-zinc-900 sm:aspect-[4/3] lg:aspect-square">
           {active.type === "video" ? (
@@ -169,7 +169,7 @@ export function PromoBanner() {
             <span className="block">Afiya Shope –</span>
             <span className="block">expensive</span>
             <span className="block">was</span>
-            <span className="mt-1 block bg-gradient-to-r from-sky-300 to-teal-300 bg-clip-text text-transparent">
+            <span className="mt-1 block bg-gradient-to-r from-cyan-300 to-pink-400 bg-clip-text text-transparent">
               yesterday!
             </span>
           </h2>

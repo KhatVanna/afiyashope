@@ -24,41 +24,41 @@
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f5fbff;
+  --foreground: #0b1b3a;
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --primary: #2563eb;
+  --card-foreground: #0b1b3a;
+  --primary: #0077b6;
   --primary-foreground: #ffffff;
-  --secondary: #0f172a;
+  --secondary: #071a4a;
   --secondary-foreground: #ffffff;
-  --accent: #f97316;
+  --accent: #c21868;
   --accent-foreground: #ffffff;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted: #eaf6fc;
+  --muted-foreground: #52677e;
   --success: #16a34a;
   --error: #dc2626;
-  --border: #e2e8f0;
-  --navy: #0f172a;
+  --border: #d6e8f2;
+  --navy: #071a4a;
 }
 
 .dark {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --card: #1e293b;
-  --card-foreground: #f8fafc;
-  --primary: #60a5fa;
-  --primary-foreground: #0f172a;
-  --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
-  --accent: #f97316;
-  --accent-foreground: #ffffff;
-  --muted: #334155;
-  --muted-foreground: #94a3b8;
+  --background: #071225;
+  --foreground: #eaf7fd;
+  --card: #0e1e38;
+  --card-foreground: #eaf7fd;
+  --primary: #20b6e8;
+  --primary-foreground: #071a2c;
+  --secondary: #102747;
+  --secondary-foreground: #eaf7fd;
+  --accent: #f04491;
+  --accent-foreground: #071225;
+  --muted: #142b48;
+  --muted-foreground: #a4bfd0;
   --success: #22c55e;
   --error: #f87171;
-  --border: #334155;
-  --navy: #f8fafc;
+  --border: #24415d;
+  --navy: #c8efff;
 }
 
 * {
@@ -85,12 +85,12 @@ body {
   z-index: 9999;
   display: grid;
   place-items: center;
-  background: #ffffff;
+  background: var(--background);
   transition: opacity 480ms ease, visibility 480ms ease;
 }
 
 .dark .site-splash {
-  background: #0b1220;
+  background: var(--background);
 }
 
 .site-splash--leave {
@@ -112,14 +112,14 @@ body {
   inset: 0;
   border-radius: 9999px;
   border: 1.5px solid transparent;
-  border-top-color: #2563eb;
-  border-right-color: color-mix(in oklab, #2563eb 35%, transparent);
+  border-top-color: var(--primary);
+  border-right-color: color-mix(in oklab, var(--primary) 35%, transparent);
   animation: site-splash-spin 1.05s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
 .site-splash__ring--delayed {
   inset: 0.55rem;
-  border-top-color: color-mix(in oklab, #2563eb 55%, transparent);
+  border-top-color: color-mix(in oklab, var(--primary) 55%, transparent);
   border-right-color: transparent;
   animation-duration: 1.45s;
   animation-direction: reverse;
@@ -137,7 +137,7 @@ body {
   width: auto !important;
   height: 2.75rem !important;
   object-fit: contain;
-  filter: drop-shadow(0 8px 18px rgba(37, 99, 235, 0.12));
+  filter: drop-shadow(0 8px 18px rgba(0, 119, 182, 0.16));
 }
 
 @keyframes site-splash-spin {

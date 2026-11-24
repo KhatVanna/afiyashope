@@ -26,11 +26,11 @@ function statusTone(status: string) {
   switch (status) {
     case "delivered":
     case "paid":
-      return "bg-[#e6fffa] text-[#0f766e]";
+      return "bg-[#e2f5fc] text-[#075985]";
     case "confirmed":
     case "processing":
     case "shipped":
-      return "bg-[#ecf2ff] text-[#5d87ff]";
+      return "bg-[#e2f5fc] text-[#0077b6]";
     case "pending":
       return "bg-[#fef5e5] text-[#b45309]";
     case "cancelled":
@@ -193,7 +193,7 @@ export function OrdersManager() {
                 setSearch(event.target.value);
               }}
               placeholder="Search order #, email, phone, customer..."
-              className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] pl-10 pr-3 text-sm outline-none focus:border-[#5d87ff] focus:bg-white"
+              className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] pl-10 pr-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
             />
           </div>
           <select
@@ -202,7 +202,7 @@ export function OrdersManager() {
               setPage(1);
               setStatusFilter(event.target.value);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
           >
             <option value="">All statuses</option>
             {ORDER_STATUSES.map((status) => (
@@ -217,7 +217,7 @@ export function OrdersManager() {
               setPage(1);
               setPaymentFilter(event.target.value);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
             <option value="">All payments</option>
             {PAYMENT_STATUSES.map((status) => (
@@ -226,14 +226,14 @@ export function OrdersManager() {
               </option>
             ))}
           </select>
-          <div className="flex items-center rounded-xl bg-[#f6f9fc] px-3 text-sm text-slate-500 lg:col-span-2">
+          <div className="flex items-center rounded-xl bg-[#f1f9fd] px-3 text-sm text-slate-500 lg:col-span-2">
             {meta.total.toLocaleString()} orders
           </div>
         </div>
       </section>
 
       {notice ? (
-        <div className="rounded-xl border border-[#c9f7ef] bg-[#e6fffa] px-4 py-3 text-sm text-[#0f766e]">
+        <div className="rounded-xl border border-[#beeafa] bg-[#e2f5fc] px-4 py-3 text-sm text-[#075985]">
           {notice}
         </div>
       ) : null}
@@ -247,7 +247,7 @@ export function OrdersManager() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-[#eef2f7] text-slate-400">
+              <tr className="border-b border-[#e2edf4] text-slate-400">
                 <th className="px-4 py-3 font-medium">Order</th>
                 <th className="px-4 py-3 font-medium">Customer</th>
                 <th className="px-4 py-3 font-medium">Placed</th>
@@ -278,7 +278,7 @@ export function OrdersManager() {
                 items.map((order) => (
                   <tr
                     key={order.id}
-                    className="border-b border-[#f5f7fb] last:border-0"
+                    className="border-b border-[#edf6fa] last:border-0"
                   >
                     <td className="px-4 py-4">
                       <p className="font-semibold text-slate-800">
@@ -322,7 +322,7 @@ export function OrdersManager() {
                         <button
                           type="button"
                           onClick={() => void openDetail(order)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-[#e5eaf2] px-3 py-2 text-sm font-medium text-slate-600 hover:bg-[#f6f9fc]"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-[#d6e8f2] px-3 py-2 text-sm font-medium text-slate-600 hover:bg-[#f1f9fd]"
                         >
                           <Eye className="h-4 w-4" />
                           View
@@ -336,7 +336,7 @@ export function OrdersManager() {
           </table>
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-[#eef2f7] px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-t border-[#e2edf4] px-4 py-3">
           <p className="text-sm text-slate-500">
             Page {meta.current_page} of {meta.last_page}
           </p>
@@ -345,7 +345,7 @@ export function OrdersManager() {
               type="button"
               disabled={page <= 1 || loading}
               onClick={() => setPage((value) => Math.max(1, value - 1))}
-              className="rounded-lg border border-[#e5eaf2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+              className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
               Previous
             </button>
@@ -353,7 +353,7 @@ export function OrdersManager() {
               type="button"
               disabled={page >= meta.last_page || loading}
               onClick={() => setPage((value) => value + 1)}
-              className="rounded-lg border border-[#e5eaf2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+              className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
               Next
             </button>
@@ -364,7 +364,7 @@ export function OrdersManager() {
       {selected ? (
         <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 sm:p-6">
           <div className="w-full max-w-4xl rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#eef2f7] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#e2edf4] px-5 py-4">
               <div>
                 <h2 className="text-lg font-semibold text-slate-800">
                   {selected.order_number}
@@ -421,14 +421,14 @@ export function OrdersManager() {
                   />
                 </div>
 
-                <div className="overflow-hidden rounded-xl border border-[#eef2f7]">
-                  <div className="border-b border-[#eef2f7] bg-[#f6f9fc] px-4 py-3 text-sm font-semibold text-slate-700">
+                <div className="overflow-hidden rounded-xl border border-[#e2edf4]">
+                  <div className="border-b border-[#e2edf4] bg-[#f1f9fd] px-4 py-3 text-sm font-semibold text-slate-700">
                     Order items
                   </div>
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-left text-sm">
                       <thead>
-                        <tr className="border-b border-[#eef2f7] text-slate-400">
+                        <tr className="border-b border-[#e2edf4] text-slate-400">
                           <th className="px-4 py-3 font-medium">Product</th>
                           <th className="px-4 py-3 font-medium">SKU</th>
                           <th className="px-4 py-3 font-medium">Qty</th>
@@ -450,7 +450,7 @@ export function OrdersManager() {
                           selected.items?.map((item) => (
                             <tr
                               key={item.id}
-                              className="border-b border-[#f5f7fb] last:border-0"
+                              className="border-b border-[#edf6fa] last:border-0"
                             >
                               <td className="px-4 py-3 font-medium text-slate-700">
                                 {item.product_name}
@@ -488,11 +488,11 @@ export function OrdersManager() {
                 </div>
 
                 {(selected.payments ?? []).length > 0 ? (
-                  <div className="overflow-hidden rounded-xl border border-[#eef2f7]">
-                    <div className="border-b border-[#eef2f7] bg-[#f6f9fc] px-4 py-3 text-sm font-semibold text-slate-700">
+                  <div className="overflow-hidden rounded-xl border border-[#e2edf4]">
+                    <div className="border-b border-[#e2edf4] bg-[#f1f9fd] px-4 py-3 text-sm font-semibold text-slate-700">
                       Payments
                     </div>
-                    <ul className="divide-y divide-[#f5f7fb]">
+                    <ul className="divide-y divide-[#edf6fa]">
                       {selected.payments?.map((payment) => (
                         <li
                           key={payment.id}
@@ -523,7 +523,7 @@ export function OrdersManager() {
                   </div>
                 ) : null}
 
-                <div className="rounded-xl border border-[#eef2f7] bg-[#f6f9fc] p-4">
+                <div className="rounded-xl border border-[#e2edf4] bg-[#f1f9fd] p-4">
                   <h3 className="text-sm font-semibold text-slate-800">
                     Update order
                   </h3>
@@ -536,7 +536,7 @@ export function OrdersManager() {
                         value={editStatus}
                         disabled={!canUpdate}
                         onChange={(event) => setEditStatus(event.target.value)}
-                        className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-white px-3 text-sm outline-none disabled:opacity-60"
+                        className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-white px-3 text-sm outline-none disabled:opacity-60"
                       >
                         {ORDER_STATUSES.map((status) => (
                           <option key={status} value={status}>
@@ -555,7 +555,7 @@ export function OrdersManager() {
                         onChange={(event) =>
                           setEditPaymentStatus(event.target.value)
                         }
-                        className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-white px-3 text-sm outline-none disabled:opacity-60"
+                        className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-white px-3 text-sm outline-none disabled:opacity-60"
                       >
                         {PAYMENT_STATUSES.map((status) => (
                           <option key={status} value={status}>
@@ -572,17 +572,17 @@ export function OrdersManager() {
                       value={editNotes}
                       disabled={!canUpdate}
                       onChange={(event) => setEditNotes(event.target.value)}
-                      className="w-full rounded-xl border border-[#e5eaf2] bg-white px-3 py-2 text-sm outline-none disabled:opacity-60"
+                      className="w-full rounded-xl border border-[#d6e8f2] bg-white px-3 py-2 text-sm outline-none disabled:opacity-60"
                       placeholder="Internal fulfillment notes..."
                     />
                   </label>
                 </div>
 
-                <div className="flex justify-end gap-3 border-t border-[#eef2f7] pt-4">
+                <div className="flex justify-end gap-3 border-t border-[#e2edf4] pt-4">
                   <button
                     type="button"
                     onClick={closeDetail}
-                    className="rounded-xl border border-[#e5eaf2] px-4 py-2.5 text-sm font-semibold text-slate-600"
+                    className="rounded-xl border border-[#d6e8f2] px-4 py-2.5 text-sm font-semibold text-slate-600"
                   >
                     Close
                   </button>
@@ -591,7 +591,7 @@ export function OrdersManager() {
                       type="button"
                       disabled={saving}
                       onClick={() => void saveOrder()}
-                      className="inline-flex items-center gap-2 rounded-xl bg-[#5d87ff] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                     >
                       {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                       Save changes
@@ -617,7 +617,7 @@ function InfoCard({
   hint?: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#eef2f7] bg-[#f6f9fc] px-4 py-3">
+    <div className="rounded-xl border border-[#e2edf4] bg-[#f1f9fd] px-4 py-3">
       <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
       <p className="mt-1 font-semibold text-slate-800">{value}</p>
       {hint ? <p className="mt-0.5 text-xs text-slate-500">{hint}</p> : null}
@@ -633,7 +633,7 @@ function AddressCard({
   address: AdminOrder["shipping_address"];
 }) {
   return (
-    <div className="rounded-xl border border-[#eef2f7] px-4 py-3">
+    <div className="rounded-xl border border-[#e2edf4] px-4 py-3">
       <p className="text-sm font-semibold text-slate-800">{title}</p>
       {address ? (
         <div className="mt-2 space-y-0.5 text-sm text-slate-600">
@@ -664,7 +664,7 @@ function TotalRow({
   emphasize?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-[#eef2f7] px-3 py-3">
+    <div className="rounded-xl border border-[#e2edf4] px-3 py-3">
       <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
       <p
         className={`mt-1 ${emphasize ? "text-base font-semibold text-slate-800" : "text-sm font-medium text-slate-700"}`}

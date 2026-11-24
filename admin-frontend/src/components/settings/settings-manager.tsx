@@ -139,7 +139,7 @@ export function SettingsManager() {
           type="button"
           disabled={saving || loading}
           onClick={() => void onSave()}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#5d87ff] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-cyan-700/20 disabled:opacity-60"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           Save changes
@@ -147,7 +147,7 @@ export function SettingsManager() {
       </div>
 
       {notice ? (
-        <div className="rounded-xl border border-[#c9f7ef] bg-[#e6fffa] px-4 py-3 text-sm text-[#0f766e]">
+        <div className="rounded-xl border border-[#beeafa] bg-[#e2f5fc] px-4 py-3 text-sm text-[#075985]">
           {notice}
         </div>
       ) : null}
@@ -170,8 +170,8 @@ export function SettingsManager() {
                 onClick={() => setActiveGroup(group.id)}
                 className={`flex w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium transition ${
                   activeGroup === group.id
-                    ? "bg-[#5d87ff] text-white shadow-md shadow-blue-500/20"
-                    : "text-slate-600 hover:bg-[#ecf2ff] hover:text-[#5d87ff]"
+                    ? "bg-[#0077b6] text-white shadow-md shadow-cyan-700/20"
+                    : "text-slate-600 hover:bg-[#e2f5fc] hover:text-[#0077b6]"
                 }`}
               >
                 {group.label}
@@ -203,7 +203,7 @@ export function SettingsManager() {
                 {currentGroup.settings.map((setting) => (
                   <div
                     key={setting.key}
-                    className="rounded-xl border border-[#eef2f7] bg-[#f6f9fc] p-4"
+                    className="rounded-xl border border-[#e2edf4] bg-[#f1f9fd] p-4"
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0 flex-1">
@@ -225,7 +225,7 @@ export function SettingsManager() {
                               onChange={(event) =>
                                 updateValue(setting, event.target.checked)
                               }
-                              className="h-4 w-4 rounded border-slate-300 text-[#5d87ff]"
+                              className="h-4 w-4 rounded border-slate-300 text-[#0077b6]"
                             />
                             Enabled
                           </label>
@@ -241,7 +241,7 @@ export function SettingsManager() {
                             onChange={(event) =>
                               updateValue(setting, event.target.value)
                             }
-                            className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-white px-3 text-sm outline-none focus:border-[#5d87ff]"
+                            className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-white px-3 text-sm outline-none focus:border-[#0077b6]"
                           />
                         )}
                       </div>

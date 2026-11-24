@@ -29,11 +29,11 @@ function statusTone(status: string) {
   switch (status) {
     case "delivered":
     case "paid":
-      return "bg-[#e6fffa] text-[#0f766e]";
+      return "bg-[#e2f5fc] text-[#075985]";
     case "confirmed":
     case "processing":
     case "shipped":
-      return "bg-[#ecf2ff] text-[#5d87ff]";
+      return "bg-[#e2f5fc] text-[#0077b6]";
     case "pending":
       return "bg-[#fef5e5] text-[#b45309]";
     case "cancelled":
@@ -225,7 +225,7 @@ export function CustomersManager() {
                 setSearch(event.target.value);
               }}
               placeholder="Search by name, email, or phone..."
-              className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] pl-10 pr-3 text-sm outline-none focus:border-[#5d87ff] focus:bg-white"
+              className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] pl-10 pr-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
             />
           </div>
           <select
@@ -234,20 +234,20 @@ export function CustomersManager() {
               setPage(1);
               setStatusFilter(event.target.value as typeof statusFilter);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
           >
             <option value="all">All status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
           </select>
-          <div className="flex items-center rounded-xl bg-[#f6f9fc] px-3 text-sm text-slate-500 lg:col-span-2">
+          <div className="flex items-center rounded-xl bg-[#f1f9fd] px-3 text-sm text-slate-500 lg:col-span-2">
             {meta.total.toLocaleString()} customers
           </div>
         </div>
       </section>
 
       {notice ? (
-        <div className="rounded-xl border border-[#c9f7ef] bg-[#e6fffa] px-4 py-3 text-sm text-[#0f766e]">
+        <div className="rounded-xl border border-[#beeafa] bg-[#e2f5fc] px-4 py-3 text-sm text-[#075985]">
           {notice}
         </div>
       ) : null}
@@ -261,7 +261,7 @@ export function CustomersManager() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-[#eef2f7] text-slate-400">
+              <tr className="border-b border-[#e2edf4] text-slate-400">
                 <th className="px-4 py-3 font-medium">Customer</th>
                 <th className="px-4 py-3 font-medium">Phone</th>
                 <th className="px-4 py-3 font-medium">Orders</th>
@@ -291,7 +291,7 @@ export function CustomersManager() {
                 items.map((customer) => (
                   <tr
                     key={customer.id}
-                    className="border-b border-[#f5f7fb] last:border-0"
+                    className="border-b border-[#edf6fa] last:border-0"
                   >
                     <td className="px-4 py-4">
                       <p className="font-semibold text-slate-800">{customer.name}</p>
@@ -316,7 +316,7 @@ export function CustomersManager() {
                           onClick={() => void toggleActive(customer)}
                           className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                             customer.is_active
-                              ? "bg-[#e6fffa] text-[#0f766e]"
+                              ? "bg-[#e2f5fc] text-[#075985]"
                               : "bg-[#f1f5f9] text-slate-500"
                           }`}
                         >
@@ -326,7 +326,7 @@ export function CustomersManager() {
                         <span
                           className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                             customer.is_active
-                              ? "bg-[#e6fffa] text-[#0f766e]"
+                              ? "bg-[#e2f5fc] text-[#075985]"
                               : "bg-[#f1f5f9] text-slate-500"
                           }`}
                         >
@@ -339,7 +339,7 @@ export function CustomersManager() {
                         <button
                           type="button"
                           onClick={() => void openDetail(customer)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-[#e5eaf2] px-3 py-2 text-sm font-medium text-slate-600 hover:bg-[#f6f9fc]"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-[#d6e8f2] px-3 py-2 text-sm font-medium text-slate-600 hover:bg-[#f1f9fd]"
                         >
                           <Eye className="h-4 w-4" />
                           View
@@ -353,7 +353,7 @@ export function CustomersManager() {
           </table>
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-[#eef2f7] px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-t border-[#e2edf4] px-4 py-3">
           <p className="text-sm text-slate-500">
             Page {meta.current_page} of {meta.last_page}
           </p>
@@ -362,7 +362,7 @@ export function CustomersManager() {
               type="button"
               disabled={page <= 1 || loading}
               onClick={() => setPage((value) => Math.max(1, value - 1))}
-              className="rounded-lg border border-[#e5eaf2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+              className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
               Previous
             </button>
@@ -370,7 +370,7 @@ export function CustomersManager() {
               type="button"
               disabled={page >= meta.last_page || loading}
               onClick={() => setPage((value) => value + 1)}
-              className="rounded-lg border border-[#e5eaf2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+              className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
               Next
             </button>
@@ -381,7 +381,7 @@ export function CustomersManager() {
       {selected ? (
         <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 sm:p-6">
           <div className="w-full max-w-4xl rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#eef2f7] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#e2edf4] px-5 py-4">
               <div>
                 <h2 className="text-lg font-semibold text-slate-800">
                   {selected.name}
@@ -426,7 +426,7 @@ export function CustomersManager() {
                   />
                 </div>
 
-                <div className="rounded-xl border border-[#eef2f7] bg-[#f6f9fc] p-4">
+                <div className="rounded-xl border border-[#e2edf4] bg-[#f1f9fd] p-4">
                   <h3 className="text-sm font-semibold text-slate-800">
                     Account details
                   </h3>
@@ -437,7 +437,7 @@ export function CustomersManager() {
                         value={editName}
                         disabled={!canUpdate}
                         onChange={(event) => setEditName(event.target.value)}
-                        className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-white px-3 text-sm outline-none disabled:opacity-60"
+                        className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-white px-3 text-sm outline-none disabled:opacity-60"
                       />
                       {formErrors.name?.[0] ? (
                         <span className="text-xs text-[#fa896b]">
@@ -452,7 +452,7 @@ export function CustomersManager() {
                         value={editEmail}
                         disabled={!canUpdate}
                         onChange={(event) => setEditEmail(event.target.value)}
-                        className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-white px-3 text-sm outline-none disabled:opacity-60"
+                        className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-white px-3 text-sm outline-none disabled:opacity-60"
                       />
                       {formErrors.email?.[0] ? (
                         <span className="text-xs text-[#fa896b]">
@@ -466,7 +466,7 @@ export function CustomersManager() {
                         value={editPhone}
                         disabled={!canUpdate}
                         onChange={(event) => setEditPhone(event.target.value)}
-                        className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-white px-3 text-sm outline-none disabled:opacity-60"
+                        className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-white px-3 text-sm outline-none disabled:opacity-60"
                       />
                     </label>
                     <label className="flex items-center gap-2 pt-7 text-sm font-medium text-slate-700">
@@ -475,15 +475,15 @@ export function CustomersManager() {
                         checked={editActive}
                         disabled={!canUpdate}
                         onChange={(event) => setEditActive(event.target.checked)}
-                        className="h-4 w-4 rounded border-slate-300 text-[#5d87ff]"
+                        className="h-4 w-4 rounded border-slate-300 text-[#0077b6]"
                       />
                       Active account
                     </label>
                   </div>
                 </div>
 
-                <div className="overflow-hidden rounded-xl border border-[#eef2f7]">
-                  <div className="border-b border-[#eef2f7] bg-[#f6f9fc] px-4 py-3 text-sm font-semibold text-slate-700">
+                <div className="overflow-hidden rounded-xl border border-[#e2edf4]">
+                  <div className="border-b border-[#e2edf4] bg-[#f1f9fd] px-4 py-3 text-sm font-semibold text-slate-700">
                     Addresses
                   </div>
                   {(selected.addresses ?? []).length === 0 ? (
@@ -491,7 +491,7 @@ export function CustomersManager() {
                       No addresses on file.
                     </p>
                   ) : (
-                    <ul className="divide-y divide-[#f5f7fb]">
+                    <ul className="divide-y divide-[#edf6fa]">
                       {selected.addresses?.map((address) => (
                         <li key={address.id} className="px-4 py-3 text-sm">
                           <div className="flex items-start justify-between gap-3">
@@ -511,7 +511,7 @@ export function CustomersManager() {
                               <p className="text-slate-500">{address.country}</p>
                             </div>
                             {address.is_default ? (
-                              <span className="rounded-full bg-[#ecf2ff] px-2.5 py-1 text-xs font-semibold text-[#5d87ff]">
+                              <span className="rounded-full bg-[#e2f5fc] px-2.5 py-1 text-xs font-semibold text-[#0077b6]">
                                 Default
                               </span>
                             ) : null}
@@ -522,14 +522,14 @@ export function CustomersManager() {
                   )}
                 </div>
 
-                <div className="overflow-hidden rounded-xl border border-[#eef2f7]">
-                  <div className="border-b border-[#eef2f7] bg-[#f6f9fc] px-4 py-3 text-sm font-semibold text-slate-700">
+                <div className="overflow-hidden rounded-xl border border-[#e2edf4]">
+                  <div className="border-b border-[#e2edf4] bg-[#f1f9fd] px-4 py-3 text-sm font-semibold text-slate-700">
                     Recent orders
                   </div>
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-left text-sm">
                       <thead>
-                        <tr className="border-b border-[#eef2f7] text-slate-400">
+                        <tr className="border-b border-[#e2edf4] text-slate-400">
                           <th className="px-4 py-3 font-medium">Order</th>
                           <th className="px-4 py-3 font-medium">Placed</th>
                           <th className="px-4 py-3 font-medium">Status</th>
@@ -551,7 +551,7 @@ export function CustomersManager() {
                           selected.orders?.map((order) => (
                             <tr
                               key={order.id}
-                              className="border-b border-[#f5f7fb] last:border-0"
+                              className="border-b border-[#edf6fa] last:border-0"
                             >
                               <td className="px-4 py-3 font-medium text-slate-700">
                                 {order.order_number}
@@ -584,11 +584,11 @@ export function CustomersManager() {
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-3 border-t border-[#eef2f7] pt-4">
+                <div className="flex justify-end gap-3 border-t border-[#e2edf4] pt-4">
                   <button
                     type="button"
                     onClick={closeDetail}
-                    className="rounded-xl border border-[#e5eaf2] px-4 py-2.5 text-sm font-semibold text-slate-600"
+                    className="rounded-xl border border-[#d6e8f2] px-4 py-2.5 text-sm font-semibold text-slate-600"
                   >
                     Close
                   </button>
@@ -597,7 +597,7 @@ export function CustomersManager() {
                       type="button"
                       disabled={saving}
                       onClick={() => void saveCustomer()}
-                      className="inline-flex items-center gap-2 rounded-xl bg-[#5d87ff] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                     >
                       {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                       Save changes
@@ -615,7 +615,7 @@ export function CustomersManager() {
 
 function InfoCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-[#eef2f7] bg-[#f6f9fc] px-4 py-3">
+    <div className="rounded-xl border border-[#e2edf4] bg-[#f1f9fd] px-4 py-3">
       <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
       <p className="mt-1 font-semibold text-slate-800">{value}</p>
     </div>

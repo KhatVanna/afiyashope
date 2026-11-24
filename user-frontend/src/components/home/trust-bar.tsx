@@ -25,7 +25,7 @@ const trustItems = [
 
 export function TrustBar() {
   return (
-    <section className="bg-gradient-to-r from-[#0F172A] via-[#1D4ED8] to-[#2563EB] text-white">
+    <section className="bg-gradient-to-r from-[#071A4A] via-[#0077B6] to-[#00A7E8] text-white">
       <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
         {trustItems.map((item) => (
           <div key={item.title} className="flex items-start gap-3">

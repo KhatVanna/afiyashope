@@ -51,7 +51,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   if (!hydrated || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f0f5f9]">
+      <div className="flex min-h-screen items-center justify-center bg-[#f5fbff]">
         <p className="text-sm text-muted-foreground">
           {!hydrated ? "Restoring session..." : "Redirecting to sign in..."}
         </p>
@@ -68,7 +68,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     .toUpperCase();
 
   return (
-    <div className="flex min-h-screen bg-[#f0f5f9]">
+    <div className="flex min-h-screen bg-[#f5fbff]">
       {mobileOpen ? (
         <button
           type="button"
@@ -79,7 +79,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       ) : null}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[270px] flex-col border-r border-[#e5eaf2] bg-white shadow-[0_0_40px_rgba(15,23,42,0.04)] transition-transform lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[270px] flex-col border-r border-[#d6e8f2] bg-white shadow-[0_0_40px_rgba(15,23,42,0.04)] transition-transform lg:static lg:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -107,14 +107,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
 
-        <div className="mx-4 mb-5 rounded-2xl bg-gradient-to-br from-[#5d87ff] to-[#4570ea] p-4 text-white shadow-lg shadow-blue-500/20">
+        <div className="mx-4 mb-5 rounded-2xl bg-gradient-to-br from-[#0077b6] to-[#005d92] p-4 text-white shadow-lg shadow-cyan-700/20">
           <p className="text-sm font-semibold">Afiya Shope Admin</p>
-          <p className="mt-1 text-xs text-blue-100">
+          <p className="mt-1 text-xs text-cyan-100">
             Manage catalog, orders, and customers from one place.
           </p>
           <Link
             href="/products"
-            className="mt-3 inline-flex rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-[#5d87ff]"
+            className="mt-3 inline-flex rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-[#0077b6]"
           >
             Open catalog
           </Link>
@@ -122,10 +122,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[#e5eaf2] bg-white/90 px-4 py-3 backdrop-blur sm:px-6">
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[#d6e8f2] bg-white/90 px-4 py-3 backdrop-blur sm:px-6">
           <button
             type="button"
-            className="rounded-xl border border-[#e5eaf2] bg-white p-2 text-slate-600 lg:hidden"
+            className="rounded-xl border border-[#d6e8f2] bg-white p-2 text-slate-600 lg:hidden"
             onClick={() => setMobileOpen(true)}
             aria-label="Open sidebar"
           >
@@ -137,29 +137,29 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <input
               type="search"
               placeholder="Search products, orders, customers..."
-              className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] pl-10 pr-3 text-sm text-slate-700 outline-none transition focus:border-[#5d87ff] focus:bg-white"
+              className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] pl-10 pr-3 text-sm text-slate-700 outline-none transition focus:border-[#0077b6] focus:bg-white"
             />
           </div>
 
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <button
               type="button"
-              className="rounded-xl border border-[#e5eaf2] p-2.5 text-slate-500 transition hover:bg-slate-50"
+              className="rounded-xl border border-[#d6e8f2] p-2.5 text-slate-500 transition hover:bg-slate-50"
               aria-label="Theme"
             >
               <Moon className="h-4 w-4" />
             </button>
             <button
               type="button"
-              className="relative rounded-xl border border-[#e5eaf2] p-2.5 text-slate-500 transition hover:bg-slate-50"
+              className="relative rounded-xl border border-[#d6e8f2] p-2.5 text-slate-500 transition hover:bg-slate-50"
               aria-label="Notifications"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#5d87ff]" />
+              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#0077b6]" />
             </button>
 
-            <div className="hidden items-center gap-3 rounded-xl border border-[#e5eaf2] bg-white px-2.5 py-1.5 sm:flex">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#5d87ff] text-xs font-semibold text-white">
+            <div className="hidden items-center gap-3 rounded-xl border border-[#d6e8f2] bg-white px-2.5 py-1.5 sm:flex">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0077b6] text-xs font-semibold text-white">
                 {initials}
               </div>
               <div className="min-w-0 pr-1">
@@ -171,7 +171,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => void logout().then(() => router.replace("/"))}
-              className="rounded-xl bg-[#5d87ff] px-3 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-500/20 transition hover:bg-[#4570ea]"
+              className="rounded-xl bg-[#0077b6] px-3 py-2 text-sm font-semibold text-white shadow-sm shadow-cyan-700/20 transition hover:bg-[#005d92]"
             >
               Log out
             </button>
@@ -192,8 +192,8 @@ function SidebarLink({ item, active }: { item: AdminNavItem; active: boolean }) 
       href={item.href}
       className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
         active
-          ? "bg-[#5d87ff] text-white shadow-md shadow-blue-500/25"
-          : "text-slate-600 hover:bg-[#ecf2ff] hover:text-[#5d87ff]"
+          ? "bg-[#0077b6] text-white shadow-md shadow-cyan-700/25"
+          : "text-slate-600 hover:bg-[#e2f5fc] hover:text-[#0077b6]"
       }`}
     >
       <Icon className="h-4 w-4 shrink-0" />

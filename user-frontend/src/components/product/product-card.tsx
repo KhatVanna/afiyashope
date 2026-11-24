@@ -77,7 +77,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
 
         {typeof product.stockLeft === "number" && product.stockLeft <= 15 ? (
-          <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-orange-50 px-2.5 py-1 text-xs font-medium text-accent dark:bg-orange-950/40">
+          <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#fce7f3] px-2.5 py-1 text-xs font-medium text-accent dark:bg-[#4a1532]/40">
             <span className="h-1.5 w-1.5 rounded-full bg-error" />
             Only {product.stockLeft} left
           </span>

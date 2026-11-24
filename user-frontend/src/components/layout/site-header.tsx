@@ -32,7 +32,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 bg-background">
-      <div className="bg-linear-to-r from-[#0F172A] via-[#1D4ED8] to-[#2563EB] text-white">
+      <div className="bg-linear-to-r from-[#071A4A] via-[#0077B6] to-[#00A7E8] text-white">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-6 sm:py-2 sm:text-sm">
           <p className="min-w-0 flex-1 truncate">
             From everyday essentials to premium upgrades — everything in one place.
@@ -184,7 +184,7 @@ export function SiteHeader() {
         </form>
       </div>
 
-      <nav className="hidden bg-linear-to-r from-[#0F172A] to-[#2563EB] lg:block">
+      <nav className="hidden bg-linear-to-r from-[#071A4A] to-[#00A7E8] lg:block">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-8 px-6 py-3">
           {navLinks.map((link) => (
             <Link

@@ -26,7 +26,7 @@ const EMPTY_FORM: UserFormValues = {
 };
 
 const inputClass =
-  "h-11 w-full rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none focus:border-[#5d87ff] focus:bg-white";
+  "h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none focus:border-[#0077b6] focus:bg-white";
 
 function formatDate(value: string | null) {
   if (!value) return "—";
@@ -38,9 +38,9 @@ function formatDate(value: string | null) {
 function roleTone(slug: string) {
   switch (slug) {
     case "super-admin":
-      return "bg-[#ecf2ff] text-[#5d87ff]";
+      return "bg-[#e2f5fc] text-[#0077b6]";
     case "admin":
-      return "bg-[#e6fffa] text-[#0f766e]";
+      return "bg-[#e2f5fc] text-[#075985]";
     default:
       return "bg-[#f1f5f9] text-slate-600";
   }
@@ -294,7 +294,7 @@ export function UsersManager() {
           <button
             type="button"
             onClick={openCreate}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#5d87ff] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-cyan-700/20"
           >
             <Plus className="h-4 w-4" />
             Add user
@@ -313,7 +313,7 @@ export function UsersManager() {
                 setSearch(event.target.value);
               }}
               placeholder="Search by name, email, or phone..."
-              className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] pl-10 pr-3 text-sm outline-none focus:border-[#5d87ff] focus:bg-white"
+              className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] pl-10 pr-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
             />
           </div>
           <select
@@ -322,7 +322,7 @@ export function UsersManager() {
               setPage(1);
               setRoleFilter(event.target.value);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
           >
             <option value="">All roles</option>
             {roles.map((role) => (
@@ -337,20 +337,20 @@ export function UsersManager() {
               setPage(1);
               setStatusFilter(event.target.value as typeof statusFilter);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
             <option value="all">All status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
           </select>
-          <div className="flex items-center rounded-xl bg-[#f6f9fc] px-3 text-sm text-slate-500 lg:col-span-2">
+          <div className="flex items-center rounded-xl bg-[#f1f9fd] px-3 text-sm text-slate-500 lg:col-span-2">
             {meta.total.toLocaleString()} users
           </div>
         </div>
       </section>
 
       {notice ? (
-        <div className="rounded-xl border border-[#c9f7ef] bg-[#e6fffa] px-4 py-3 text-sm text-[#0f766e]">
+        <div className="rounded-xl border border-[#beeafa] bg-[#e2f5fc] px-4 py-3 text-sm text-[#075985]">
           {notice}
         </div>
       ) : null}
@@ -364,7 +364,7 @@ export function UsersManager() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-[#eef2f7] text-slate-400">
+              <tr className="border-b border-[#e2edf4] text-slate-400">
                 <th className="px-4 py-3 font-medium">User</th>
                 <th className="px-4 py-3 font-medium">Phone</th>
                 <th className="px-4 py-3 font-medium">Role</th>
@@ -405,7 +405,7 @@ export function UsersManager() {
                   return (
                     <tr
                       key={user.id}
-                      className="border-b border-[#f5f7fb] last:border-0"
+                      className="border-b border-[#edf6fa] last:border-0"
                     >
                       <td className="px-4 py-4">
                         <div className="min-w-[220px]">
@@ -441,7 +441,7 @@ export function UsersManager() {
                             onClick={() => void toggleActive(user)}
                             className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                               user.is_active
-                                ? "bg-[#e6fffa] text-[#0f766e]"
+                                ? "bg-[#e2f5fc] text-[#075985]"
                                 : "bg-[#f1f5f9] text-slate-500"
                             }`}
                           >
@@ -451,7 +451,7 @@ export function UsersManager() {
                           <span
                             className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                               user.is_active
-                                ? "bg-[#e6fffa] text-[#0f766e]"
+                                ? "bg-[#e2f5fc] text-[#075985]"
                                 : "bg-[#f1f5f9] text-slate-500"
                             }`}
                           >
@@ -468,7 +468,7 @@ export function UsersManager() {
                             <button
                               type="button"
                               onClick={() => openEdit(user)}
-                              className="rounded-lg border border-[#e5eaf2] p-2 text-slate-600 hover:bg-[#f6f9fc]"
+                              className="rounded-lg border border-[#d6e8f2] p-2 text-slate-600 hover:bg-[#f1f9fd]"
                               aria-label={`Edit ${user.name}`}
                             >
                               <Pencil className="h-4 w-4" />
@@ -497,7 +497,7 @@ export function UsersManager() {
           </table>
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-[#eef2f7] px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-t border-[#e2edf4] px-4 py-3">
           <p className="text-sm text-slate-500">
             Page {meta.current_page} of {meta.last_page}
           </p>
@@ -506,7 +506,7 @@ export function UsersManager() {
               type="button"
               disabled={page <= 1 || loading}
               onClick={() => setPage((value) => Math.max(1, value - 1))}
-              className="rounded-lg border border-[#e5eaf2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+              className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
               Previous
             </button>
@@ -514,7 +514,7 @@ export function UsersManager() {
               type="button"
               disabled={page >= meta.last_page || loading}
               onClick={() => setPage((value) => value + 1)}
-              className="rounded-lg border border-[#e5eaf2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+              className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
               Next
             </button>
@@ -589,7 +589,7 @@ export function UsersManager() {
       {modalOpen ? (
         <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4 sm:p-6">
           <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#eef2f7] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#e2edf4] px-5 py-4">
               <div>
                 <h2 className="text-lg font-semibold text-slate-800">
                   {editing ? "Edit user" : "Add user"}
@@ -706,7 +706,7 @@ export function UsersManager() {
                 </Field>
               </div>
 
-              <div className="flex flex-wrap gap-4 rounded-xl bg-[#f6f9fc] px-4 py-3">
+              <div className="flex flex-wrap gap-4 rounded-xl bg-[#f1f9fd] px-4 py-3">
                 <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700">
                   <input
                     type="checkbox"
@@ -718,7 +718,7 @@ export function UsersManager() {
                         is_active: event.target.checked,
                       }))
                     }
-                    className="h-4 w-4 rounded border-slate-300 text-[#5d87ff]"
+                    className="h-4 w-4 rounded border-slate-300 text-[#0077b6]"
                   />
                   Active
                 </label>
@@ -729,18 +729,18 @@ export function UsersManager() {
                 ) : null}
               </div>
 
-              <div className="flex justify-end gap-3 border-t border-[#eef2f7] pt-4">
+              <div className="flex justify-end gap-3 border-t border-[#e2edf4] pt-4">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl border border-[#e5eaf2] px-4 py-2.5 text-sm font-semibold text-slate-600"
+                  className="rounded-xl border border-[#d6e8f2] px-4 py-2.5 text-sm font-semibold text-slate-600"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#5d87ff] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                 >
                   {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   {editing ? "Save changes" : "Create user"}

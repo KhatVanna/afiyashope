@@ -45,17 +45,17 @@ export function AdminModulePage({ href, title, description, bullets }: ModulePag
         <ul className="mt-4 space-y-2 text-sm text-slate-500">
           {bullets.map((bullet) => (
             <li key={bullet} className="flex gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#5d87ff]" />
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0077b6]" />
               <span>{bullet}</span>
             </li>
           ))}
         </ul>
-        <p className="mt-6 rounded-xl bg-[#f6f9fc] px-4 py-3 text-sm text-slate-500">
+        <p className="mt-6 rounded-xl bg-[#f1f9fd] px-4 py-3 text-sm text-slate-500">
           UI shell is ready. Connected CRUD screens will plug into the Laravel API next.
         </p>
         <Link
           href="/dashboard"
-          className="mt-4 inline-flex text-sm font-semibold text-[#5d87ff] hover:underline"
+          className="mt-4 inline-flex text-sm font-semibold text-[#0077b6] hover:underline"
         >
           Back to dashboard
         </Link>

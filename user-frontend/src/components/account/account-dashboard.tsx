@@ -78,7 +78,7 @@ function statusTone(status: string) {
     case "confirmed":
     case "processing":
     case "shipped":
-      return "bg-blue-50 text-blue-700";
+      return "bg-cyan-50 text-cyan-800";
     case "pending":
       return "bg-amber-50 text-amber-700";
     case "cancelled":

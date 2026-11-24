@@ -59,7 +59,7 @@ export function mapApiProduct(product: ApiProduct): CatalogProduct {
     .map((image) => image?.path)
     .filter((path): path is string => Boolean(path));
   const primary =
-    product.primary_image?.path ?? images[0] ?? "/images/products/wireless-headphones.png";
+    product.primary_image?.path ?? images[0] ?? "/images/products/no-product-image.svg";
 
   return {
     id: String(product.id),
@@ -88,7 +88,7 @@ export async function fetchCategories(): Promise<CatalogCategory[]> {
       id: String(category.id),
       name: category.name,
       slug: category.slug,
-      image: category.image || "/images/products/wireless-headphones.png",
+      image: category.image || "/images/products/no-product-image.svg",
       productCount: Number(category.product_count ?? 0),
     }));
   } catch {

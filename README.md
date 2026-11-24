@@ -280,12 +280,12 @@ Afiya Shope uses a consistent design token system with full **light / dark mode*
 
 | Token | Light | Dark |
 |---|---|---|
-| Background | `#F8FAFC` | `#0F172A` |
-| Card | `#FFFFFF` | `#1E293B` |
-| Text | `#0F172A` | `#F8FAFC` |
-| Primary | `#2563EB` | `#60A5FA` |
-| Accent (sale) | `#F97316` | `#F97316` |
-| Navy | `#0F172A` | — |
+| Background | `#F5FBFF` | `#071225` |
+| Card | `#FFFFFF` | `#0E1E38` |
+| Text | `#0B1B3A` | `#EAF7FD` |
+| Primary (cyan) | `#0077B6` | `#20B6E8` |
+| Accent (magenta) | `#C21868` | `#F04491` |
+| Navy | `#071A4A` | `#C8EFFF` |
 
 ---
 

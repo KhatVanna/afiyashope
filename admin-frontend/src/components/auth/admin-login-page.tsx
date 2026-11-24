@@ -78,8 +78,8 @@ export function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f0f5f9]">
-      <header className="border-b border-[#e5eaf2] bg-white">
+    <div className="flex min-h-screen flex-col bg-[#f5fbff]">
+      <header className="border-b border-[#d6e8f2] bg-white">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <Logo height={44} />
           <span className="text-sm text-slate-400">Staff access only</span>
@@ -102,7 +102,7 @@ export function AdminLoginPage() {
                 id="email"
                 type="email"
                 autoComplete="email"
-                className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm outline-none focus:border-[#5d87ff] focus:bg-white"
+                className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
                 {...register("email")}
               />
               {errors.email ? (
@@ -118,7 +118,7 @@ export function AdminLoginPage() {
                 id="password"
                 type="password"
                 autoComplete="current-password"
-                className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm outline-none focus:border-[#5d87ff] focus:bg-white"
+                className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
                 {...register("password")}
               />
               {errors.password ? (
@@ -135,7 +135,7 @@ export function AdminLoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex w-full items-center justify-center rounded-xl bg-[#5d87ff] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/20 disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-[#0077b6] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-cyan-700/20 disabled:opacity-60"
             >
               {isSubmitting ? "Signing in..." : "Sign in"}
             </button>

@@ -46,7 +46,7 @@ const snowflakePattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
 export function SiteFooter() {
   return (
     <footer
-      className="relative mt-auto overflow-hidden bg-black text-zinc-300"
+      className="relative mt-auto overflow-hidden bg-[#071A4A] text-zinc-300"
       style={{ backgroundImage: snowflakePattern }}
     >
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-8 pt-14 sm:px-6">

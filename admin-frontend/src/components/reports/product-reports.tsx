@@ -263,28 +263,28 @@ export function ProductReports() {
       value: summary ? money(summary.revenue) : "—",
       hint: summary ? `${summary.orders_count.toLocaleString()} orders` : "In selected period",
       icon: Wallet,
-      tone: "bg-[#e6fffa] text-[#13deb9]",
+      tone: "bg-[#e2f5fc] text-[#0da9d6]",
     },
     {
       label: "Units sold",
       value: summary ? summary.units_sold.toLocaleString() : "—",
       hint: summary ? `${money(summary.average_order_value)} avg order` : "Paid and open orders",
       icon: ShoppingCart,
-      tone: "bg-[#ecf2ff] text-[#5d87ff]",
+      tone: "bg-[#e2f5fc] text-[#0077b6]",
     },
     {
       label: "Gross margin",
       value: summary ? (summary.margin === null ? "—" : money(summary.margin)) : "—",
       hint: summary?.margin === null ? "Set cost prices to calculate" : "Revenue minus unit cost",
       icon: TrendingUp,
-      tone: "bg-[#e8f7ff] text-[#49bfff]",
+      tone: "bg-[#e2f5fc] text-[#0da9d6]",
     },
     {
       label: "Active products",
       value: summary ? summary.active_count.toLocaleString() : "—",
       hint: summary ? `${summary.product_count.toLocaleString()} matching filters` : "Catalog",
       icon: Package,
-      tone: "bg-[#f2ecff] text-[#8b5cf6]",
+      tone: "bg-[#fde7f3] text-[#c21868]",
     },
     {
       label: "Low stock",
@@ -323,7 +323,7 @@ export function ProductReports() {
           type="button"
           onClick={() => void exportCsv()}
           disabled={exporting || loading}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#5d87ff] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-cyan-700/20 disabled:opacity-60"
         >
           {exporting ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -342,7 +342,7 @@ export function ProductReports() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search by name or SKU..."
-              className="h-11 w-full rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] pl-10 pr-3 text-sm outline-none focus:border-[#5d87ff] focus:bg-white"
+              className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] pl-10 pr-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
             />
           </div>
           <select
@@ -351,7 +351,7 @@ export function ProductReports() {
               setPage(1);
               setPeriod(event.target.value as ReportPeriod);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
             {PERIODS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -365,7 +365,7 @@ export function ProductReports() {
               setPage(1);
               setCategoryId(event.target.value);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
             <option value="">All categories</option>
             {categories.map((category) => (
@@ -380,7 +380,7 @@ export function ProductReports() {
               setPage(1);
               setBrandId(event.target.value);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
             <option value="">All brands</option>
             {brands.map((brand) => (
@@ -395,7 +395,7 @@ export function ProductReports() {
               setPage(1);
               setStatus(event.target.value);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
             <option value="all">All status</option>
             <option value="active">Active</option>
@@ -415,7 +415,7 @@ export function ProductReports() {
                   setPage(1);
                   setFrom(event.target.value);
                 }}
-                className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
+                className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
               />
               <input
                 type="date"
@@ -424,7 +424,7 @@ export function ProductReports() {
                   setPage(1);
                   setTo(event.target.value);
                 }}
-                className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
+                className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
               />
             </>
           ) : null}
@@ -434,13 +434,13 @@ export function ProductReports() {
               setPage(1);
               setSales(event.target.value);
             }}
-            className="h-11 rounded-xl border border-[#e5eaf2] bg-[#f6f9fc] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
+            className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
           >
             <option value="all">All products</option>
             <option value="with">With sales in period</option>
             <option value="without">No sales in period</option>
           </select>
-          <div className="flex items-center rounded-xl bg-[#f6f9fc] px-3 text-sm text-slate-500 lg:col-span-3">
+          <div className="flex items-center rounded-xl bg-[#f1f9fd] px-3 text-sm text-slate-500 lg:col-span-3">
             {(report?.meta.total ?? 0).toLocaleString()} products
             {loading ? " · updating..." : ""}
           </div>
@@ -494,7 +494,7 @@ export function ProductReports() {
                     <div className="flex h-44 w-full items-end justify-center">
                       <div
                         title={`${point.label}: ${money(point.revenue)} · ${point.units} units`}
-                        className="w-3 rounded-t-md bg-[#5d87ff]"
+                        className="w-3 rounded-t-md bg-[#0077b6]"
                         style={{
                           height: `${Math.max((point.revenue / maxRevenue) * 100, point.revenue > 0 ? 6 : 0)}%`,
                         }}
@@ -534,7 +534,7 @@ export function ProductReports() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-[#eef2f7] text-slate-400">
+              <tr className="border-b border-[#e2edf4] text-slate-400">
                 <SortHeader label="Product" column="name" sort={sort} direction={direction} onSort={changeSort} />
                 <th className="px-4 py-3 font-medium">SKU</th>
                 <th className="px-4 py-3 font-medium">Category</th>
@@ -565,7 +565,7 @@ export function ProductReports() {
                 </tr>
               ) : (
                 report?.items.map((product) => (
-                  <tr key={product.id} className="border-b border-[#f5f7fb] last:border-0">
+                  <tr key={product.id} className="border-b border-[#edf6fa] last:border-0">
                     <td className="px-4 py-4">
                       <p className="min-w-45 font-semibold text-slate-800">{product.name}</p>
                       <p className="text-xs text-slate-400">{product.brand ?? "No brand"}</p>
@@ -596,7 +596,7 @@ export function ProductReports() {
                       <span
                         className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                           product.is_active
-                            ? "bg-[#e6fffa] text-[#0f766e]"
+                            ? "bg-[#e2f5fc] text-[#075985]"
                             : "bg-[#f1f5f9] text-slate-500"
                         }`}
                       >
@@ -609,7 +609,7 @@ export function ProductReports() {
             </tbody>
           </table>
         </div>
-        <div className="flex items-center justify-between gap-3 border-t border-[#eef2f7] px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-t border-[#e2edf4] px-4 py-3">
           <p className="text-sm text-slate-500">
             Page {report?.meta.current_page ?? 1} of {report?.meta.last_page ?? 1}
           </p>
@@ -618,7 +618,7 @@ export function ProductReports() {
               type="button"
               disabled={page <= 1 || loading}
               onClick={() => setPage((value) => Math.max(1, value - 1))}
-              className="rounded-lg border border-[#e5eaf2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+              className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
               Previous
             </button>
@@ -626,7 +626,7 @@ export function ProductReports() {
               type="button"
               disabled={page >= (report?.meta.last_page ?? 1) || loading}
               onClick={() => setPage((value) => value + 1)}
-              className="rounded-lg border border-[#e5eaf2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+              className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
               Next
             </button>
@@ -663,9 +663,9 @@ function BreakdownCard({
                 <span className="truncate font-medium text-slate-700">{row.name}</span>
                 <span className="shrink-0 text-slate-500">{money(row.revenue)}</span>
               </div>
-              <div className="h-2 overflow-hidden rounded-full bg-[#f6f9fc]">
+              <div className="h-2 overflow-hidden rounded-full bg-[#f1f9fd]">
                 <div
-                  className="h-full rounded-full bg-[#5d87ff]"
+                  className="h-full rounded-full bg-[#0077b6]"
                   style={{ width: `${Math.max((row.revenue / maxRevenue) * 100, row.revenue > 0 ? 4 : 0)}%` }}
                 />
               </div>
@@ -699,7 +699,7 @@ function SortHeader({
       <button
         type="button"
         onClick={() => onSort(column)}
-        className={`inline-flex items-center gap-1 ${active ? "text-[#5d87ff]" : "text-slate-400"}`}
+        className={`inline-flex items-center gap-1 ${active ? "text-[#0077b6]" : "text-slate-400"}`}
       >
         {label}
         <span className="text-[10px]">{active ? (direction === "asc" ? "↑" : "↓") : ""}</span>
