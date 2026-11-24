@@ -70,7 +70,7 @@ export function SiteSplash() {
       className={`site-splash ${leaving ? "site-splash--leave" : ""}`}
       role="status"
       aria-live="polite"
-      aria-label="Loading V2005"
+      aria-label="Loading Afiya Shope"
     >
       <div className="site-splash__mark" aria-hidden>
         <span className="site-splash__ring" />
@@ -78,9 +78,9 @@ export function SiteSplash() {
         <div className="site-splash__logo-wrap">
           <Image
             src="/images/logo_v2005.png"
-            alt="V2005"
-            width={200}
-            height={68}
+            alt="Afiya Shope"
+            width={2042}
+            height={768}
             priority
             className="site-splash__logo"
           />

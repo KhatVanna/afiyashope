@@ -14,17 +14,17 @@ export function Logo({
   height = 40,
   priority = true,
 }: LogoProps) {
-  const width = Math.round(height * 3);
+  const width = Math.round(height * (2042 / 768));
 
   return (
     <Link
       href={href}
       className={`inline-flex items-center ${className}`}
-      aria-label="V2005 home"
+      aria-label="Afiya Shope home"
     >
       <Image
         src="/images/logo_v2005.png"
-        alt="V2005"
+        alt="Afiya Shope"
         width={width}
         height={height}
         priority={priority}

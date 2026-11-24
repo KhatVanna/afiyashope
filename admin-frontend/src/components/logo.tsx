@@ -17,17 +17,17 @@ export function Logo({
   priority = true,
   showAdminLabel = true,
 }: LogoProps) {
-  const width = Math.round(height * (480 / 160));
+  const width = Math.round(height * (2042 / 768));
 
   return (
     <Link
       href={href}
       className={`inline-flex items-center gap-3 ${className}`}
-      aria-label="V2005 Admin home"
+      aria-label="Afiya Shope Admin home"
     >
       <Image
         src="/images/logo_v2005.png"
-        alt="V2005"
+        alt="Afiya Shope"
         width={width}
         height={height}
         priority={priority}

@@ -52,7 +52,7 @@ export function SiteFooter() {
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-8 pt-14 sm:px-6">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           <div className="space-y-4">
-            <Logo height={44} priority={false} className="brightness-0 invert" />
+            <Logo height={44} priority={false} />
             <p className="max-w-xs text-sm leading-relaxed text-zinc-400">
               Share contact information, store details and brand content with your
               customers.

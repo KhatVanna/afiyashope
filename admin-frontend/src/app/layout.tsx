@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   description: "V2005 administration dashboard for products, orders, and store settings.",
   applicationName: "V2005 Admin",
   icons: {
-    icon: "/images/logo_v2005.png",
-    apple: "/images/logo_v2005.png",
+    icon: "/favicon.ico",
+    apple: "/images/afiya-icon.png",
   },
   robots: {
     index: false,

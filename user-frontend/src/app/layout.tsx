@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   applicationName: "V2005",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   icons: {
-    icon: "/images/logo_v2005.png",
-    apple: "/images/logo_v2005.png",
+    icon: "/favicon.ico",
+    apple: "/images/afiya-icon.png",
   },
   openGraph: {
     title: "V2005 — Modern E-Commerce Marketplace",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/images/logo_v2005.png",
-        alt: "V2005",
+        alt: "Afiya Shope",
       },
     ],
   },
