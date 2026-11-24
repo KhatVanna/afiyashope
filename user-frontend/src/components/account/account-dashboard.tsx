@@ -16,7 +16,6 @@ import { ProductCard } from "@/components/product/product-card";
 import { storeApi } from "@/lib/store-api";
 import { useFormatMoney } from "@/hooks/use-format-money";
 import {
-  getRegionLabel,
   REGION_PRESETS,
   useRegionStore,
 } from "@/stores/region-store";
@@ -895,7 +894,7 @@ function PreferencesPanel() {
       <div>
         <h2 className="text-xl font-semibold text-navy">Preferences</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Choose your region currency and language. Current: {getRegionLabel(current)}
+          Choose your language and currency. Current: {current.languageLabel} · {current.currencySymbol}
         </p>
       </div>
       <div className="grid gap-3">
@@ -919,9 +918,9 @@ function PreferencesPanel() {
                 className="h-5 w-7 rounded-sm object-cover"
               />
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-semibold">{preset.country}</span>
+                <span className="block text-sm font-semibold">{preset.languageLabel}</span>
                 <span className="block text-xs text-muted-foreground">
-                  {preset.currencySymbol} · {preset.languageLabel} ({preset.language})
+                  {preset.currencySymbol} · {preset.language}
                 </span>
               </span>
               {selected ? (

@@ -24,7 +24,7 @@ export const REGION_PRESETS: RegionPreset[] = [
     language: "EN",
     languageLabel: "English",
     locale: "en-US",
-    flagSrc: "/images/images_payment_method/Flag_of_Cambodia.svg",
+    flagSrc: "/flags/gb.svg",
   },
   {
     id: "kh-khr-km",
@@ -35,18 +35,7 @@ export const REGION_PRESETS: RegionPreset[] = [
     language: "KM",
     languageLabel: "ខ្មែរ",
     locale: "km-KH",
-    flagSrc: "/images/images_payment_method/Flag_of_Cambodia.svg",
-  },
-  {
-    id: "kh-usd-km",
-    country: "Cambodia",
-    countryCode: "KH",
-    currency: "USD",
-    currencySymbol: "USD $",
-    language: "KM",
-    languageLabel: "ខ្មែរ",
-    locale: "km-KH",
-    flagSrc: "/images/images_payment_method/Flag_of_Cambodia.svg",
+    flagSrc: "/flags/kh.svg",
   },
 ];
 
@@ -72,8 +61,17 @@ export const useRegionStore = create<RegionState>((set, get) => ({
     if (typeof window === "undefined") return;
     const stored = window.localStorage.getItem(STORAGE_KEY);
     const valid = REGION_PRESETS.some((preset) => preset.id === stored);
+    const regionId =
+      stored === "kh-usd-km"
+        ? "kh-khr-km"
+        : valid && stored
+          ? stored
+          : REGION_PRESETS[0].id;
+    if (stored !== regionId) {
+      window.localStorage.setItem(STORAGE_KEY, regionId);
+    }
     set({
-      regionId: valid && stored ? stored : REGION_PRESETS[0].id,
+      regionId,
       hydrated: true,
     });
   },

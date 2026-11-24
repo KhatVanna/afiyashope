@@ -17,9 +17,9 @@ import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 
 const departmentLinks = [
-  { label: "🌸 ពណ៌ Pastel", href: "/products?tag=pastel" },
-  { label: "✨ ម៉ូដប្រណិត", href: "/products?tag=luxury" },
-  { label: "👗 ឈុតពេញ", href: "/products?tag=set" },
+  { label: "ពណ៌ Pastel", href: "/products?tag=pastel" },
+  { label: "ម៉ូដប្រណិត", href: "/products?tag=luxury" },
+  { label: "ឈុតពេញ", href: "/products?tag=set" },
 ];
 
 const exploreLinks = [
@@ -106,12 +106,6 @@ export function SiteHeader() {
           />
 
           <div className="flex min-w-0 items-center justify-end gap-0.5 sm:gap-1.5">
-            <RegionSelector
-              variant="header"
-              compact
-              className="hidden xl:block"
-            />
-
             <form
               action="/products"
               onSubmit={submitSearch}
@@ -137,6 +131,12 @@ export function SiteHeader() {
                 <Search className="h-4 w-4" />
               </button>
             </form>
+
+            <RegionSelector
+              variant="header"
+              compact
+              className="hidden xl:block"
+            />
 
             <div className="hidden md:inline-flex">
               <ThemeToggle />

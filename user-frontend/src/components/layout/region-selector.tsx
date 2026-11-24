@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import {
-  getRegionLabel,
   REGION_PRESETS,
   useRegionStore,
 } from "@/stores/region-store";
@@ -35,6 +34,10 @@ export function RegionSelector({
   }, [hydrate]);
 
   useEffect(() => {
+    document.documentElement.lang = current.language === "KM" ? "km" : "en";
+  }, [current.language]);
+
+  useEffect(() => {
     if (!open) return;
 
     function onPointerDown(event: MouseEvent) {
@@ -63,7 +66,7 @@ export function RegionSelector({
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={`Region settings: ${getRegionLabel(current)}`}
+        aria-label={`Language: ${current.languageLabel}`}
         onClick={() => setOpen((value) => !value)}
         className={
           isHeader
@@ -76,11 +79,11 @@ export function RegionSelector({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={current.flagSrc}
-          alt={current.country}
-          className="h-3.5 w-5 rounded-xs object-cover"
+          alt=""
+          className="h-4 w-6 rounded-sm object-cover"
         />
         <span className={compact ? "sr-only" : ""}>
-          {hydrated ? getRegionLabel(current) : "Cambodia (USD $, EN)"}
+          {hydrated ? current.languageLabel : "English"}
         </span>
         <ChevronDown
           className={`h-3.5 w-3.5 transition ${
@@ -92,7 +95,7 @@ export function RegionSelector({
       {open ? (
         <div
           role="listbox"
-          aria-label="Region, currency, and language"
+          aria-label="Language selection"
           className={
             isHeader
               ? "absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
@@ -109,7 +112,7 @@ export function RegionSelector({
                 isHeader ? "text-muted-foreground" : "text-zinc-500"
               }`}
             >
-              Region settings
+              Language / ភាសា
             </p>
           </div>
           <ul className="max-h-72 overflow-y-auto p-1.5">
@@ -143,15 +146,7 @@ export function RegionSelector({
                     />
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-medium">
-                        {preset.country}
-                      </span>
-                      <span
-                        className={`mt-0.5 block text-xs ${
-                          isHeader ? "text-muted-foreground" : "text-zinc-400"
-                        }`}
-                      >
-                        {preset.currencySymbol} · {preset.languageLabel} (
-                        {preset.language})
+                        {preset.languageLabel}
                       </span>
                     </span>
                     {selected ? (
