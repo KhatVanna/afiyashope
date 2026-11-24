@@ -1,22 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 import {
-  ChevronDown,
-  Headphones,
   Heart,
   Menu,
   Search,
-  ShoppingCart,
+  ShoppingBag,
   User,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { RegionSelector } from "@/components/layout/region-selector";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { navLinks } from "@/data/demo-catalog";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
+
+const departmentLinks = [
+  { label: "🌸 ពណ៌ Pastel", href: "/products?tag=pastel" },
+  { label: "✨ ម៉ូដប្រណិត", href: "/products?tag=luxury" },
+  { label: "👗 ឈុតពេញ", href: "/products?tag=set" },
+];
+
+const exploreLinks = [
+  { label: "Shop All", href: "/products" },
+  { label: "Categories", href: "/categories" },
+  { label: "New Arrivals", href: "/products?sort=latest" },
+  { label: "Blog & News", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
+
+const iconButtonClass =
+  "relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted sm:h-10 sm:w-10";
 
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -30,112 +45,115 @@ export function SiteHeader() {
   );
   const wishlistCount = wishlistItems.length;
 
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    if (!query.trim()) {
+      event.preventDefault();
+    }
+  }
+
   return (
-    <header className="sticky top-0 z-50 bg-background">
-      <div className="bg-linear-to-r from-[#071A4A] via-[#0077B6] to-[#00A7E8] text-white">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-6 sm:py-2 sm:text-sm">
-          <p className="min-w-0 flex-1 truncate">
-            From everyday essentials to premium upgrades — everything in one place.
-          </p>
-          <div className="hidden shrink-0 items-center gap-4 md:flex">
-            <a href="tel:+10000000000" className="hover:underline">
-              Tel: +1 (000) 000-0000
-            </a>
-            <Link href="/account" className="inline-flex items-center gap-1.5 hover:underline">
-              <User className="h-3.5 w-3.5" />
-              My Account
-            </Link>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1 rounded-full border border-white/30 px-2.5 py-1"
-            >
-              USD $ · EN
-              <ChevronDown className="h-3.5 w-3.5" />
-            </button>
-          </div>
+    <header className="sticky top-0 z-50 bg-background shadow-sm">
+      <div className="bg-[#21A8D8] text-white">
+        <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-center gap-2 px-3 text-center text-[11px] sm:px-6 sm:text-xs">
+          <span className="hidden font-semibold tracking-[0.16em] text-white sm:inline">
+            សួស្តីមិត្តភក្តិ
+          </span>
+          <span className="hidden text-white/50 sm:inline" aria-hidden="true">
+            |
+          </span>
+          <span>NEW COLLECTION 2026 • ២៥ ខេត្ត-ក្រុង</span>
+          <Link
+            href="/products"
+            className="font-semibold text-white underline decoration-[#F9318D] underline-offset-2 hover:text-[#F9318D]"
+          >
+            មើលម៉ូដ
+          </Link>
         </div>
       </div>
 
       <div className="border-b border-border bg-card">
-        <div className="mx-auto flex w-full max-w-7xl items-center gap-2 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3 lg:gap-6">
-          <button
-            type="button"
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border lg:hidden"
-            aria-label="Open menu"
-            onClick={() => setMobileOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-
-          <span className="shrink-0 sm:hidden">
-            <Logo height={32} />
-          </span>
-          <span className="hidden shrink-0 sm:inline-flex">
-            <Logo height={42} />
-          </span>
-
-          <form
-            action="/products"
-            className="hidden min-w-0 flex-1 items-center overflow-hidden rounded-lg border border-border bg-background md:flex"
-            onSubmit={(event) => {
-              if (!query.trim()) {
-                event.preventDefault();
-              }
-            }}
-          >
-            <label className="sr-only" htmlFor="site-search">
-              Search products
-            </label>
-            <select
-              name="category"
-              defaultValue="all"
-              className="h-11 max-w-[8.5rem] shrink-0 border-r border-border bg-muted/50 px-3 text-sm text-muted-foreground outline-none"
-            >
-              <option value="all">All</option>
-              <option value="smartphones-accessories">Smartphones</option>
-              <option value="kitchen-household">Kitchen</option>
-              <option value="toys-gaming">Gaming</option>
-              <option value="computers-accessories">Computers</option>
-            </select>
-            <input
-              id="site-search"
-              name="q"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search our store..."
-              className="h-11 min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground"
-            />
+        <div className="mx-auto grid h-[4.25rem] w-full max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-2 px-3 sm:px-6 lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
+          <div className="flex min-w-0 items-center">
             <button
-              type="submit"
-              className="inline-flex h-11 w-11 shrink-0 items-center justify-center bg-primary text-primary-foreground transition hover:opacity-90"
-              aria-label="Search"
+              type="button"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted lg:hidden"
+              aria-label="Open menu"
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen(true)}
             >
-              <Search className="h-4 w-4" />
+              <Menu className="h-5 w-5" />
             </button>
-          </form>
 
-          <div className="ml-auto flex shrink-0 items-center gap-0.5 sm:gap-2">
-            <a
-              href="tel:+10000000000"
-              className="hidden items-center gap-2 rounded-lg px-2 py-1.5 text-sm xl:flex"
+            <nav
+              aria-label="Shop departments"
+              className="hidden items-center gap-5 lg:flex xl:gap-7"
             >
-              <Headphones className="h-5 w-5 text-primary" />
-              <span className="leading-tight">
-                <span className="block text-xs text-muted-foreground">Customer Support</span>
-                <span className="font-medium">+1 (000) 000-0000</span>
-              </span>
-            </a>
+              {departmentLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-foreground transition hover:text-primary xl:text-sm"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
 
-            <ThemeToggle />
+          <Logo
+            height={38}
+            className="justify-self-center"
+          />
+
+          <div className="flex min-w-0 items-center justify-end gap-0.5 sm:gap-1.5">
+            <RegionSelector
+              variant="header"
+              compact
+              className="hidden xl:block"
+            />
+
+            <form
+              action="/products"
+              onSubmit={submitSearch}
+              className="hidden h-10 w-48 items-center overflow-hidden rounded-full border border-border bg-background focus-within:border-primary xl:flex"
+            >
+              <label className="sr-only" htmlFor="desktop-site-search">
+                Search products
+              </label>
+              <input
+                id="desktop-site-search"
+                name="q"
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="ស្វែងរកម៉ូដ Abaya..."
+                className="h-full min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground"
+              />
+              <button
+                type="submit"
+                className="inline-flex h-full w-10 shrink-0 items-center justify-center text-muted-foreground transition hover:text-primary"
+                aria-label="Search"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            </form>
+
+            <div className="hidden md:inline-flex">
+              <ThemeToggle />
+            </div>
 
             <Link
               href="/wishlist"
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground transition hover:bg-muted sm:h-10 sm:w-10"
-              aria-label="Wishlist"
+              className={`${iconButtonClass} hidden sm:inline-flex`}
+              aria-label={
+                wishlistCount > 0
+                  ? `Wishlist, ${wishlistCount} items`
+                  : "Wishlist"
+              }
             >
               <Heart className="h-5 w-5" />
               {wishlistCount > 0 ? (
-                <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                <span className="absolute right-0 top-0 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold text-accent-foreground">
                   {wishlistCount}
                 </span>
               ) : null}
@@ -143,7 +161,7 @@ export function SiteHeader() {
 
             <Link
               href="/account"
-              className="hidden h-9 w-9 items-center justify-center rounded-lg text-foreground transition hover:bg-muted sm:inline-flex sm:h-10 sm:w-10"
+              className={`${iconButtonClass} hidden md:inline-flex`}
               aria-label="Account"
             >
               <User className="h-5 w-5" />
@@ -152,12 +170,14 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={openCart}
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground transition hover:bg-muted sm:h-10 sm:w-10"
-              aria-label="Open cart"
+              className={iconButtonClass}
+              aria-label={
+                itemCount > 0 ? `Open cart, ${itemCount} items` : "Open cart"
+              }
             >
-              <ShoppingCart className="h-5 w-5" />
+              <ShoppingBag className="h-5 w-5" />
               {itemCount > 0 ? (
-                <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                <span className="absolute right-0 top-0 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
                   {itemCount}
                 </span>
               ) : null}
@@ -167,16 +187,24 @@ export function SiteHeader() {
 
         <form
           action="/products"
-          className="flex items-center gap-2 border-t border-border px-3 py-2 md:hidden"
+          onSubmit={submitSearch}
+          className="flex items-center gap-2 border-t border-border px-3 py-2 xl:hidden sm:px-6"
         >
+          <label className="sr-only" htmlFor="mobile-site-search">
+            Search products
+          </label>
           <input
+            id="mobile-site-search"
             name="q"
-            placeholder="Search products..."
-            className="h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-sm outline-none"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="ស្វែងរកម៉ូដ Abaya..."
+            className="h-9 min-w-0 flex-1 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-primary"
           />
           <button
             type="submit"
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition hover:opacity-90"
             aria-label="Search"
           >
             <Search className="h-4 w-4" />
@@ -184,17 +212,26 @@ export function SiteHeader() {
         </form>
       </div>
 
-      <nav className="hidden bg-linear-to-r from-[#071A4A] to-[#00A7E8] lg:block">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-8 px-6 py-3">
-          {navLinks.map((link) => (
+      <nav
+        aria-label="Main navigation"
+        className="hidden border-b border-border bg-card lg:block"
+      >
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-8 px-6 py-2.5">
+          {exploreLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium uppercase tracking-wide text-white/90 transition hover:text-white"
+              className="text-xs font-medium text-muted-foreground transition hover:text-primary"
             >
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/products?sort=offers"
+            className="text-xs font-semibold text-accent transition hover:opacity-75"
+          >
+            Sale
+          </Link>
         </div>
       </nav>
 
@@ -206,37 +243,66 @@ export function SiteHeader() {
             aria-label="Close menu overlay"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute left-0 top-0 flex h-full w-[min(88vw,20rem)] flex-col bg-card shadow-xl">
+          <aside className="absolute left-0 top-0 flex h-full w-[min(88vw,22rem)] flex-col bg-card shadow-xl">
             <div className="flex items-center justify-between border-b border-border px-4 py-4">
               <Logo height={36} />
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition hover:bg-muted"
                 aria-label="Close menu"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
+
             <nav className="flex flex-col gap-1 overflow-y-auto p-4">
-              {navLinks.map((link) => (
+              <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Shop by department
+              </p>
+              {departmentLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-3 py-3 text-sm font-medium hover:bg-muted"
+                  className="rounded-lg px-3 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted hover:text-primary"
+                >
+                  {link.label}
+                </Link>
+              ))}
+
+              <div className="my-3 border-t border-border" />
+
+              {exploreLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
                 >
                   {link.label}
                 </Link>
               ))}
               <Link
+                href="/products?sort=offers"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-lg px-3 py-2.5 text-sm font-semibold text-accent transition hover:bg-muted"
+              >
+                Sale
+              </Link>
+              <Link
                 href="/account"
                 onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-3 py-3 text-sm font-medium hover:bg-muted"
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
               >
                 My Account
               </Link>
             </nav>
+
+            <div className="mt-auto flex items-center justify-between gap-3 border-t border-border p-4">
+              <ThemeToggle />
+              <RegionSelector variant="header" />
+            </div>
           </aside>
         </div>
       ) : null}

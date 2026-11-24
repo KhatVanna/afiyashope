@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Afiya Shope — Modern E-Commerce Marketplace",
+    default: "Afiya Shope — Luxury Abaya Boutique",
     template: "%s | Afiya Shope",
   },
   description:
-    "Afiya Shope is a modern, premium e-commerce marketplace for quality products with fast delivery and secure checkout.",
+    "Abaya Collection • បោះដុំ និងលក់រាយ ២៥ ខេត្ត-ក្រុង",
   applicationName: "Afiya Shope",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   icons: {
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
     apple: "/images/afiya-icon.png",
   },
   openGraph: {
-    title: "Afiya Shope — Modern E-Commerce Marketplace",
+    title: "Afiya Shope — Luxury Abaya Boutique",
     description:
-      "Shop quality products at Afiya Shope. Discover new arrivals, flash sales, and trusted brands.",
+      "ម៉ូដ Abaya ទាន់សម័យ សុភាពរាបសារ និងប្រណិតភាព",
     siteName: "Afiya Shope",
     type: "website",
     images: [
@@ -51,7 +51,7 @@ export const viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="km"
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       data-scroll-behavior="smooth"

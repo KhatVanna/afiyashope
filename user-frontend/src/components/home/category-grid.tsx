@@ -12,15 +12,15 @@ export async function CategoryGrid() {
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-              Browse
+              ស្វែងរកដោយប្រភេទ
             </p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-navy">Categories</h2>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-navy">ប្រភេទម៉ូដ</h2>
           </div>
           <Link
             href="/categories"
             className="text-sm font-medium text-primary hover:underline"
           >
-            View all
+            មើលទាំងអស់
           </Link>
         </div>
       </ScrollReveal>

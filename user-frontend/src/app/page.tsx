@@ -24,8 +24,8 @@ export default async function HomePage() {
       <CategoryGrid />
       <div className="bg-muted/40">
         <ProductSection
-          title="Top offers"
-          subtitle="Act fast — while the deal is still valid."
+          title="ម៉ូដពេញនិយម"
+          subtitle="ម៉ូដពិសេសដែលត្រូវពេញនិយម"
           products={topOffers}
           href="/products?sort=offers"
           ctaLabel="Show more"
@@ -33,8 +33,8 @@ export default async function HomePage() {
         />
       </div>
       <ProductSection
-        title="Products"
-        subtitle={`${catalog.total.toLocaleString()} products ready to browse.`}
+        title="ការរក្សាទុកម៉ូដ Abaya"
+        subtitle={`${catalog.total.toLocaleString()} ម៉ូដសម្រាប់មើល និងបញ្ជាទិញ។`}
         products={catalog.items}
         href="/products"
         ctaLabel="Our top picks"

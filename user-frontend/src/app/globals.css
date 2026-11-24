@@ -24,22 +24,22 @@
 }
 
 :root {
-  --background: #f5fbff;
-  --foreground: #0b1b3a;
+  --background: #fff7fb;
+  --foreground: #19364a;
   --card: #ffffff;
-  --card-foreground: #0b1b3a;
-  --primary: #0077b6;
+  --card-foreground: #19364a;
+  --primary: #21a8d8;
   --primary-foreground: #ffffff;
-  --secondary: #071a4a;
+  --secondary: #168db5;
   --secondary-foreground: #ffffff;
-  --accent: #c21868;
+  --accent: #f9318d;
   --accent-foreground: #ffffff;
-  --muted: #eaf6fc;
-  --muted-foreground: #52677e;
+  --muted: #edf9fd;
+  --muted-foreground: #4f6a7c;
   --success: #16a34a;
   --error: #dc2626;
-  --border: #d6e8f2;
-  --navy: #071a4a;
+  --border: #d9eff7;
+  --navy: #168db5;
 }
 
 .dark {
@@ -47,11 +47,11 @@
   --foreground: #eaf7fd;
   --card: #0e1e38;
   --card-foreground: #eaf7fd;
-  --primary: #20b6e8;
+  --primary: #21a8d8;
   --primary-foreground: #071a2c;
   --secondary: #102747;
   --secondary-foreground: #eaf7fd;
-  --accent: #f04491;
+  --accent: #f9318d;
   --accent-foreground: #071225;
   --muted: #142b48;
   --muted-foreground: #a4bfd0;
@@ -73,7 +73,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Kantumruy Pro", "Battambang", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   overflow-x: hidden;
   min-width: 0;
 }

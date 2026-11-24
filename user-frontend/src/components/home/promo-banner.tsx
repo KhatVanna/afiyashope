@@ -74,7 +74,7 @@ export function PromoBanner() {
   }
 
   return (
-    <section className="bg-[#071A4A] text-white">
+    <section className="bg-[#168DB5] text-white">
       <div className="mx-auto grid w-full max-w-7xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:py-16">
         <div className="relative aspect-square overflow-hidden rounded-[1.75rem] bg-zinc-900 sm:aspect-[4/3] lg:aspect-square">
           {active.type === "video" ? (

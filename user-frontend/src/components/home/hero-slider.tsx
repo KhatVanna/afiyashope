@@ -19,7 +19,7 @@ export function HeroSlider() {
   }, [playing]);
 
   return (
-    <section className="relative isolate min-h-[28rem] overflow-hidden bg-[#071A4A] text-white sm:min-h-[32rem] lg:min-h-[36rem]">
+    <section className="relative isolate min-h-[28rem] overflow-hidden bg-[#21A8D8] text-white sm:min-h-[32rem] lg:min-h-[36rem]">
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover"
@@ -31,25 +31,27 @@ export function HeroSlider() {
         autoPlay
         aria-label="Afiya Shope promotional video"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#071A4A]/90 via-[#071A4A]/55 to-[#071A4A]/25" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#071A4A]/55 via-transparent to-black/15" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#168DB5]/95 via-[#21A8D8]/70 to-[#F9318D]/25" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#168DB5]/60 via-transparent to-white/10" />
 
       <div className="relative mx-auto flex h-full w-full max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:py-24">
         <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">
-          New Season
+          ✨ NEW COLLECTION 2026
         </p>
         <h1 className="max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-          Ready to upgrade to the next level?
+          ម៉ូដ Abaya ទាន់សម័យ
         </h1>
         <p className="mt-4 max-w-xl text-base text-zinc-200 sm:text-lg">
-          Discover premium tech and everyday essentials at Afiya Shope.
+          សុភាពរាបសារ និងប្រណិតភាព • សាច់ក្រណាត់នាំចូលគុណភាពខ្ពស់
         </p>
         <div className="mt-8">
           <Link
-            href="/products"
+            href="https://www.facebook.com/share/1E66nep5tC/?mibextid=wwXIfr"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wide text-primary-foreground transition hover:opacity-90"
           >
-            Shop Now
+            ឆាតសួរព័ត៌មាន FB Page
           </Link>
         </div>
       </div>

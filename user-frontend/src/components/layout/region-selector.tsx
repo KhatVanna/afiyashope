@@ -8,11 +8,18 @@ import {
   useRegionStore,
 } from "@/stores/region-store";
 
+type RegionSelectorProps = {
+  className?: string;
+  variant?: "footer" | "header";
+  compact?: boolean;
+};
+
 export function RegionSelector({
   className = "",
-}: {
-  className?: string;
-}) {
+  variant = "footer",
+  compact = false,
+}: RegionSelectorProps) {
+  const isHeader = variant === "header";
   const regionId = useRegionStore((state) => state.regionId);
   const hydrated = useRegionStore((state) => state.hydrated);
   const hydrate = useRegionStore((state) => state.hydrate);
@@ -56,8 +63,15 @@ export function RegionSelector({
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-label={`Region settings: ${getRegionLabel(current)}`}
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/80 px-3 py-1.5 text-xs text-zinc-200 transition hover:border-zinc-500 hover:bg-zinc-800"
+        className={
+          isHeader
+            ? `inline-flex items-center gap-2 rounded-full border border-border bg-card px-2.5 py-1.5 text-xs text-foreground transition hover:bg-muted ${
+                compact ? "h-9 w-9 justify-center p-0" : ""
+              }`
+            : "inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/80 px-3 py-1.5 text-xs text-zinc-200 transition hover:border-zinc-500 hover:bg-zinc-800"
+        }
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -65,9 +79,13 @@ export function RegionSelector({
           alt={current.country}
           className="h-3.5 w-5 rounded-xs object-cover"
         />
-        <span>{hydrated ? getRegionLabel(current) : "Cambodia (USD $, EN)"}</span>
+        <span className={compact ? "sr-only" : ""}>
+          {hydrated ? getRegionLabel(current) : "Cambodia (USD $, EN)"}
+        </span>
         <ChevronDown
-          className={`h-3.5 w-3.5 text-zinc-400 transition ${open ? "rotate-180" : ""}`}
+          className={`h-3.5 w-3.5 transition ${
+            isHeader ? "text-muted-foreground" : "text-zinc-400"
+          } ${open ? "rotate-180" : ""} ${compact ? "hidden" : ""}`}
         />
       </button>
 
@@ -75,10 +93,22 @@ export function RegionSelector({
         <div
           role="listbox"
           aria-label="Region, currency, and language"
-          className="absolute bottom-full right-0 z-50 mb-2 w-72 overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-950 shadow-2xl shadow-black/40"
+          className={
+            isHeader
+              ? "absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+              : "absolute bottom-full right-0 z-50 mb-2 w-72 overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-950 shadow-2xl shadow-black/40"
+          }
         >
-          <div className="border-b border-zinc-800 px-3 py-2">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+          <div
+            className={`border-b px-3 py-2 ${
+              isHeader ? "border-border" : "border-zinc-800"
+            }`}
+          >
+            <p
+              className={`text-[11px] font-semibold uppercase tracking-wide ${
+                isHeader ? "text-muted-foreground" : "text-zinc-500"
+              }`}
+            >
               Region settings
             </p>
           </div>
@@ -97,8 +127,12 @@ export function RegionSelector({
                     }}
                     className={`flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition ${
                       selected
-                        ? "bg-[#0077b6]/15 text-white"
-                        : "text-zinc-300 hover:bg-zinc-900 hover:text-white"
+                        ? isHeader
+                          ? "bg-primary/10 text-foreground"
+                          : "bg-[#21A8D8]/15 text-white"
+                        : isHeader
+                          ? "text-foreground hover:bg-muted"
+                          : "text-zinc-300 hover:bg-zinc-900 hover:text-white"
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -111,13 +145,17 @@ export function RegionSelector({
                       <span className="block text-sm font-medium">
                         {preset.country}
                       </span>
-                      <span className="mt-0.5 block text-xs text-zinc-400">
+                      <span
+                        className={`mt-0.5 block text-xs ${
+                          isHeader ? "text-muted-foreground" : "text-zinc-400"
+                        }`}
+                      >
                         {preset.currencySymbol} · {preset.languageLabel} (
                         {preset.language})
                       </span>
                     </span>
                     {selected ? (
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#0077b6]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#21A8D8]" />
                     ) : null}
                   </button>
                 </li>

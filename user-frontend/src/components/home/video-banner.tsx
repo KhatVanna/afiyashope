@@ -30,7 +30,7 @@ export function VideoBanner({
   }
 
   return (
-    <section className="bg-[#071A4A]">
+    <section className="bg-[#21A8D8]">
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">
         <div className="relative overflow-hidden rounded-2xl bg-black">
           <div className="relative aspect-[16/9] w-full">

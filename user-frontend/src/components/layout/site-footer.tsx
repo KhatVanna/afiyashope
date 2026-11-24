@@ -35,7 +35,7 @@ const paymentMethods = [
 ] as const;
 
 const socialLinks = [
-  { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
+  { label: "Facebook", href: "https://www.facebook.com/share/1E66nep5tC/?mibextid=wwXIfr", icon: "facebook" },
   { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
   { label: "YouTube", href: "https://youtube.com", icon: "youtube" },
   { label: "TikTok", href: "https://tiktok.com", icon: "tiktok" },
@@ -46,16 +46,15 @@ const snowflakePattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
 export function SiteFooter() {
   return (
     <footer
-      className="relative mt-auto overflow-hidden bg-[#071A4A] text-zinc-300"
+      className="relative mt-auto overflow-hidden bg-[#21A8D8] text-white"
       style={{ backgroundImage: snowflakePattern }}
     >
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-8 pt-14 sm:px-6">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           <div className="space-y-4">
             <Logo height={44} priority={false} />
-            <p className="max-w-xs text-sm leading-relaxed text-zinc-400">
-              Share contact information, store details and brand content with your
-              customers.
+            <p className="max-w-xs text-sm leading-relaxed text-slate-200">
+              Abaya Collection • បោះដុំ និងលក់រាយ ២៥ ខេត្ត-ក្រុង
             </p>
           </div>
 
@@ -66,7 +65,7 @@ export function SiteFooter() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-300 transition hover:text-white"
+                    className="text-sm font-medium text-white transition hover:text-[#F9318D]"
                   >
                     {link.label}
                   </Link>
@@ -82,7 +81,7 @@ export function SiteFooter() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-300 transition hover:text-white"
+                    className="text-sm font-medium text-white transition hover:text-[#F9318D]"
                   >
                     {link.label}
                   </Link>
@@ -93,7 +92,7 @@ export function SiteFooter() {
 
           <div>
             <h3 className="mb-4 text-sm font-semibold text-white">Help & Contact</h3>
-            <p className="mb-3 max-w-xs text-sm leading-relaxed text-zinc-400">
+            <p className="mb-3 max-w-xs text-sm leading-relaxed text-slate-200">
               Need any advice before you buy? We&apos;re here to help.
             </p>
             <Link
@@ -124,8 +123,8 @@ export function SiteFooter() {
 
         <div className="mt-10 border-t border-zinc-800 pt-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <p className="text-xs text-zinc-500">
-              © {new Date().getFullYear()}. Afiya Shope. Premium E-Commerce Marketplace
+            <p className="text-xs text-slate-300">
+              © {new Date().getFullYear()}. Afiya Shope. Luxury Abaya Boutique
             </p>
 
             <div className="flex flex-wrap items-center gap-4 sm:gap-5">
