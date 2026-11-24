@@ -25,9 +25,9 @@ class DatabaseSeeder extends Seeder
         $customerRole = Role::query()->where('slug', 'customer')->firstOrFail();
 
         $superAdmin = User::query()->updateOrCreate(
-            ['email' => 'admin@v2005.test'],
+            ['email' => 'admin@afiyashope.test'],
             [
-                'name' => 'V2005 Super Admin',
+                'name' => 'Afiya Shope Super Admin',
                 'password' => Hash::make('password'),
                 'phone' => '+10000000001',
                 'is_active' => true,
@@ -37,9 +37,9 @@ class DatabaseSeeder extends Seeder
         $superAdmin->roles()->syncWithoutDetaching([$superAdminRole->id]);
 
         $admin = User::query()->updateOrCreate(
-            ['email' => 'manager@v2005.test'],
+            ['email' => 'manager@afiyashope.test'],
             [
-                'name' => 'V2005 Admin',
+                'name' => 'Afiya Shope Admin',
                 'password' => Hash::make('password'),
                 'phone' => '+10000000002',
                 'is_active' => true,
@@ -49,9 +49,9 @@ class DatabaseSeeder extends Seeder
         $admin->roles()->syncWithoutDetaching([$adminRole->id]);
 
         $staff = User::query()->updateOrCreate(
-            ['email' => 'staff@v2005.test'],
+            ['email' => 'staff@afiyashope.test'],
             [
-                'name' => 'V2005 Staff',
+                'name' => 'Afiya Shope Staff',
                 'password' => Hash::make('password'),
                 'phone' => '+10000000004',
                 'is_active' => true,
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         $staff->roles()->syncWithoutDetaching([$staffRole->id]);
 
         $customer = User::query()->updateOrCreate(
-            ['email' => 'customer@v2005.test'],
+            ['email' => 'customer@afiyashope.test'],
             [
                 'name' => 'Demo Customer',
                 'password' => Hash::make('password'),

@@ -142,9 +142,9 @@ export function AdminLoginPage() {
           </form>
 
           <div className="mt-6 space-y-1 text-center text-xs text-slate-400">
-            <p>admin@v2005.test / password</p>
-            <p>manager@v2005.test / password</p>
-            <p>staff@v2005.test / password</p>
+            <p>admin@afiyashope.test / password</p>
+            <p>manager@afiyashope.test / password</p>
+            <p>staff@afiyashope.test / password</p>
           </div>
         </section>
       </main>

@@ -3,7 +3,7 @@ import { LoginForm } from "@/components/auth/login-form";
 
 export const metadata: Metadata = {
   title: "Account",
-  description: "Manage your V2005 customer account, orders, and addresses.",
+  description: "Manage your Afiya Shope customer account, orders, and addresses.",
 };
 
 export default function AccountPage() {

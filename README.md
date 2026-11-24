@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛍️ V2005 — E-Commerce Platform
+# 🛍️ Afiya Shope — E-Commerce Platform
 
 **A modern, full-stack e-commerce monorepo built with Next.js & Laravel.**  
 Customer storefront · Admin dashboard · REST API backend
@@ -56,7 +56,7 @@ Customer storefront · Admin dashboard · REST API backend
 ## 📁 Project Structure
 
 ```
-V2005/
+afiyashope/
 ├── user-frontend/      # Public customer storefront (Next.js)
 ├── admin-frontend/     # Admin dashboard (Next.js)
 └── backend/            # Laravel REST API
@@ -102,8 +102,8 @@ Ensure the following are installed before getting started:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/kalapak-team/V2005.git
-cd v2005
+git clone https://github.com/KhatVanna/afiyashope.git
+cd afiyashope
 ```
 
 ### 2. Create the Database
@@ -221,13 +221,13 @@ The `backend/` directory is fully configured for Railway deployment via Docker.
 **Step-by-step deployment:**
 
 1. Push this repository to GitHub.
-2. Go to [Railway](https://railway.app) → **New Project** → **Deploy from GitHub** → select `v2005`.
+2. Go to [Railway](https://railway.app) → **New Project** → **Deploy from GitHub** → select `afiyashope`.
 3. Under Service settings, set **Root Directory** to `backend` (Railway auto-detects the `Dockerfile`).
 4. Add a public domain under **Settings → Networking**.
 5. Set the following environment variables in the **Variables** tab:
 
 ```env
-APP_NAME=V2005
+APP_NAME="Afiya Shope"
 APP_ENV=production
 APP_DEBUG=false
 APP_KEY=base64:GENERATE_WITH_php_artisan_key_generate_--show
@@ -276,7 +276,7 @@ cd backend && php artisan key:generate --show
 
 ## 🎨 Design System
 
-V2005 uses a consistent design token system with full **light / dark mode** support.
+Afiya Shope uses a consistent design token system with full **light / dark mode** support.
 
 | Token | Light | Dark |
 |---|---|---|
@@ -318,4 +318,4 @@ V2005 uses a consistent design token system with full **light / dark mode** supp
 ## 📄 License
 
 This is a **private project** — all rights reserved.  
-© 2026 V2005. Unauthorized use, reproduction, or distribution is prohibited.
+© 2026 Afiya Shope. Unauthorized use, reproduction, or distribution is prohibited.

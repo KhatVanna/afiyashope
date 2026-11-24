@@ -65,7 +65,7 @@ function mapSummary(post: ApiBlogPost): BlogPostSummary {
     slug: post.slug,
     excerpt: post.excerpt ?? undefined,
     coverImage: post.cover_image || "/images/blog/blog-shopping.jpg",
-    authorName: post.author_name || "V2005 Editorial",
+    authorName: post.author_name || "Afiya Shope Editorial",
     category: post.category ?? undefined,
     publishedAt: post.published_at ?? undefined,
   };

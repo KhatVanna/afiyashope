@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Checkout",
-  description: "Complete your V2005 order.",
+  description: "Complete your Afiya Shope order.",
 };
 
 export default function CheckoutPage() {

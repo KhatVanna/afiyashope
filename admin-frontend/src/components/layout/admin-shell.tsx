@@ -108,7 +108,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="mx-4 mb-5 rounded-2xl bg-gradient-to-br from-[#5d87ff] to-[#4570ea] p-4 text-white shadow-lg shadow-blue-500/20">
-          <p className="text-sm font-semibold">V2005 Admin</p>
+          <p className="text-sm font-semibold">Afiya Shope Admin</p>
           <p className="mt-1 text-xs text-blue-100">
             Manage catalog, orders, and customers from one place.
           </p>

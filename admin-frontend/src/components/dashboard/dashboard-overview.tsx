@@ -79,7 +79,7 @@ const TRANSACTIONS = [
   {
     time: "10:00",
     title: "New order recorded",
-    detail: "#V2005-100248",
+    detail: "#AFIYA-100248",
     tone: "bg-[#5d87ff]",
   },
   {
@@ -91,7 +91,7 @@ const TRANSACTIONS = [
   {
     time: "14:20",
     title: "New sale recorded",
-    detail: "#V2005-100249",
+    detail: "#AFIYA-100249",
     tone: "bg-[#5d87ff]",
   },
   {

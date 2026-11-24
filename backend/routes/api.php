@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| V2005 API Routes
+| Afiya Shope API Routes
 |--------------------------------------------------------------------------
 |
 | Base path is /api (configured by Laravel). Versioned routes are loaded

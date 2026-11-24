@@ -6,7 +6,7 @@ import { fetchBlogPosts } from "@/lib/blog-api";
 
 export const metadata: Metadata = {
   title: "Blog & News",
-  description: "Technology insights and product guides from V2005.",
+  description: "Technology insights and product guides from Afiya Shope.",
 };
 
 type BlogPageProps = {

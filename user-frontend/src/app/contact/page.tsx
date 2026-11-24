@@ -5,7 +5,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with V2005 customer support.",
+  description: "Get in touch with Afiya Shope customer support.",
 };
 
 export default function ContactPage() {
@@ -43,7 +43,7 @@ export default function ContactPage() {
           <InfoCard
             icon={<Mail className="h-5 w-5 text-primary" />}
             title="Email"
-            text="support@v2005.local"
+            text="support@afiyashope.local"
           />
         </ScrollReveal>
         <ScrollReveal delay={180}>

@@ -39,7 +39,7 @@ class BlogSeeder extends Seeder
                     'cover_image' => $cover,
                     'author_name' => $topic['author'],
                     'category' => $topic['category'],
-                    'meta_title' => $title.' | V2005 Blog',
+                    'meta_title' => $title.' | Afiya Shope Blog',
                     'meta_description' => Str::limit($excerpt, 155, ''),
                     'is_published' => true,
                     'published_at' => now()->subDays(200 - $i)->subHours($i % 12),
@@ -228,7 +228,7 @@ class BlogSeeder extends Seeder
                 'title' => 'Smart Shopping Habits for Better Deals',
                 'category' => 'Shopping',
                 'excerpt' => 'Compare value, timing, and trust signals before you tap “Add to cart”.',
-                'author' => 'V2005 Editorial',
+                'author' => 'Afiya Shope Editorial',
                 'focus' => 'online shopping tips and deal evaluation',
             ],
         ];
@@ -242,13 +242,13 @@ class BlogSeeder extends Seeder
         $focus = $topic['focus'];
 
         $paragraphs = [
-            "<p>At V2005, we see shoppers ask the same practical questions about {$focus}. This guide (#{$index}) keeps the advice clear, useful, and ready to apply on your next order.</p>",
+            "<p>At Afiya Shope, we see shoppers ask the same practical questions about {$focus}. This guide (#{$index}) keeps the advice clear, useful, and ready to apply on your next order.</p>",
             "<p><strong>Start with the job to be done.</strong> Decide what “good enough” means for your week: speed, comfort, durability, or value. That filter prevents overspending on features you will never use.</p>",
             "<p><strong>Check the everyday details.</strong> Look at materials, warranty language, stock signals, and real shipping expectations. Small product choices often matter more than marketing headlines.</p>",
             "<p><strong>Compare options side by side.</strong> Open two or three product pages, note price vs. compare-at savings, and scan reviews for consistency. A short shortlist beats endless scrolling.</p>",
             "<p><strong>Set up for success after checkout.</strong> Unbox carefully, keep packaging for returns if needed, and follow the first-week care tips tied to {$focus}. Good habits extend product life.</p>",
             "<p>Edition {$edition} of this series expands on seasonal use-cases and common mistakes we see in support chats. Bookmark it if you are upgrading gear this month.</p>",
-            "<p>Ready to shop? Browse the matching collection on V2005, add your top pick to cart, and use wishlist for anything still under consideration.</p>",
+            "<p>Ready to shop? Browse the matching collection on Afiya Shope, add your top pick to cart, and use wishlist for anything still under consideration.</p>",
         ];
 
         return implode("\n", $paragraphs);

@@ -336,7 +336,7 @@ export function ProductsManager() {
             Products
           </h1>
           <p className="mt-2 text-slate-500">
-            Manage the V2005 catalog, inventory levels, pricing, and visibility.
+            Manage the Afiya Shope catalog, inventory levels, pricing, and visibility.
           </p>
         </div>
         {canManage ? (
@@ -637,7 +637,7 @@ export function ProductsManager() {
                     </p>
                     <p className="text-xs text-slate-500">
                       JPG, PNG, or WebP. Uploads to your Cloudinary cloud{" "}
-                      <span className="font-semibold">v2005</span>.
+                      <span className="font-semibold">Afiya Shope</span>.
                     </p>
                     <input
                       type="file"

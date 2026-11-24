@@ -14,8 +14,8 @@ class StoreSettings
                 'group' => 'general',
                 'type' => 'string',
                 'label' => 'Store name',
-                'description' => 'Public name shown across V2005.',
-                'default' => 'V2005',
+                'description' => 'Public name shown across Afiya Shope.',
+                'default' => 'Afiya Shope',
             ],
             'store_tagline' => [
                 'group' => 'general',
@@ -29,7 +29,7 @@ class StoreSettings
                 'type' => 'string',
                 'label' => 'Support email',
                 'description' => 'Customer support contact email.',
-                'default' => 'support@v2005.test',
+                'default' => 'support@afiyashope.test',
             ],
             'support_phone' => [
                 'group' => 'general',

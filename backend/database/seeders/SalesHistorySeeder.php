@@ -20,7 +20,7 @@ class SalesHistorySeeder extends Seeder
             ->orderBy('id')
             ->get(['id', 'name', 'sku', 'price']);
 
-        $customer = User::query()->where('email', 'customer@v2005.test')->first();
+        $customer = User::query()->where('email', 'customer@afiyashope.test')->first();
 
         if ($products->isEmpty() || ! $customer) {
             return;

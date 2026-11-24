@@ -25,6 +25,6 @@ class HealthController extends Controller
             'version' => 'v1',
             'environment' => config('app.env'),
             'database' => $database,
-        ], 'V2005 API is healthy');
+        ], 'Afiya Shope API is healthy');
     }
 }

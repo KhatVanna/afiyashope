@@ -6,7 +6,7 @@ import { fetchCategories, fetchProducts } from "@/lib/catalog-api";
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Browse the full V2005 product catalog with filters and sorting.",
+  description: "Browse the full Afiya Shope product catalog with filters and sorting.",
 };
 
 type ProductsPageProps = {

@@ -112,7 +112,7 @@ class CatalogSeeder extends Seeder
                 ['slug' => $category['slug']],
                 [
                     'name' => $category['name'],
-                    'description' => $category['name'].' products at V2005',
+                    'description' => $category['name'].' products at Afiya Shope',
                     'image' => $cloudinaryByLocalPath[$localImage] ?? $localImage,
                     'is_active' => true,
                     'sort_order' => $index + 1,
@@ -235,7 +235,7 @@ class CatalogSeeder extends Seeder
 
         $templateKeys = array_keys($templates);
         $now = now();
-        $customer = User::query()->where('email', 'customer@v2005.test')->first();
+        $customer = User::query()->where('email', 'customer@afiyashope.test')->first();
 
         DB::transaction(function () use (
             $templates,
@@ -277,8 +277,8 @@ class CatalogSeeder extends Seeder
                     'name' => $name,
                     'slug' => $slug,
                     'sku' => $sku,
-                    'short_description' => 'Premium quality '.$name.' available at V2005.',
-                    'description' => 'Shop the '.$name.' at V2005. Designed for everyday performance with reliable build quality.',
+                    'short_description' => 'Premium quality '.$name.' available at Afiya Shope.',
+                    'description' => 'Shop the '.$name.' at Afiya Shope. Designed for everyday performance with reliable build quality.',
                     'price' => $price,
                     'compare_at_price' => $compare,
                     'cost_price' => null,
@@ -289,8 +289,8 @@ class CatalogSeeder extends Seeder
                     'average_rating' => round(3.6 + ($random * 1.4), 2),
                     'reviews_count' => 0,
                     'sales_count' => 0,
-                    'meta_title' => $name.' | V2005',
-                    'meta_description' => 'Buy '.$name.' at V2005.',
+                    'meta_title' => $name.' | Afiya Shope',
+                    'meta_description' => 'Buy '.$name.' at Afiya Shope.',
                     'published_at' => $now->copy()->subMinutes($i),
                     'created_at' => $now,
                     'updated_at' => $now,
@@ -368,7 +368,7 @@ class CatalogSeeder extends Seeder
                                 [
                                     'rating' => 5,
                                     'title' => 'Great product',
-                                    'body' => 'Happy with my purchase from V2005.',
+                                    'body' => 'Happy with my purchase from Afiya Shope.',
                                     'is_approved' => true,
                                 ]
                             );
@@ -404,7 +404,7 @@ class CatalogSeeder extends Seeder
         Banner::query()->updateOrCreate(
             ['title' => 'Discover Something New'],
             [
-                'subtitle' => 'Shop quality products at V2005',
+                'subtitle' => 'Shop quality products at Afiya Shope',
                 'image' => $cloudinaryByLocalPath[$bannerLocal] ?? $bannerLocal,
                 'link_url' => '/products',
                 'button_text' => 'Shop Now',
@@ -420,7 +420,7 @@ class CatalogSeeder extends Seeder
             ['key' => 'store_name'],
             [
                 'group' => 'general',
-                'value' => 'V2005',
+                'value' => 'Afiya Shope',
                 'type' => 'string',
             ]
         );

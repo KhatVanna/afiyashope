@@ -14,7 +14,7 @@ export function Logo({
   height = 40,
   priority = true,
 }: LogoProps) {
-  const width = Math.round(height * (2042 / 768));
+  const width = Math.round(height * (2045 / 769));
 
   return (
     <Link
@@ -23,11 +23,12 @@ export function Logo({
       aria-label="Afiya Shope home"
     >
       <Image
-        src="/images/logo_v2005.png"
+        src="/images/afiyashope_logo.png"
         alt="Afiya Shope"
         width={width}
         height={height}
         priority={priority}
+        unoptimized
         className="rounded-md object-contain"
         style={{ width: "auto", height }}
       />

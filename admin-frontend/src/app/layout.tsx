@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "V2005 Admin",
-    template: "%s | V2005 Admin",
+    default: "Afiya Shope Admin",
+    template: "%s | Afiya Shope Admin",
   },
-  description: "V2005 administration dashboard for products, orders, and store settings.",
-  applicationName: "V2005 Admin",
+  description: "Afiya Shope administration dashboard for products, orders, and store settings.",
+  applicationName: "Afiya Shope Admin",
   icons: {
     icon: "/favicon.ico",
     apple: "/images/afiya-icon.png",

@@ -7,7 +7,7 @@ return [
     | Cross-Origin Resource Sharing (CORS) Configuration
     |--------------------------------------------------------------------------
     |
-    | V2005 allows the user and admin Next.js frontends to call the API
+    | Afiya Shope allows the user and admin Next.js frontends to call the API
     | with credentials (Sanctum SPA cookie authentication).
     |
     */

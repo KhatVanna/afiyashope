@@ -77,11 +77,12 @@ export function SiteSplash() {
         <span className="site-splash__ring site-splash__ring--delayed" />
         <div className="site-splash__logo-wrap">
           <Image
-            src="/images/logo_v2005.png"
+            src="/images/afiyashope_logo.png"
             alt="Afiya Shope"
-            width={2042}
-            height={768}
+            width={2045}
+            height={769}
             priority
+            unoptimized
             className="site-splash__logo"
           />
         </div>

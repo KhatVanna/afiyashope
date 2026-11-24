@@ -22,7 +22,7 @@ const slides: PromoSlide[] = [
     type: "video",
     src: "/videos/promo.mp4",
     poster: "/videos/promo-poster.png",
-    alt: "V2005 promo video",
+    alt: "Afiya Shope promo video",
   },
   {
     type: "image",
@@ -166,7 +166,7 @@ export function PromoBanner() {
 
         <div className="max-w-xl lg:pl-4">
           <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-            <span className="block">V2005 –</span>
+            <span className="block">Afiya Shope –</span>
             <span className="block">expensive</span>
             <span className="block">was</span>
             <span className="mt-1 block bg-gradient-to-r from-sky-300 to-teal-300 bg-clip-text text-transparent">
@@ -174,7 +174,7 @@ export function PromoBanner() {
             </span>
           </h2>
           <p className="mt-6 max-w-md text-sm leading-relaxed text-zinc-400 sm:text-base">
-            V2005 stands for clear selection, strong quality and a shopping
+            Afiya Shope stands for clear selection, strong quality and a shopping
             experience without detours.
           </p>
           <Link

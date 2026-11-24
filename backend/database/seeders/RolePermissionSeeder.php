@@ -37,7 +37,7 @@ class RolePermissionSeeder extends Seeder
         $roles = [
             'super-admin' => [
                 'name' => 'Super Admin',
-                'description' => 'Full access to all V2005 admin features',
+                'description' => 'Full access to all Afiya Shope admin features',
                 'permissions' => Permission::query()->pluck('id')->all(),
             ],
             'admin' => [

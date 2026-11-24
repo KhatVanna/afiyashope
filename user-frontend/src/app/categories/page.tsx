@@ -6,7 +6,7 @@ import { fetchCategories } from "@/lib/catalog-api";
 
 export const metadata: Metadata = {
   title: "Categories",
-  description: "Browse V2005 product categories.",
+  description: "Browse Afiya Shope product categories.",
 };
 
 export default async function CategoriesPage() {

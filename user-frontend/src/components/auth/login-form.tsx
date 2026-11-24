@@ -320,7 +320,7 @@ export function LoginForm() {
       )}
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
-        Demo customer: customer@v2005.test / password
+        Demo customer: customer@afiyashope.test / password
       </p>
       <p className="mt-2 text-center text-xs text-muted-foreground">
         <Link href="/contact" className="underline">

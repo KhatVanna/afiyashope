@@ -1,8 +1,8 @@
 {
-  "name": "v2005",
+  "name": "afiyashope",
   "version": "0.1.0",
   "private": true,
-  "description": "V2005 e-commerce monorepo — user frontend, admin frontend, and Laravel API",
+  "description": "Afiya Shope e-commerce monorepo — user frontend, admin frontend, and Laravel API",
   "scripts": {
     "dev:user": "npm --prefix user-frontend run dev",
     "dev:admin": "npm --prefix admin-frontend run dev",

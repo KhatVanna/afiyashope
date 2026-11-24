@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('excerpt', 500)->nullable();
             $table->longText('body');
             $table->string('cover_image')->nullable();
-            $table->string('author_name')->default('V2005 Editorial');
+            $table->string('author_name')->default('Afiya Shope Editorial');
             $table->string('category')->nullable();
             $table->string('meta_title')->nullable();
             $table->string('meta_description', 500)->nullable();

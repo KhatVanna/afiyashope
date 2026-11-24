@@ -65,7 +65,7 @@ export function mapApiProduct(product: ApiProduct): CatalogProduct {
     id: String(product.id),
     slug: product.slug,
     name: product.name,
-    brand: product.brand?.name ?? "V2005",
+    brand: product.brand?.name ?? "Afiya Shope",
     price: Number(product.price),
     compareAtPrice:
       product.compare_at_price != null ? Number(product.compare_at_price) : undefined,

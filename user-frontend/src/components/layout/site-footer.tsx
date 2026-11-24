@@ -125,7 +125,7 @@ export function SiteFooter() {
         <div className="mt-10 border-t border-zinc-800 pt-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <p className="text-xs text-zinc-500">
-              © {new Date().getFullYear()}. V2005. Premium E-Commerce Marketplace
+              © {new Date().getFullYear()}. Afiya Shope. Premium E-Commerce Marketplace
             </p>
 
             <div className="flex flex-wrap items-center gap-4 sm:gap-5">

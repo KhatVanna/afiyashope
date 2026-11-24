@@ -16,26 +16,26 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "V2005 — Modern E-Commerce Marketplace",
-    template: "%s | V2005",
+    default: "Afiya Shope — Modern E-Commerce Marketplace",
+    template: "%s | Afiya Shope",
   },
   description:
-    "V2005 is a modern, premium e-commerce marketplace for quality products with fast delivery and secure checkout.",
-  applicationName: "V2005",
+    "Afiya Shope is a modern, premium e-commerce marketplace for quality products with fast delivery and secure checkout.",
+  applicationName: "Afiya Shope",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   icons: {
     icon: "/favicon.ico",
     apple: "/images/afiya-icon.png",
   },
   openGraph: {
-    title: "V2005 — Modern E-Commerce Marketplace",
+    title: "Afiya Shope — Modern E-Commerce Marketplace",
     description:
-      "Shop quality products at V2005. Discover new arrivals, flash sales, and trusted brands.",
-    siteName: "V2005",
+      "Shop quality products at Afiya Shope. Discover new arrivals, flash sales, and trusted brands.",
+    siteName: "Afiya Shope",
     type: "website",
     images: [
       {
-        url: "/images/logo_v2005.png",
+        url: "/images/afiyashope_logo.png",
         alt: "Afiya Shope",
       },
     ],

@@ -29,7 +29,7 @@ export function HeroSlider() {
         loop
         playsInline
         autoPlay
-        aria-label="V2005 TVC promotional video"
+        aria-label="Afiya Shope promotional video"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-[#0F172A]/90 via-[#0F172A]/55 to-[#0F172A]/25" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/55 via-transparent to-black/15" />
@@ -42,7 +42,7 @@ export function HeroSlider() {
           Ready to upgrade to the next level?
         </h1>
         <p className="mt-4 max-w-xl text-base text-zinc-200 sm:text-lg">
-          Discover premium tech and everyday essentials at V2005.
+          Discover premium tech and everyday essentials at Afiya Shope.
         </p>
         <div className="mt-8">
           <Link
