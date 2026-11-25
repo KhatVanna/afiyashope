@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
+import { siFacebook } from "simple-icons";
 
 export function HeroSlider() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -49,8 +50,11 @@ export function HeroSlider() {
             href="https://www.facebook.com/share/1E66nep5tC/?mibextid=wwXIfr"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wide text-primary-foreground transition hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wide text-primary-foreground transition hover:opacity-90"
           >
+            <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+              <path d={siFacebook.path} />
+            </svg>
             ឆាតសួរព័ត៌មាន FB Page
           </Link>
         </div>
