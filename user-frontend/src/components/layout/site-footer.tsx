@@ -1,6 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import {
+  siFacebook,
+  siInstagram,
+  siTelegram,
+  siTiktok,
+} from "simple-icons";
 import { Logo } from "@/components/logo";
 
 const menuLinks = [
@@ -42,6 +48,13 @@ const socialLinks = [
   { label: "TikTok", href: "https://tiktok.com", icon: "tiktok" },
   { label: "Telegram", href: "https://t.me/", icon: "telegram" },
 ] as const;
+
+const socialIcons = {
+  facebook: siFacebook,
+  instagram: siInstagram,
+  tiktok: siTiktok,
+  telegram: siTelegram,
+} as const;
 
 const snowflakePattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.07' stroke-width='1'%3E%3Cpath d='M40 12v56M18 26l44 28M18 54l44-28'/%3E%3Cpath d='M40 20l4 6-4 2-4-2zM40 54l4 6-4 2-4-2zM24 30l7 1-1 4-5 1zM49 45l7 1-1 4-5 1zM24 50l7-1-1-4-5-1zM49 35l7-1-1-4-5-1z'/%3E%3C/g%3E%3C/svg%3E")`;
 
@@ -154,45 +167,10 @@ export function SiteFooter() {
 }
 
 function SocialGlyph({ name }: { name: (typeof socialLinks)[number]["icon"] }) {
-  const className = "h-5 w-5 fill-current";
-
-  if (name === "facebook") {
-    return (
-      <svg viewBox="0 0 24 24" className={className} aria-hidden>
-        <path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H8v3h3v7h3v-7h3l1-3h-4V9c0-.6.4-1 1-1z" />
-      </svg>
-    );
-  }
-
-  if (name === "instagram") {
-    return (
-      <svg viewBox="0 0 24 24" className={className} aria-hidden>
-        <path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm10 2H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm-5 3.5A3.5 3.5 0 1 1 8.5 12 3.5 3.5 0 0 1 12 8.5zm0 2A1.5 1.5 0 1 0 13.5 12 1.5 1.5 0 0 0 12 10.5zM17.5 7a1 1 0 1 1-1 1 1 1 0 0 1 1-1z" />
-      </svg>
-    );
-  }
-
-  if (name === "tiktok") {
-    return (
-      <svg viewBox="0 0 24 24" className={className} aria-hidden>
-        <path d="M16.6 5.8c-.7.3-1.4.6-2.2.6h-.2V14a3.4 3.4 0 1 1-2.3-3.2v2.1a1.4 1.4 0 1 0 1 .3V4.5h2.1c.1 1.2.8 2.3 1.6 3.1z" />
-      </svg>
-    );
-  }
-
+  const icon = socialIcons[name];
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="m22 2-7 20-4-9-9-4Z" />
-      <path d="M22 2 11 13" />
+    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
+      <path d={icon.path} />
     </svg>
   );
 }

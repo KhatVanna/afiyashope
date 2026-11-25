@@ -17,6 +17,7 @@
     "react-dom": "19.2.8",
     "react-hook-form": "^7.88.0",
     "sharp": "^0.35.4",
+    "simple-icons": "^16.38.1",
     "zod": "^4.6.5",
     "zustand": "^5.0.15"
   },
