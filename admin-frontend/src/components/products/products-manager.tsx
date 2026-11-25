@@ -28,21 +28,12 @@ import type {
 
 const EMPTY_FORM: ProductFormValues = {
   category_id: "",
-  brand_id: "",
   name: "",
   slug: "",
   sku: "",
-  short_description: "",
   description: "",
   price: "",
-  compare_at_price: "",
-  cost_price: "",
   stock_quantity: "0",
-  track_inventory: true,
-  is_active: true,
-  is_featured: false,
-  meta_title: "",
-  meta_description: "",
 };
 
 function primaryImageUrl(product?: AdminProduct | null): string | null {
@@ -67,45 +58,24 @@ function canManageCatalog(roleSlugs: string[]) {
 function toFormValues(product: AdminProduct): ProductFormValues {
   return {
     category_id: product.category_id?.toString() ?? "",
-    brand_id: product.brand_id?.toString() ?? "",
     name: product.name,
     slug: product.slug,
     sku: product.sku,
-    short_description: product.short_description ?? "",
     description: product.description ?? "",
     price: String(product.price),
-    compare_at_price:
-      product.compare_at_price !== null ? String(product.compare_at_price) : "",
-    cost_price: product.cost_price !== null ? String(product.cost_price) : "",
     stock_quantity: String(product.stock_quantity),
-    track_inventory: product.track_inventory,
-    is_active: product.is_active,
-    is_featured: product.is_featured,
-    meta_title: product.meta_title ?? "",
-    meta_description: product.meta_description ?? "",
   };
 }
 
 function toPayload(form: ProductFormValues) {
   return {
     category_id: form.category_id ? Number(form.category_id) : null,
-    brand_id: form.brand_id ? Number(form.brand_id) : null,
     name: form.name.trim(),
     slug: form.slug.trim() || undefined,
     sku: form.sku.trim(),
-    short_description: form.short_description.trim() || null,
     description: form.description.trim() || null,
     price: Number(form.price),
-    compare_at_price: form.compare_at_price
-      ? Number(form.compare_at_price)
-      : null,
-    cost_price: form.cost_price ? Number(form.cost_price) : null,
     stock_quantity: Number(form.stock_quantity),
-    track_inventory: form.track_inventory,
-    is_active: form.is_active,
-    is_featured: form.is_featured,
-    meta_title: form.meta_title.trim() || null,
-    meta_description: form.meta_description.trim() || null,
   };
 }
 
@@ -120,7 +90,6 @@ export function ProductsManager() {
 
   const [items, setItems] = useState<AdminProduct[]>([]);
   const [categories, setCategories] = useState<CatalogOption[]>([]);
-  const [brands, setBrands] = useState<CatalogOption[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">(
     "all"
@@ -152,7 +121,6 @@ export function ProductsManager() {
     );
     if (ok && payload.success) {
       setCategories(payload.data.categories);
-      setBrands(payload.data.brands);
     }
   }, []);
 
@@ -729,39 +697,6 @@ export function ProductsManager() {
                   />
                 </Field>
                 <Field
-                  label="Compare at price"
-                  error={formErrors.compare_at_price?.[0]}
-                >
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={form.compare_at_price}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        compare_at_price: event.target.value,
-                      }))
-                    }
-                    className={inputClass}
-                  />
-                </Field>
-                <Field label="Cost price" error={formErrors.cost_price?.[0]}>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={form.cost_price}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        cost_price: event.target.value,
-                      }))
-                    }
-                    className={inputClass}
-                  />
-                </Field>
-                <Field
                   label="Stock quantity"
                   error={formErrors.stock_quantity?.[0]}
                 >
@@ -799,43 +734,7 @@ export function ProductsManager() {
                     ))}
                   </select>
                 </Field>
-                <Field label="Brand" error={formErrors.brand_id?.[0]}>
-                  <select
-                    value={form.brand_id}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        brand_id: event.target.value,
-                      }))
-                    }
-                    className={inputClass}
-                  >
-                    <option value="">{t("No brand")}</option>
-                    {brands.map((brand) => (
-                      <option key={brand.id} value={brand.id}>
-                        {brand.name}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
               </div>
-
-              <Field
-                label="Short description"
-                error={formErrors.short_description?.[0]}
-              >
-                <textarea
-                  rows={2}
-                  value={form.short_description}
-                  onChange={(event) =>
-                    setForm((current) => ({
-                      ...current,
-                      short_description: event.target.value,
-                    }))
-                  }
-                  className={inputClass}
-                />
-              </Field>
 
               <Field label="Description" error={formErrors.description?.[0]}>
                 <textarea
@@ -850,63 +749,6 @@ export function ProductsManager() {
                   className={inputClass}
                 />
               </Field>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Meta title" error={formErrors.meta_title?.[0]}>
-                  <input
-                    value={form.meta_title}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        meta_title: event.target.value,
-                      }))
-                    }
-                    className={inputClass}
-                  />
-                </Field>
-                <Field
-                  label="Meta description"
-                  error={formErrors.meta_description?.[0]}
-                >
-                  <input
-                    value={form.meta_description}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        meta_description: event.target.value,
-                      }))
-                    }
-                    className={inputClass}
-                  />
-                </Field>
-              </div>
-
-              <div className="flex flex-wrap gap-4 rounded-xl bg-[#f1f9fd] px-4 py-3">
-                <Toggle
-                  label="Active"
-                  checked={form.is_active}
-                  onChange={(checked) =>
-                    setForm((current) => ({ ...current, is_active: checked }))
-                  }
-                />
-                <Toggle
-                  label="Featured"
-                  checked={form.is_featured}
-                  onChange={(checked) =>
-                    setForm((current) => ({ ...current, is_featured: checked }))
-                  }
-                />
-                <Toggle
-                  label="Track inventory"
-                  checked={form.track_inventory}
-                  onChange={(checked) =>
-                    setForm((current) => ({
-                      ...current,
-                      track_inventory: checked,
-                    }))
-                  }
-                />
-              </div>
 
               <div className="flex justify-end gap-3 border-t border-[#e2edf4] pt-4">
                 <button
@@ -951,29 +793,6 @@ function Field({
       <span className="text-sm font-medium text-slate-700">{t(label)}</span>
       {children}
       {error ? <span className="block text-xs text-[#fa896b]">{t(error)}</span> : null}
-    </label>
-  );
-}
-
-function Toggle({
-  label,
-  checked,
-  onChange,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  const t = useAdminText();
-  return (
-    <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-        className="h-4 w-4 rounded border-slate-300 text-[#0077b6]"
-      />
-      {t(label)}
     </label>
   );
 }

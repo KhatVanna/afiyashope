@@ -40,21 +40,12 @@ export type AdminProduct = {
 
 export type ProductFormValues = {
   category_id: string;
-  brand_id: string;
   name: string;
   slug: string;
   sku: string;
-  short_description: string;
   description: string;
   price: string;
-  compare_at_price: string;
-  cost_price: string;
   stock_quantity: string;
-  track_inventory: boolean;
-  is_active: boolean;
-  is_featured: boolean;
-  meta_title: string;
-  meta_description: string;
 };
 
 export type ProductsListData = {
