@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Brand;
+use App\Models\Category;
 use App\Policies\BrandPolicy;
+use App\Policies\CategoryPolicy;
 use App\Support\DatabaseCommandGuard;
 use App\Support\NeonDatabaseUrl;
 use Illuminate\Console\Events\CommandStarting;
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Brand::class, BrandPolicy::class);
+        Gate::policy(Category::class, CategoryPolicy::class);
 
         if ($this->app->runningInConsole()) {
             Event::listen(CommandStarting::class, static function (CommandStarting $event): void {

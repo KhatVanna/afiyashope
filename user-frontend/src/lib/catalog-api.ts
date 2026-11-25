@@ -21,6 +21,7 @@ type ApiProduct = {
 type ApiCategory = {
   id: number;
   name: string;
+  name_km?: string | null;
   slug: string;
   image?: string | null;
   product_count?: number;
@@ -158,6 +159,7 @@ export async function fetchCategories(): Promise<CatalogListResult<CatalogCatego
       items: (data.items ?? []).map((category) => ({
         id: String(category.id),
         name: category.name,
+        nameKm: category.name_km ?? null,
         slug: category.slug,
         image: category.image?.trim() ?? "",
         productCount: Number(category.product_count ?? 0),

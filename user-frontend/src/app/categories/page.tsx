@@ -61,7 +61,9 @@ export default async function CategoriesPage() {
                 />
               </div>
               <div className="p-4">
-                <h2 className="text-lg font-semibold">{category.name}</h2>
+                <h2 className="text-lg font-semibold">
+                  <LocaleText en={category.name} km={category.nameKm || category.name} />
+                </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                   <LocaleText
                     en={`${category.productCount} products`}

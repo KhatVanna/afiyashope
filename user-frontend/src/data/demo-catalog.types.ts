@@ -18,6 +18,7 @@ export type CatalogProduct = {
 export type CatalogCategory = {
   id: string;
   name: string;
+  nameKm?: string | null;
   slug: string;
   image: string;
   productCount: number;

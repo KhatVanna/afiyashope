@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   BarChart3,
   Bell,
+  Boxes,
   Check,
   LayoutDashboard,
   Menu,
@@ -63,6 +64,7 @@ function getServerSidebarCollapsedSnapshot() {
 const ICONS = {
   dashboard: LayoutDashboard,
   products: Package,
+  categories: Boxes,
   brands: Tag,
   orders: ShoppingCart,
   customers: Users,

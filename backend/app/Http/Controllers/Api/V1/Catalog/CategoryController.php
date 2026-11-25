@@ -22,10 +22,11 @@ class CategoryController extends Controller
                     ->withCount(['products' => fn ($query) => $query->where('is_active', true)])
                     ->orderBy('sort_order')
                     ->orderBy('name')
-                    ->get(['id', 'name', 'slug', 'image', 'description', 'sort_order'])
+                    ->get(['id', 'name', 'name_km', 'slug', 'image', 'description', 'sort_order'])
                     ->map(fn (Category $category) => [
                         'id' => $category->id,
                         'name' => $category->name,
+                        'name_km' => $category->name_km,
                         'slug' => $category->slug,
                         'image' => $category->image,
                         'description' => $category->description,

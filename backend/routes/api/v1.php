@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Account\OrderController as AccountOrderControlle
 use App\Http\Controllers\Api\V1\Account\ProfileController;
 use App\Http\Controllers\Api\V1\Admin\BrandController;
 use App\Http\Controllers\Api\V1\Admin\BrandLogoController;
+use App\Http\Controllers\Api\V1\Admin\CategoryController;
 use App\Http\Controllers\Api\V1\Admin\CustomerController;
 use App\Http\Controllers\Api\V1\Admin\MediaController;
 use App\Http\Controllers\Api\V1\Admin\OrderController;
@@ -76,6 +77,11 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/brands/{brand}', [BrandController::class, 'update']);
     Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
     Route::post('/brands/{brand}/logo', [BrandLogoController::class, 'store']);
+
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{category}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 
     Route::get('/site-settings/{group}', [SiteSettingsController::class, 'showGroup']);
     Route::put('/site-settings/branding', [SiteSettingsController::class, 'updateBranding']);
