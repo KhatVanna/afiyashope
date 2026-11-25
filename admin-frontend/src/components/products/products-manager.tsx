@@ -726,23 +726,46 @@ export function ProductsManager() {
                     className={inputClass}
                   />
                 </Field>
-                <Field label="Currency" error={formErrors.currency?.[0]}>
-                  <select
-                    value={form.currency}
-                    onChange={(event) => {
-                      const value = event.target.value;
-                      setForm((current) => ({
-                        ...current,
-                        currency: value === "USD" || value === "KHR" ? value : "",
-                      }));
-                    }}
-                    className={inputClass}
+                <div className="block space-y-1.5">
+                  <span className="text-sm font-medium text-slate-700">
+                    {t("Currency")}
+                  </span>
+                  <div
+                    role="group"
+                    aria-label={t("Currency")}
+                    className="flex h-11 items-center gap-2"
                   >
-                    <option value="">{t("Follow visitor's region")}</option>
-                    <option value="USD">{t("USD ($)")}</option>
-                    <option value="KHR">{t("KHR (៛)")}</option>
-                  </select>
-                </Field>
+                    {(["USD", "KHR"] as const).map((currency) => {
+                      const selected = form.currency === currency;
+                      return (
+                        <button
+                          key={currency}
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() =>
+                            setForm((current) => ({
+                              ...current,
+                              currency:
+                                current.currency === currency ? "" : currency,
+                            }))
+                          }
+                          className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
+                            selected
+                              ? "border-[#0077b6] bg-[#e2f5fc] text-[#075985]"
+                              : "border-[#d6e8f2] bg-[#f1f9fd] text-slate-600 hover:bg-white"
+                          }`}
+                        >
+                          {currency === "USD" ? t("USD ($)") : t("KHR (៛)")}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {formErrors.currency?.[0] ? (
+                    <span className="block text-xs text-[#fa896b]">
+                      {t(formErrors.currency[0])}
+                    </span>
+                  ) : null}
+                </div>
                 <Field
                   label="Stock quantity"
                   error={formErrors.stock_quantity?.[0]}
