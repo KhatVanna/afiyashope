@@ -122,29 +122,29 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
               </div>
             </dl>
           </div>
+
+          <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:rounded-2xl sm:p-5">
+            <h2 className="text-xl font-semibold tracking-tight text-navy">
+              {t("Description", "ការពិពណ៌នា")}
+            </h2>
+            <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-muted-foreground">
+              {product.description ||
+                (product.brand
+                  ? t(
+                      `Experience premium quality with the ${product.name} from ${product.brand}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`,
+                      `ស្វែងយល់ពីគុណភាពល្អរបស់ ${product.name} ពី ${product.brand}។ រចនាឡើងសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ ជាមួយនឹងរូបរាងស្អាត និងគុណភាពជឿទុកចិត្តបាន។`
+                    )
+                  : t(
+                      `Experience premium quality with the ${product.name}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`,
+                      `ស្វែងយល់ពីគុណភាពល្អរបស់ ${product.name}។ រចនាឡើងសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ ជាមួយនឹងរូបរាងស្អាត និងគុណភាពជឿទុកចិត្តបាន។`
+                    ))}
+            </p>
+          </div>
         </div>
       </div>
 
-      <ScrollReveal as="section" variant="apple" className="mt-12 max-w-3xl space-y-8">
-        <div>
-          <h2 className="text-2xl font-semibold tracking-tight text-navy sm:text-3xl">
-            {t("Description", "ការពិពណ៌នា")}
-          </h2>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
-            {product.description ||
-              (product.brand
-                ? t(
-                    `Experience premium quality with the ${product.name} from ${product.brand}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`,
-                    `ស្វែងយល់ពីគុណភាពល្អរបស់ ${product.name} ពី ${product.brand}។ រចនាឡើងសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ ជាមួយនឹងរូបរាងស្អាត និងគុណភាពជឿទុកចិត្តបាន។`
-                  )
-                : t(
-                    `Experience premium quality with the ${product.name}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`,
-                    `ស្វែងយល់ពីគុណភាពល្អរបស់ ${product.name}។ រចនាឡើងសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ ជាមួយនឹងរូបរាងស្អាត និងគុណភាពជឿទុកចិត្តបាន។`
-                  ))}
-          </p>
-        </div>
-
-        {product.brand ? (
+      {product.brand ? (
+        <ScrollReveal as="section" variant="apple" className="mt-12 max-w-3xl">
           <div className="border-t border-border pt-8">
             <h3 className="text-xl font-semibold text-navy">{t("Highlights", "ចំណុចសំខាន់ៗ")}</h3>
             <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
@@ -153,8 +153,8 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
               </li>
             </ul>
           </div>
-        ) : null}
-      </ScrollReveal>
+        </ScrollReveal>
+      ) : null}
 
       {related.length > 0 ? (
         <section className="mt-14">
