@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUp } from "lucide-react";
+import { ArrowUp } from "@/components/ui/emoji-icons";
 import { useEffect, useState } from "react";
 import { useLocaleText } from "@/components/i18n/locale-text";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Eye, Loader2, Search, X } from "lucide-react";
+import { Eye, Loader2, Search, X } from "@/components/ui/emoji-icons";
 import { adminApi } from "@/lib/admin-api";
 import {
   useAdminLanguage,

@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { CategoryGrid } from "@/components/home/category-grid";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { ProductSection } from "@/components/home/product-section";
-import { PromoBanner } from "@/components/home/promo-banner";
-import { TrustBar } from "@/components/home/trust-bar";
-import { VideoBanner } from "@/components/home/video-banner";
 import { LocaleText } from "@/components/i18n/locale-text";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchProducts } from "@/lib/catalog-api";
@@ -31,7 +27,6 @@ export default async function HomePage() {
   return (
     <>
       <HeroSlider banners={banners} />
-      <CategoryGrid />
       <div className="bg-muted/40">
         <ProductSection
           title={<LocaleText en="Popular Styles" km="ម៉ូដពេញនិយម" />}
@@ -63,15 +58,6 @@ export default async function HomePage() {
           staggerCards
         />
       )}
-      <ScrollReveal>
-        <PromoBanner />
-      </ScrollReveal>
-      <ScrollReveal>
-        <VideoBanner />
-      </ScrollReveal>
-      <ScrollReveal>
-        <TrustBar />
-      </ScrollReveal>
     </>
   );
 }

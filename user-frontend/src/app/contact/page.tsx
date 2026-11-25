@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Headphones, Mail, MapPin } from "lucide-react";
+import { Headphones, Mail, MapPin } from "@/components/ui/emoji-icons";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { LocaleText } from "@/components/i18n/locale-text";
 import { ContactForm } from "@/components/contact/contact-form";

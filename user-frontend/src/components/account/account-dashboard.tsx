@@ -11,7 +11,7 @@ import {
   Settings2,
   Trash2,
   UserRound,
-} from "lucide-react";
+} from "@/components/ui/emoji-icons";
 import { ProductCard } from "@/components/product/product-card";
 import { useLocaleText } from "@/components/i18n/locale-text";
 import { storeApi } from "@/lib/store-api";

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader2, Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import { Loader2, Pencil, Plus, Search, Trash2, X } from "@/components/ui/emoji-icons";
 import { adminApi } from "@/lib/admin-api";
 import { canAccessNavItem, ADMIN_NAV } from "@/lib/admin-nav";
 import {

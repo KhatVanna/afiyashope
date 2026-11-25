@@ -26,16 +26,18 @@ export function Logo({
       className={`inline-flex items-center ${className}`}
       aria-label={t("Afiya Shope home", "ទំព័រដើម Afiya Shope")}
     >
-      <Image
-        src="/images/afiyashope_logo.png"
-        alt="Afiya Shope"
-        width={width}
-        height={height}
-        priority={priority}
-        unoptimized
-        className="rounded-md object-contain"
-        style={{ width: "auto", height }}
-      />
+      <span className="brand-logo-plate inline-flex items-center justify-center rounded-2xl border px-2 py-1">
+        <Image
+          src="/images/afiyashope_logo.png"
+          alt="Afiya Shope"
+          width={width}
+          height={height}
+          priority={priority}
+          unoptimized
+          className="rounded-md object-contain"
+          style={{ width: "auto", height }}
+        />
+      </span>
     </Link>
   );
 }

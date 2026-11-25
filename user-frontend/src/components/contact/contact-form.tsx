@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone } from "lucide-react";
+import { Phone } from "@/components/ui/emoji-icons";
 import { useLocaleText } from "@/components/i18n/locale-text";
 
 export function ContactForm() {

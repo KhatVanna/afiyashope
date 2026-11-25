@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Heart, Minus, Plus, ShieldCheck, ShoppingCart, Star } from "lucide-react";
+import { Heart, Minus, Plus, ShieldCheck, ShoppingCart, Star } from "@/components/ui/emoji-icons";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";

@@ -10,6 +10,7 @@ import {
   AdminLanguageSelector,
   useAdminText,
 } from "@/components/layout/admin-language-selector";
+import { AdminThemeToggle } from "@/components/layout/admin-theme-toggle";
 import { useAuthStore } from "@/stores/auth-store";
 
 const loginSchema = z.object({
@@ -86,10 +87,10 @@ export function AdminLoginPage() {
     <div className="flex min-h-screen flex-col bg-[#f5fbff]">
       <header className="border-b border-[#d6e8f2] bg-white">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <Logo height={44} />
+          <Logo height={44} showAdminLabel={false} />
           <div className="flex items-center gap-3">
+            <AdminThemeToggle />
             <AdminLanguageSelector />
-            <span className="text-sm text-slate-400">{t("Staff access only")}</span>
           </div>
         </div>
       </header>
@@ -97,11 +98,8 @@ export function AdminLoginPage() {
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 py-16 sm:px-6">
         <section className="mx-auto w-full max-w-md rounded-2xl border border-white bg-white p-8 shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
           <h1 className="text-3xl font-semibold tracking-tight text-slate-800">{t("Admin sign in")}</h1>
-          <p className="mt-2 text-sm text-slate-500">
-            {t("Super Admin, Admin, and Staff only. Customer accounts cannot sign in here.")}
-          </p>
 
-          <form className="mt-8 space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
             <div>
               <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">
                 {t("Email")}
@@ -149,11 +147,6 @@ export function AdminLoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 space-y-1 text-center text-xs text-slate-400">
-            <p>admin@afiyashope.test / password</p>
-            <p>manager@afiyashope.test / password</p>
-            <p>staff@afiyashope.test / password</p>
-          </div>
         </section>
       </main>
     </div>

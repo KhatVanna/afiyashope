@@ -4,11 +4,11 @@ import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message"
 import { LocaleText } from "@/components/i18n/locale-text";
 import { ProductCard } from "@/components/product/product-card";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { fetchBrands, fetchCategories, fetchProducts } from "@/lib/catalog-api";
+import { fetchProducts } from "@/lib/catalog-api";
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Browse the full Afiya Shope product catalog with filters and sorting.",
+  description: "Browse the full Afiya Shope product catalog.",
 };
 
 type ProductsPageProps = {
@@ -29,29 +29,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const sort = params.sort ?? "latest";
   const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
 
-  const [categoryResult, brandResult, catalog] = await Promise.all([
-    fetchCategories(),
-    fetchBrands(),
-    fetchProducts({
-      q: query || undefined,
-      category: category || undefined,
-      brand: brand || undefined,
-      sort,
-      page,
-      perPage: 20,
-    }),
-  ]);
-
-  const categories = categoryResult.items;
-  const brands = brandResult.items;
-  const total = catalog.total;
+  const catalog = await fetchProducts({
+    q: query || undefined,
+    category: category || undefined,
+    brand: brand || undefined,
+    sort,
+    page,
+    perPage: 20,
+  });
   const totalPages = Math.max(1, catalog.lastPage);
   const currentPage = Math.min(page, totalPages);
   const pageItems = catalog.items;
-  const allCount = categories.reduce((sum, item) => sum + item.productCount, 0);
-
-  const categoryName = categories.find((item) => item.slug === category)?.name;
-  const brandName = brands.find((item) => item.slug === brand)?.name;
 
   function buildHref(nextPage: number) {
     const search = new URLSearchParams();
@@ -60,19 +48,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     if (brand) search.set("brand", brand);
     if (sort && sort !== "latest") search.set("sort", sort);
     if (nextPage > 1) search.set("page", String(nextPage));
-    const value = search.toString();
-    return value ? `/products?${value}` : "/products";
-  }
-
-  function buildFilterHref(next: { category?: string; brand?: string; sort?: string }) {
-    const search = new URLSearchParams();
-    if (query) search.set("q", params.q ?? "");
-    const nextCategory = next.category ?? category;
-    const nextBrand = next.brand ?? brand;
-    const nextSort = next.sort ?? sort;
-    if (nextCategory) search.set("category", nextCategory);
-    if (nextBrand) search.set("brand", nextBrand);
-    if (nextSort && nextSort !== "latest") search.set("sort", nextSort);
     const value = search.toString();
     return value ? `/products?${value}` : "/products";
   }
@@ -91,149 +66,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         </nav>
       </ScrollReveal>
 
-      <ScrollReveal delay={40}>
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-navy">
-              {brandName ?? categoryName ?? <LocaleText en="All products" km="ទំនិញទាំងអស់" />}
-            </h1>
-            {catalog.error ? (
-              <CatalogErrorMessage className="mt-3" />
-            ) : (
-              <p className="mt-2 text-sm text-muted-foreground">
-                <LocaleText
-                  en={`${total.toLocaleString()} product${total === 1 ? "" : "s"}`}
-                  km={`ទំនិញ ${total.toLocaleString()} មុខ`}
-                />
-                {query ? (
-                  <LocaleText
-                    en={` matching “${params.q}”`}
-                    km={` ដែលត្រូវនឹង “${params.q}”`}
-                  />
-                ) : ""}
-                {" · "}
-                <LocaleText
-                  en={`Page ${currentPage} of ${totalPages}`}
-                  km={`ទំព័រ ${currentPage} នៃ ${totalPages}`}
-                />
-              </p>
-            )}
-          </div>
-        </div>
-      </ScrollReveal>
-
-      <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <ScrollReveal delay={60}>
-          <aside className="h-fit space-y-6 rounded-2xl border border-border bg-card p-5">
-            <div>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide">
-                <LocaleText en="Categories" km="ប្រភេទទំនិញ" />
-              </h2>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href={buildFilterHref({ category: "" })}
-                    className={`text-sm ${!category ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground"}`}
-                  >
-                    <LocaleText en={`All (${allCount})`} km={`ទាំងអស់ (${allCount})`} />
-                  </Link>
-                </li>
-                {categoryResult.error ? (
-                  <li>
-                    <CatalogErrorMessage className="px-3 py-2 text-left text-xs" />
-                  </li>
-                ) : categories.map((item) => (
-                  <li key={item.id}>
-                    <Link
-                      href={buildFilterHref({ category: item.slug })}
-                      className={`text-sm ${category === item.slug ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground"}`}
-                    >
-                      {item.name} ({item.productCount})
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {brands.length > 0 ? (
-                <div>
-                  <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide">
-                    <LocaleText en="Brands" km="ម៉ាក" />
-                  </h2>
-                  <ul className="flex flex-wrap gap-2">
-                    <li>
-                      <Link
-                        href={buildFilterHref({ brand: "" })}
-                        aria-current={!brand ? "page" : undefined}
-                        className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-medium ${
-                          !brand
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <LocaleText en="All brands" km="គ្រប់ម៉ាក" />
-                      </Link>
-                    </li>
-                    {brands.map((item) => (
-                      <li key={item.id}>
-                        <Link
-                          href={buildFilterHref({ brand: item.slug })}
-                          aria-current={brand === item.slug ? "page" : undefined}
-                          className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-medium ${
-                            brand === item.slug
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border text-muted-foreground hover:text-foreground"
-                          }`}
-                        >
-                          {item.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-            ) : null}
-
-            <div>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide">
-                <LocaleText en="Sort" km="តម្រៀប" />
-              </h2>
-              <ul className="space-y-2 text-sm">
-                <SortLink
-                  labelEn="Latest"
-                  labelKm="ថ្មីបំផុត"
-                  href={buildFilterHref({ sort: "latest" })}
-                  active={sort === "latest" || !params.sort}
-                />
-                <SortLink
-                  labelEn="Popular"
-                  labelKm="ពេញនិយម"
-                  href={buildFilterHref({ sort: "popular" })}
-                  active={sort === "popular"}
-                />
-                <SortLink
-                  labelEn="Price: Low to High"
-                  labelKm="តម្លៃ៖ ពីទាបទៅខ្ពស់"
-                  href={buildFilterHref({ sort: "price-asc" })}
-                  active={sort === "price-asc"}
-                />
-                <SortLink
-                  labelEn="Price: High to Low"
-                  labelKm="តម្លៃ៖ ពីខ្ពស់ទៅទាប"
-                  href={buildFilterHref({ sort: "price-desc" })}
-                  active={sort === "price-desc"}
-                />
-                <SortLink
-                  labelEn="Offers"
-                  labelKm="ការផ្តល់ជូន"
-                  href={buildFilterHref({ sort: "offers" })}
-                  active={sort === "offers"}
-                />
-              </ul>
-            </div>
-          </aside>
-        </ScrollReveal>
-
-        <div>
+      {catalog.error ? <CatalogErrorMessage className="mb-6" /> : null}
+      <div>
           {catalog.error ? null : pageItems.length === 0 ? (
             <ScrollReveal>
               <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center">
@@ -313,36 +147,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </ScrollReveal>
             </>
           )}
-        </div>
       </div>
     </div>
-  );
-}
-
-function SortLink({
-  labelEn,
-  labelKm,
-  href,
-  active,
-}: {
-  labelEn: string;
-  labelKm: string;
-  href: string;
-  active: boolean;
-}) {
-  return (
-    <li>
-      <Link
-        href={href}
-        className={
-          active
-            ? "font-semibold text-primary"
-            : "text-muted-foreground hover:text-foreground"
-        }
-      >
-        <LocaleText en={labelEn} km={labelKm} />
-      </Link>
-    </li>
   );
 }
 

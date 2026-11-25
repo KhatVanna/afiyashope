@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useId, useState, type ChangeEvent } from "react";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X } from "@/components/ui/emoji-icons";
 import { useAdminText } from "@/components/layout/admin-language-selector";
 import type { SiteMediaKind } from "@/lib/site-settings-api";
 

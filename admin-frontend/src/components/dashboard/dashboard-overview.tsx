@@ -10,7 +10,7 @@ import {
   TrendingUp,
   Users,
   Wallet,
-} from "lucide-react";
+} from "@/components/ui/emoji-icons";
 import { getNavForUser } from "@/lib/admin-nav";
 import { useAuthStore } from "@/stores/auth-store";
 import { useAdminText } from "@/components/layout/admin-language-selector";
@@ -280,7 +280,7 @@ export function DashboardOverview() {
                     cy="18"
                     r="14"
                     fill="none"
-                    stroke="#e2edf4"
+                    stroke="var(--border)"
                     strokeWidth="4"
                   />
                   <circle
@@ -288,7 +288,7 @@ export function DashboardOverview() {
                     cy="18"
                     r="14"
                     fill="none"
-                    stroke="#0077b6"
+                    stroke="var(--primary)"
                     strokeWidth="4"
                     strokeDasharray="55 45"
                     strokeLinecap="round"
@@ -298,7 +298,7 @@ export function DashboardOverview() {
                     cy="18"
                     r="14"
                     fill="none"
-                    stroke="#0da9d6"
+                    stroke="var(--accent)"
                     strokeWidth="4"
                     strokeDasharray="25 75"
                     strokeDashoffset="-55"
@@ -309,7 +309,7 @@ export function DashboardOverview() {
                     cy="18"
                     r="14"
                     fill="none"
-                    stroke="#e2f5fc"
+                    stroke="var(--muted)"
                     strokeWidth="4"
                     strokeDasharray="20 80"
                     strokeDashoffset="-80"

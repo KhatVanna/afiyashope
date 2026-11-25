@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type RefObject } from "react";
-import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
-import { siFacebook } from "simple-icons";
+import { ChevronLeft, ChevronRight } from "@/components/ui/emoji-icons";
 import type { PublicSiteBanner } from "@/lib/site-content-api";
 import { useRegionLanguage } from "@/stores/region-store";
 
@@ -43,7 +42,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
   const isKhmer = useRegionLanguage() === "KM";
   const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
   const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [playing, setPlaying] = useState(true);
+  const playing = true;
   const [slideIndex, setSlideIndex] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [saveData, setSaveData] = useState(false);
@@ -150,7 +149,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
     <section
       aria-roledescription={hasCarousel ? "carousel" : undefined}
       aria-label={isKhmer ? "ផ្ទាំងផ្សព្វផ្សាយចម្បង" : "Storefront hero"}
-      className="relative isolate min-h-[28rem] overflow-hidden bg-[#21A8D8] text-white sm:min-h-[32rem] lg:min-h-[36rem]"
+      className="relative isolate mx-auto my-5 min-h-[28rem] w-[calc(100%-1.5rem)] max-w-[1800px] overflow-hidden rounded-[2rem] border-2 border-[#e85d8b] bg-[#21A8D8] text-white shadow-[0_10px_30px_-10px_rgba(232,93,139,0.45)] dark:border-[#ff8ab4] sm:my-6 sm:w-[calc(100%-3rem)] sm:min-h-[32rem] lg:min-h-[36rem]"
     >
       <div className="absolute inset-0 hidden sm:block">
         {renderMedia(banner.media_url, desktopType, desktopVideoRef)}
@@ -190,9 +189,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wide text-primary-foreground transition hover:opacity-90"
             >
               {externalButton && buttonUrl.includes("facebook") ? (
-                <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-                  <path d={siFacebook.path} />
-                </svg>
+                <span aria-hidden="true" className="text-base leading-none">👍</span>
               ) : null}
               {buttonText}
             </Link>
@@ -226,22 +223,6 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
         </>
       ) : null}
 
-      <button
-        type="button"
-        aria-label={
-          isKhmer
-            ? playing ? "ផ្អាកផ្ទាំងផ្សព្វផ្សាយ" : "ចាក់ផ្ទាំងផ្សព្វផ្សាយ"
-            : playing ? "Pause banner" : "Play banner"
-        }
-        onClick={() => setPlaying((value) => !value)}
-        className="absolute bottom-4 right-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-zinc-900 shadow-lg transition hover:bg-zinc-100 sm:bottom-6 sm:right-6"
-      >
-        {playing ? (
-          <Pause className="h-4 w-4 fill-current" aria-hidden="true" />
-        ) : (
-          <Play className="h-4 w-4 fill-current pl-0.5" aria-hidden="true" />
-        )}
-      </button>
     </section>
   );
 }

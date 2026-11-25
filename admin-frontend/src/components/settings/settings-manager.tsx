@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save } from "@/components/ui/emoji-icons";
 import { adminApi } from "@/lib/admin-api";
 import { useAdminText } from "@/components/layout/admin-language-selector";
 import { useAuthStore } from "@/stores/auth-store";

@@ -23,48 +23,24 @@ import {
   Users,
   UserCog,
   X,
-} from "lucide-react";
+} from "@/components/ui/emoji-icons";
 import {
   AdminLanguageSelector,
   useAdminText,
 } from "@/components/layout/admin-language-selector";
+import {
+  applyThemeMode,
+  getServerThemeModeSnapshot,
+  getThemeModeSnapshot,
+  subscribeToTheme,
+  syncThemeMode,
+} from "@/lib/admin-theme";
 import { SidebarBrand } from "@/components/layout/sidebar-brand";
 import { getNavForUser, type AdminNavItem } from "@/lib/admin-nav";
 import { useAuthStore } from "@/stores/auth-store";
 
-const THEME_STORAGE_KEY = "afiya-admin-theme";
-const THEME_CHANGE_EVENT = "afiya-admin-theme-change";
 const SIDEBAR_STORAGE_KEY = "afiya-admin-sidebar-collapsed";
 const SIDEBAR_CHANGE_EVENT = "afiya-admin-sidebar-change";
-
-type ThemeMode = "light" | "dark" | "system";
-
-function subscribeToTheme(onChange: () => void) {
-  window.addEventListener(THEME_CHANGE_EVENT, onChange);
-  window.addEventListener("storage", onChange);
-  return () => {
-    window.removeEventListener(THEME_CHANGE_EVENT, onChange);
-    window.removeEventListener("storage", onChange);
-  };
-}
-
-function getThemeModeSnapshot(): ThemeMode {
-  const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-  return savedTheme === "dark" || savedTheme === "system" ? savedTheme : "light";
-}
-
-function getServerThemeModeSnapshot(): ThemeMode {
-  return "light";
-}
-
-function applyThemeMode(mode: ThemeMode) {
-  window.localStorage.setItem(THEME_STORAGE_KEY, mode);
-  const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const darkMode = mode === "dark" || (mode === "system" && systemPrefersDark);
-  document.documentElement.classList.toggle("dark", darkMode);
-  document.documentElement.style.colorScheme = darkMode ? "dark" : "light";
-  window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
-}
 
 function subscribeToSidebar(onChange: () => void) {
   window.addEventListener(SIDEBAR_CHANGE_EVENT, onChange);
@@ -128,19 +104,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)");
-    function syncTheme() {
-      const selectedMode = getThemeModeSnapshot();
-      const darkMode =
-        selectedMode === "dark" ||
-        (selectedMode === "system" && preference.matches);
-      document.documentElement.classList.toggle("dark", darkMode);
-      document.documentElement.style.colorScheme = darkMode ? "dark" : "light";
-      window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
-    }
-
-    syncTheme();
-    preference.addEventListener("change", syncTheme);
-    return () => preference.removeEventListener("change", syncTheme);
+    syncThemeMode();
+    preference.addEventListener("change", syncThemeMode);
+    return () => preference.removeEventListener("change", syncThemeMode);
   }, []);
 
   useEffect(() => {

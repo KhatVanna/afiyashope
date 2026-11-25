@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { Loader2, Pencil, Plus, Tag, Trash2, Upload, X } from "lucide-react";
+import { Loader2, Pencil, Plus, Tag, Trash2, Upload, X } from "@/components/ui/emoji-icons";
 import { ProductImage } from "@/components/product-image";
 import { useAdminText } from "@/components/layout/admin-language-selector";
 import { adminApi } from "@/lib/admin-api";

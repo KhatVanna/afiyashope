@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Lock, Minus, Plus, Trash2, X } from "lucide-react";
+import { Lock, Minus, Plus, Trash2, X } from "@/components/ui/emoji-icons";
 import { useFormatMoney } from "@/hooks/use-format-money";
 import { useCartStore } from "@/stores/cart-store";
 import { ProductImage } from "@/components/product-image";

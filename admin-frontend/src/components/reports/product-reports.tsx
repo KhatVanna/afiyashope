@@ -12,7 +12,7 @@ import {
   Wallet,
   AlertTriangle,
   Boxes,
-} from "lucide-react";
+} from "@/components/ui/emoji-icons";
 import { adminApi } from "@/lib/admin-api";
 import { canAccessNavItem, ADMIN_NAV } from "@/lib/admin-nav";
 import {

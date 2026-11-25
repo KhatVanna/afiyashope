@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown } from "lucide-react";
+import { Check } from "@/components/ui/emoji-icons";
 import {
   getLanguageName,
   REGION_PRESETS,
@@ -90,11 +90,6 @@ export function RegionSelector({
         <span className={compact ? "sr-only" : ""}>
           {hydrated ? currentLanguageName : getLanguageName(current.language, displayLanguage)}
         </span>
-        <ChevronDown
-          className={`h-3.5 w-3.5 transition ${
-            isHeader ? "text-muted-foreground" : "text-zinc-400"
-          } ${open ? "rotate-180" : ""} ${compact ? "hidden" : ""}`}
-        />
       </button>
 
       {open ? (

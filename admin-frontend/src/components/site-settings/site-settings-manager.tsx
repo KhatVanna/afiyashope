@@ -12,7 +12,7 @@ import {
   Save,
   Trash2,
   Upload,
-} from "lucide-react";
+} from "@/components/ui/emoji-icons";
 import {
   type ChangeEvent,
   type DragEvent,

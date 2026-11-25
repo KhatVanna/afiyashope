@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { Check, ChevronDown } from "lucide-react";
+import { Check } from "@/components/ui/emoji-icons";
 
 const LANGUAGE_STORAGE_KEY = "afiya-admin-language";
 const LANGUAGE_CHANGE_EVENT = "afiya-admin-language-change";
@@ -91,9 +91,7 @@ const ADMIN_KHMER_TRANSLATIONS: Record<string, string> = {
   "UI shell is ready. Connected CRUD screens will plug into the Laravel API next.": "ផ្ទាំងគ្រប់គ្រងរួចរាល់។ អេក្រង់គ្រប់គ្រងទិន្នន័យនឹងភ្ជាប់ទៅ Laravel API នៅពេលក្រោយ។",
   "Back to dashboard": "ត្រឡប់ទៅផ្ទាំងគ្រប់គ្រង",
   "Redirecting to dashboard...": "កំពុងបញ្ជូនទៅផ្ទាំងគ្រប់គ្រង...",
-  "Staff access only": "សម្រាប់បុគ្គលិកប៉ុណ្ណោះ",
   "Admin sign in": "ចូលប្រព័ន្ធគ្រប់គ្រង",
-  "Super Admin, Admin, and Staff only. Customer accounts cannot sign in here.": "សម្រាប់អ្នកគ្រប់គ្រងជាន់ខ្ពស់ អ្នកគ្រប់គ្រង និងបុគ្គលិកប៉ុណ្ណោះ។ គណនីអតិថិជនមិនអាចចូលទីនេះបានទេ។",
   "Email": "អ៊ីមែល",
   "Password": "ពាក្យសម្ងាត់",
   "Enter a valid email": "សូមបញ្ចូលអ៊ីមែលត្រឹមត្រូវ",
@@ -668,7 +666,6 @@ export function AdminLanguageSelector() {
           height={18}
           className="h-4 w-6 rounded-sm object-cover"
         />
-        <ChevronDown className={`h-3.5 w-3.5 transition ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open ? (

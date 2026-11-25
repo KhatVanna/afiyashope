@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "@/components/ui/emoji-icons";
 import { ProductImage } from "@/components/product-image";
 import { useLocaleText } from "@/components/i18n/locale-text";
 

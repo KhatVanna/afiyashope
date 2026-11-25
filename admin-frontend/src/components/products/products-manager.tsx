@@ -9,7 +9,7 @@ import {
   Search,
   Trash2,
   X,
-} from "lucide-react";
+} from "@/components/ui/emoji-icons";
 import { adminApi } from "@/lib/admin-api";
 import { ProductImage } from "@/components/product-image";
 import {

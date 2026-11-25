@@ -1,11 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Heart } from "lucide-react";
 import { type CatalogProduct } from "@/data/demo-catalog.types";
 import { useFormatMoney } from "@/hooks/use-format-money";
-import { useCartStore } from "@/stores/cart-store";
-import { useWishlistStore } from "@/stores/wishlist-store";
 import { ProductImage } from "@/components/product-image";
 import { getProductImageUrls } from "@/lib/product-images";
 import { useLocaleText } from "@/components/i18n/locale-text";
@@ -18,21 +15,10 @@ type ProductCardProps = {
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   const t = useLocaleText();
   const formatMoney = useFormatMoney();
-  const addItem = useCartStore((state) => state.addItem);
-  const toggleWishlist = useWishlistStore((state) => state.toggleItem);
   const productImages = getProductImageUrls(product);
-  const wishlisted = useWishlistStore((state) =>
-    state.items.some((item) => item.id === product.id)
-  );
-  const discount =
-    product.compareAtPrice && product.compareAtPrice > product.price
-      ? Math.round(
-          ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
-        )
-      : null;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#ffd1dc] bg-card shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
       <div className="relative aspect-[3/4] overflow-hidden bg-slate-100">
         <Link href={`/products/${product.slug}`} className="relative block h-full w-full">
           <ProductImage
@@ -44,84 +30,46 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             className="object-contain p-3 transition duration-500 ease-out group-hover:scale-105"
           />
         </Link>
-
-        {productImages.length > 0 ? (
-          <span
-            aria-label={
-              t(`${productImages.length} photos`, `${productImages.length} រូប`)
-            }
-            className="absolute bottom-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm"
-          >
-            {t(`${productImages.length} photos`, `${productImages.length} រូប`)}
-          </span>
-        ) : null}
-
-        {discount ? (
-          <span className="absolute left-3 top-3 rounded-md bg-accent px-2 py-1 text-xs font-semibold text-accent-foreground">
-            -{discount}%
-          </span>
-        ) : null}
-
-        <button
-          type="button"
-          aria-label={
-            wishlisted
-              ? t(`Remove ${product.name} from wishlist`, `ដក ${product.name} ចេញពីបញ្ជីចំណូលចិត្ត`)
-              : t(`Save ${product.name} to wishlist`, `រក្សាទុក ${product.name} ក្នុងបញ្ជីចំណូលចិត្ត`)
-          }
-          aria-pressed={wishlisted}
-          onClick={(event) => {
-            event.preventDefault();
-            toggleWishlist(product);
-          }}
-          className={`absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-sm transition hover:bg-white ${
-            wishlisted ? "text-error" : "text-navy hover:text-error"
-          }`}
-        >
-          <Heart className={`h-4 w-4 ${wishlisted ? "fill-current" : ""}`} />
-        </button>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        {product.brand ? (
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            {product.brand}
-          </p>
+      <div className="flex flex-1 flex-col items-center gap-2 p-4 text-center">
+        {typeof product.stockLeft === "number" ? (
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+              product.stockLeft > 0
+                ? "bg-emerald-100 text-emerald-800"
+                : "bg-rose-100 text-rose-700"
+            }`}
+          >
+            {product.stockLeft > 0
+              ? t("✓ In stock", "✓ មានស្តុក")
+              : t("Out of stock", "អស់ស្តុក")}
+          </span>
         ) : null}
         <Link
           href={`/products/${product.slug}`}
-          className="line-clamp-2 min-h-[2.75rem] text-sm font-semibold text-foreground transition hover:text-primary"
+          className="line-clamp-2 min-h-[2.75rem] w-full text-sm font-bold text-foreground transition hover:text-primary"
         >
           {product.name}
         </Link>
 
-        {typeof product.stockLeft === "number" && product.stockLeft <= 15 ? (
-          <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#fce7f3] px-2.5 py-1 text-xs font-medium text-accent dark:bg-[#4a1532]/40">
-            <span className="h-1.5 w-1.5 rounded-full bg-error" />
-            {t(`Only ${product.stockLeft} left`, `នៅសល់តែ ${product.stockLeft} មុខ`)}
-          </span>
-        ) : (
-          <span className="h-6" />
-        )}
-
-        <div className="mt-auto flex items-baseline gap-2 pt-1">
-          <span className="text-base font-bold text-foreground">
-            {formatMoney(product.price)}
-          </span>
-          {product.compareAtPrice ? (
+        <div className="mt-auto flex flex-wrap items-baseline justify-center gap-2 pt-1">
+          {product.compareAtPrice && product.compareAtPrice > product.price ? (
             <span className="text-sm text-muted-foreground line-through">
               {formatMoney(product.compareAtPrice)}
             </span>
           ) : null}
+          <span className="text-lg font-bold text-[#139bc6]">
+            {formatMoney(product.price)}
+          </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => addItem(product)}
-          className="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-foreground bg-card px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-foreground transition hover:bg-foreground hover:text-background"
+        <Link
+          href={`/products/${product.slug}`}
+          className="mt-2 inline-flex w-full items-center justify-center rounded-full border border-[#ffd1dc] bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-[#fff1f4]"
         >
-          {t("+ Cart", "បន្ថែមទៅកន្ត្រក")}
-        </button>
+          {t("View", "ចុចមើល")}
+        </Link>
       </div>
     </article>
   );

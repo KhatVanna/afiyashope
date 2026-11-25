@@ -32,20 +32,9 @@ export function ProductImage({
         aria-label={t(EMPTY_IMAGE_LABEL)}
         className={`absolute inset-0 flex flex-col items-center justify-center gap-2 overflow-hidden border border-slate-200 bg-slate-100 p-2 text-slate-400 ${className ?? ""}`}
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.25"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-          className="aspect-square w-[36%] max-w-14"
-        >
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <circle cx="8.5" cy="8.5" r="1.5" />
-          <path d="m21 15-5-5L5 21" />
-        </svg>
+        <span aria-hidden="true" className="text-5xl leading-none">
+          🖼️
+        </span>
         {!compact ? (
           <span className="text-center text-[10px] leading-tight text-slate-500 sm:text-xs">
             {t(EMPTY_IMAGE_LABEL)}
