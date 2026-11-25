@@ -60,8 +60,13 @@ class CloudinaryService
         string $publicId,
         ?string $folder = null,
         bool $overwrite = true,
+        string $resourceType = 'image',
     ): array {
         $this->assertConfigured();
+
+        if (! in_array($resourceType, ['image', 'video'], true)) {
+            throw new RuntimeException('Unsupported Cloudinary resource type.');
+        }
 
         if (! is_file($absolutePath)) {
             throw new RuntimeException('Cloudinary upload source is missing.');
@@ -85,7 +90,7 @@ class CloudinaryService
             ->asMultipart()
             ->attach('file', $fileContents, basename($absolutePath))
             ->post(
-                sprintf('https://api.cloudinary.com/v1_1/%s/image/upload', $this->cloudName()),
+                sprintf('https://api.cloudinary.com/v1_1/%s/%s/upload', $this->cloudName(), $resourceType),
                 [
                     ['name' => 'api_key', 'contents' => $this->apiKey()],
                     ['name' => 'timestamp', 'contents' => (string) $timestamp],

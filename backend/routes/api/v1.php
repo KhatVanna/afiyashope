@@ -10,12 +10,15 @@ use App\Http\Controllers\Api\V1\Admin\ProductController;
 use App\Http\Controllers\Api\V1\Admin\ProductImageController;
 use App\Http\Controllers\Api\V1\Admin\ReportController;
 use App\Http\Controllers\Api\V1\Admin\SettingController;
+use App\Http\Controllers\Api\V1\Admin\SiteMediaController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Catalog\BlogPostController as CatalogBlogPostController;
 use App\Http\Controllers\Api\V1\Catalog\CategoryController as CatalogCategoryController;
 use App\Http\Controllers\Api\V1\Catalog\ProductController as CatalogProductController;
 use App\Http\Controllers\Api\V1\HealthController;
+use App\Http\Controllers\Api\V1\SiteBannerController;
+use App\Http\Controllers\Api\V1\SiteSettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', HealthController::class);
@@ -27,6 +30,9 @@ Route::prefix('catalog')->group(function () {
     Route::get('/blog', [CatalogBlogPostController::class, 'index']);
     Route::get('/blog/{slug}', [CatalogBlogPostController::class, 'show']);
 });
+
+Route::get('/site-settings', [SiteSettingsController::class, 'publicIndex']);
+Route::get('/banners', [SiteBannerController::class, 'publicIndex']);
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -57,6 +63,19 @@ Route::middleware('auth:sanctum')->prefix('account')->group(function () {
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/catalog/options', [ProductController::class, 'options']);
     Route::post('/media/cloudinary-signature', [MediaController::class, 'cloudinarySignature']);
+    Route::post('/media/site-settings', [SiteMediaController::class, 'store']);
+
+    Route::get('/site-settings/{group}', [SiteSettingsController::class, 'showGroup']);
+    Route::put('/site-settings/branding', [SiteSettingsController::class, 'updateBranding']);
+    Route::put('/site-settings/contact', [SiteSettingsController::class, 'updateContact']);
+    Route::put('/site-settings/footer', [SiteSettingsController::class, 'updateFooter']);
+    Route::put('/site-settings/seo', [SiteSettingsController::class, 'updateSeo']);
+
+    Route::get('/banners', [SiteBannerController::class, 'index']);
+    Route::post('/banners', [SiteBannerController::class, 'store']);
+    Route::post('/banners/reorder', [SiteBannerController::class, 'reorder']);
+    Route::put('/banners/{banner}', [SiteBannerController::class, 'update']);
+    Route::delete('/banners/{banner}', [SiteBannerController::class, 'destroy']);
 
     Route::get('/products', [ProductController::class, 'index']);
     Route::post('/products', [ProductController::class, 'store']);

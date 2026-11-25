@@ -163,5 +163,6 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call(SalesHistorySeeder::class);
+        $this->call(SiteSettingsSeeder::class);
     }
 }

@@ -127,6 +127,28 @@ php artisan serve
 
 ✅ API health check: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
 
+### Site Settings API
+
+The admin-managed storefront content is stored in the `site_settings` groups
+`branding`, `contact`, `footer`, and `seo`, with hero content stored separately
+in `site_banners`. Run the new migration on the intended local or deployment
+database, then run `php artisan db:seed --class=SiteSettingsSeeder` to insert
+defaults without replacing saved settings.
+
+Public, read-only endpoints are `GET /api/v1/site-settings` and
+`GET /api/v1/banners`. The latter returns only active banners inside their
+schedule window. Both endpoints cache for 60 seconds and admin saves clear the
+cache.
+
+Admin endpoints require a Sanctum-authenticated `admin` or `super-admin`:
+
+- `GET|PUT /api/v1/admin/site-settings/{group}` for each settings group.
+- `GET|POST /api/v1/admin/banners`, `PUT|DELETE /api/v1/admin/banners/{id}`,
+  and `POST /api/v1/admin/banners/reorder`.
+- `POST /api/v1/admin/media/site-settings` accepts a file and `kind`; images
+  are limited to 5 MB and videos to 15 MB. It uses the configured Cloudinary
+  service, and does not remove previously uploaded assets.
+
 ### 4. User Frontend
 
 ```bash

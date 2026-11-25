@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\ApiResponse;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -24,6 +26,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->render(function (AuthenticationException $exception, Request $request) {
+            if (
+                $request->is('api/v1/admin/site-settings*')
+                || $request->is('api/v1/admin/banners*')
+                || $request->is('api/v1/admin/media/site-settings')
+            ) {
+                return ApiResponse::error('Unauthenticated.', 401);
+            }
+
+            return null;
+        });
+
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
