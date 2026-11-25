@@ -104,6 +104,25 @@ return [
             ]),
         ],
 
+        'pgsql_direct' => [
+            'driver' => 'pgsql',
+            'url' => env('DB_DIRECT_URL'),
+            'host' => env('DB_DIRECT_HOST', '127.0.0.1'),
+            'port' => env('DB_DIRECT_PORT', '5432'),
+            'database' => env('DB_DIRECT_DATABASE', 'laravel'),
+            'username' => env('DB_DIRECT_USERNAME', 'root'),
+            'password' => env('DB_DIRECT_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => env('DB_DIRECT_SSLMODE', 'require'),
+            'options' => array_filter([
+                PDO::ATTR_PERSISTENT => false,
+                PDO::ATTR_TIMEOUT => (int) env('DB_CONNECT_TIMEOUT', 10),
+            ]),
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),

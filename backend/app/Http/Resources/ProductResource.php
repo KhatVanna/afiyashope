@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\Product */
+/** @mixin Product */
 class ProductResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -46,13 +47,15 @@ class ProductResource extends JsonResource
             ] : null),
             'primary_image' => $this->whenLoaded('primaryImage', fn () => $this->primaryImage ? [
                 'id' => $this->primaryImage->id,
-                'path' => $this->primaryImage->path,
+                'path' => $this->primaryImage->url ?: $this->primaryImage->path,
+                'url' => $this->primaryImage->url ?: $this->primaryImage->path,
                 'alt_text' => $this->primaryImage->alt_text,
             ] : null),
             'images' => $this->whenLoaded('images', fn () => $this->images
                 ->map(fn ($image) => [
                     'id' => $image->id,
-                    'path' => $image->path,
+                    'path' => $image->url ?: $image->path,
+                    'url' => $image->url ?: $image->path,
                     'alt_text' => $image->alt_text,
                     'is_primary' => (bool) $image->is_primary,
                     'sort_order' => (int) $image->sort_order,

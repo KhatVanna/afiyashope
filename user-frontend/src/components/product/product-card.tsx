@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { type CatalogProduct } from "@/data/demo-catalog.types";
 import { useFormatMoney } from "@/hooks/use-format-money";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
+import { ImageWithFallback } from "@/components/product/image-with-fallback";
 
 type ProductCardProps = {
   product: CatalogProduct;
@@ -30,7 +30,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
       <div className="relative aspect-square overflow-hidden bg-muted">
         <Link href={`/products/${product.slug}`} className="relative block h-full w-full">
-          <Image
+          <ImageWithFallback
             src={product.image}
             alt={product.name}
             fill

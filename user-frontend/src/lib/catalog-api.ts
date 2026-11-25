@@ -14,8 +14,8 @@ type ApiProduct = {
   description?: string | null;
   brand?: { name?: string | null } | null;
   category?: { slug?: string | null } | null;
-  primary_image?: { path?: string | null } | null;
-  images?: Array<{ path?: string | null }> | null;
+  primary_image?: { path?: string | null; url?: string | null } | null;
+  images?: Array<{ path?: string | null; url?: string | null }> | null;
 };
 
 type ApiCategory = {
@@ -56,10 +56,13 @@ async function catalogFetch<T>(path: string): Promise<T> {
 export function mapApiProduct(product: ApiProduct): CatalogProduct {
   const imageList = Array.isArray(product.images) ? product.images : [];
   const images = imageList
-    .map((image) => image?.path)
+    .map((image) => image?.url ?? image?.path)
     .filter((path): path is string => Boolean(path));
   const primary =
-    product.primary_image?.path ?? images[0] ?? "/images/products/no-product-image.svg";
+    product.primary_image?.url ??
+    product.primary_image?.path ??
+    images[0] ??
+    "/images/products/no-product-image.svg";
 
   return {
     id: String(product.id),

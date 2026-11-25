@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\CloudinaryService;
 use App\Support\ApiResponse;
 use App\Support\CatalogCache;
 use Illuminate\Http\JsonResponse;
@@ -19,6 +20,8 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+    public function __construct(private readonly CloudinaryService $cloudinary) {}
+
     public function options(Request $request): JsonResponse
     {
         $this->ensurePermission($request->user(), 'products.view');
@@ -166,6 +169,17 @@ class ProductController extends Controller
     {
         $this->ensurePermission($request->user(), 'products.delete');
 
+        $product->load('images');
+        foreach ($product->images as $image) {
+            $publicId = $image->cloudinary_public_id
+                ?: $this->cloudinary->extractPublicIdFromUrl($image->url ?: $image->path);
+
+            if ($publicId !== null && ! $this->cloudinary->destroy($publicId)) {
+                abort(502, 'Cloudinary image deletion failed; the product was not deleted.');
+            }
+        }
+
+        $product->images()->delete();
         $product->delete();
 
         CatalogCache::bust();

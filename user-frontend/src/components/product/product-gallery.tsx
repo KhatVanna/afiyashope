@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ImageWithFallback } from "@/components/product/image-with-fallback";
 
 type ProductGalleryProps = {
   images: string[];
@@ -47,7 +47,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
                   : "border-border hover:border-foreground/40"
               }`}
             >
-              <Image
+              <ImageWithFallback
                 src={image}
                 alt=""
                 fill
@@ -61,7 +61,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
 
       <div className="space-y-3 sm:space-y-4">
         <div className="relative aspect-square overflow-hidden rounded-xl border border-border bg-[#f1f9fd] sm:rounded-2xl">
-          <Image
+          <ImageWithFallback
             key={activeImage}
             src={activeImage}
             alt={alt}
@@ -94,7 +94,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
                       : "border-border hover:border-foreground/40"
                   }`}
                 >
-                  <Image
+                  <ImageWithFallback
                     src={image}
                     alt=""
                     fill

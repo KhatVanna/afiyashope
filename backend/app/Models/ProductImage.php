@@ -10,6 +10,8 @@ class ProductImage extends Model
     protected $fillable = [
         'product_id',
         'path',
+        'url',
+        'cloudinary_public_id',
         'alt_text',
         'sort_order',
         'is_primary',

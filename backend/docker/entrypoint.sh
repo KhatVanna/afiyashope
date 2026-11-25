@@ -28,11 +28,25 @@ SERVER_PID=$!
 
 sleep 2
 
-# Neon free/cold starts are slow; keep serving even if migrate needs a retry.
-if ! php artisan migrate --force --no-interaction; then
-  echo "WARNING: migrate failed on first attempt; retrying once..."
+# Use the direct PostgreSQL connection for production migrations.
+MIGRATION_DB=pgsql
+if [ "${APP_ENV:-production}" = "production" ]; then
+  if [ -z "${DB_DIRECT_URL:-}" ]; then
+    echo "ERROR: DB_DIRECT_URL must be set for production migrations." >&2
+    kill "${SERVER_PID}"
+    exit 1
+  fi
+  MIGRATION_DB=pgsql_direct
+fi
+
+if ! php artisan migrate --database="${MIGRATION_DB}" --force --no-interaction; then
+  echo "WARNING: migrate failed on first attempt; retrying once..." >&2
   sleep 3
-  php artisan migrate --force --no-interaction || echo "WARNING: migrate failed — check Neon DB_* / DB_URL"
+  if ! php artisan migrate --database="${MIGRATION_DB}" --force --no-interaction; then
+    echo "ERROR: migration failed twice; refusing to serve the application." >&2
+    kill "${SERVER_PID}"
+    exit 1
+  fi
 fi
 
 # Drop stale file-cache entries (corrupt catalog payloads from older deploys).

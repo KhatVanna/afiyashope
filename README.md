@@ -193,7 +193,11 @@ CLOUDINARY_FOLDER=v2005/products
 ```env
 DB_CONNECTION=pgsql
 DB_URL=postgresql://neondb_owner:PASSWORD@HOST/neondb?sslmode=require
+# Migration-only direct connection; keep the pooled URL in DB_URL for runtime.
+DB_DIRECT_URL=
 DB_SSLMODE=require
+OWNER_EMAIL=
+OWNER_PASSWORD=
 
 CLOUDINARY_CLOUD_NAME=v2005
 CLOUDINARY_API_KEY=your_api_key
@@ -201,7 +205,10 @@ CLOUDINARY_API_SECRET=your_api_secret
 CLOUDINARY_FOLDER=v2005/products
 ```
 
-After the first deploy, run: `php artisan migrate --force`
+After the first deploy, run migrations using the direct connection:
+`php artisan migrate --database=pgsql_direct --force`.
+Keep `DB_URL` set to the pooled connection for the running application and
+provide `DB_DIRECT_URL` only for migration operations.
 
 ---
 
@@ -261,7 +268,7 @@ QUEUE_CONNECTION=sync
 
 > **💡 Tip:** Choose the Railway region closest to your Neon region to minimize latency. This project uses `ap-southeast-1` (Singapore). Cross-region connections can add ~2s per database call on cold queries.
 
-6. **Redeploy.** The entrypoint will run `php artisan migrate --force` automatically, then start FrankenPHP.
+6. **Redeploy.** The entrypoint runs migrations with `DB_DIRECT_URL` and refuses to serve if they fail.
 7. Verify health endpoints:
    - `https://YOUR-SERVICE.up.railway.app/up`
    - `https://YOUR-SERVICE.up.railway.app/api/v1/health`
@@ -271,6 +278,57 @@ QUEUE_CONNECTION=sync
 ```bash
 cd backend && php artisan key:generate --show
 ```
+
+### Vercel frontends
+
+Create separate Vercel projects for the two frontends:
+
+| Project | Root Directory |
+|---|---|
+| Customer storefront | `user-frontend` |
+| Admin dashboard | `admin-frontend` |
+
+Set `NEXT_PUBLIC_API_URL` and `LARAVEL_API_ORIGIN` to the public Laravel API origin.
+Set the backend's `FRONTEND_USER_URL`, `FRONTEND_ADMIN_URL`, and
+`SANCTUM_STATEFUL_DOMAINS` to the two deployed frontend domains. Redeploy after
+changing project roots or environment variables. Never use `localhost:8000` as
+the production API origin.
+
+### Demo product images
+
+The Cloudinary image importer only uploads files; it does not create database
+products or image rows. After reviewing the mapping and confirming the selected
+database, inspect the product plan with:
+
+```bash
+php artisan products:sync-demo --dry-run
+```
+
+For a verified local database, run `php artisan products:sync-demo` and confirm
+the prompt. The command refuses non-local databases unless `--allow-remote` is
+provided, and still asks for confirmation. Demo prices are stored as USD 10.98,
+which displays approximately 45,000 KHR using the storefront's current exchange
+rate.
+
+Before removing demo records, inspect the scope with
+`php artisan products:remove-demo --dry-run`. The removal command asks for
+confirmation and deletes the Cloudinary assets as well as demo database rows.
+For Neon, create a database backup or branch in the Neon console first. Set the
+pooled connection in `DB_URL`, the direct connection in `DB_DIRECT_URL`, and
+the private owner credentials in `OWNER_EMAIL` and `OWNER_PASSWORD`. Then run
+these commands in order:
+
+```bash
+php artisan migrate --database=pgsql_direct --force
+php artisan app:seed-owner-settings --allow-remote
+php artisan products:sync-demo --allow-remote
+```
+
+The owner-settings command seeds the required roles/permissions, one owner,
+and two store settings; it does not seed products or demo users. Both seed
+commands ask for confirmation. Do not run these commands until the Neon backup
+is complete, the target connection has been verified, and you have explicitly
+approved the production writes.
 
 ---
 

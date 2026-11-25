@@ -55,26 +55,35 @@ class CloudinaryService
      *
      * @return array{secure_url: string, public_id: string}
      */
-    public function uploadLocalFile(string $absolutePath, string $publicId, ?string $folder = null): array
-    {
+    public function uploadLocalFile(
+        string $absolutePath,
+        string $publicId,
+        ?string $folder = null,
+        bool $overwrite = true,
+    ): array {
         $this->assertConfigured();
 
         if (! is_file($absolutePath)) {
-            throw new RuntimeException("Cloudinary upload source missing: {$absolutePath}");
+            throw new RuntimeException('Cloudinary upload source is missing.');
+        }
+
+        $fileContents = file_get_contents($absolutePath);
+        if ($fileContents === false) {
+            throw new RuntimeException('Unable to read the Cloudinary upload source.');
         }
 
         $timestamp = time();
         $folder = $folder ?: $this->folder();
         $params = [
             'folder' => $folder,
-            'overwrite' => 'true',
+            'overwrite' => $overwrite ? 'true' : 'false',
             'public_id' => $publicId,
             'timestamp' => $timestamp,
         ];
 
-        $response = Http::withOptions(['verify' => (bool) config('services.cloudinary.verify_ssl', true)])
+        $response = Http::withOptions($this->httpOptions())
             ->asMultipart()
-            ->attach('file', file_get_contents($absolutePath), basename($absolutePath))
+            ->attach('file', $fileContents, basename($absolutePath))
             ->post(
                 sprintf('https://api.cloudinary.com/v1_1/%s/image/upload', $this->cloudName()),
                 [
@@ -82,14 +91,21 @@ class CloudinaryService
                     ['name' => 'timestamp', 'contents' => (string) $timestamp],
                     ['name' => 'folder', 'contents' => $folder],
                     ['name' => 'public_id', 'contents' => $publicId],
-                    ['name' => 'overwrite', 'contents' => 'true'],
+                    ['name' => 'overwrite', 'contents' => $params['overwrite']],
                     ['name' => 'signature', 'contents' => $this->sign($params)],
                 ]
             );
 
+        if ($response->status() === 409 && ! $overwrite) {
+            $existing = $this->findResource($publicId);
+            if ($existing !== null) {
+                return $existing;
+            }
+        }
+
         if (! $response->successful() || blank($response->json('secure_url'))) {
             throw new RuntimeException(
-                'Cloudinary upload failed: '.($response->json('error.message') ?? $response->body())
+                'Cloudinary upload failed (HTTP '.$response->status().').'
             );
         }
 
@@ -97,6 +113,23 @@ class CloudinaryService
             'secure_url' => (string) $response->json('secure_url'),
             'public_id' => (string) $response->json('public_id'),
         ];
+    }
+
+    /**
+     * Upload without replacing an existing asset, returning that asset when it already exists.
+     *
+     * @return array{secure_url: string, public_id: string}
+     */
+    public function uploadWithoutOverwrite(string $absolutePath, string $publicId, string $folder): array
+    {
+        $this->assertConfigured();
+
+        $existing = $this->findResource($publicId);
+        if ($existing !== null) {
+            return $existing;
+        }
+
+        return $this->uploadLocalFile($absolutePath, $publicId, $folder, overwrite: false);
     }
 
     public function destroy(?string $publicId): bool
@@ -113,7 +146,7 @@ class CloudinaryService
             'timestamp' => $timestamp,
         ];
 
-        $response = Http::asForm()->post(
+        $response = Http::withOptions($this->httpOptions())->asForm()->post(
             sprintf('https://api.cloudinary.com/v1_1/%s/image/destroy', $this->cloudName()),
             [
                 ...$params,
@@ -127,7 +160,7 @@ class CloudinaryService
 
     public function extractPublicIdFromUrl(string $url): ?string
     {
-        if (! str_contains($url, 'res.cloudinary.com')) {
+        if (parse_url($url, PHP_URL_HOST) !== 'res.cloudinary.com') {
             return null;
         }
 
@@ -136,12 +169,33 @@ class CloudinaryService
             return null;
         }
 
-        // /<cloud>/image/upload[/transformations]/v123/<public_id>.<ext>
-        if (! preg_match('#/upload/(?:.*?/)?(?:v\d+/)?(.+)\.[a-zA-Z0-9]+$#', $path, $matches)) {
+        $segments = explode('/', trim($path, '/'));
+        $uploadIndex = array_search('upload', $segments, true);
+        if ($uploadIndex === false) {
             return null;
         }
 
-        return $matches[1];
+        $assetSegments = array_slice($segments, $uploadIndex + 1);
+        while (
+            $assetSegments !== []
+            && (str_contains($assetSegments[0], ',') || preg_match('/^v\d+$/', $assetSegments[0]))
+        ) {
+            array_shift($assetSegments);
+        }
+
+        if ($assetSegments === []) {
+            return null;
+        }
+
+        $lastSegment = array_pop($assetSegments);
+        $extensionPosition = strrpos($lastSegment, '.');
+        if ($extensionPosition === false || ! preg_match('/^[a-zA-Z0-9]+$/', substr($lastSegment, $extensionPosition + 1))) {
+            return null;
+        }
+
+        $assetSegments[] = substr($lastSegment, 0, $extensionPosition);
+
+        return implode('/', $assetSegments);
     }
 
     /**
@@ -158,7 +212,7 @@ class CloudinaryService
         return sha1($toSign.(string) config('services.cloudinary.api_secret'));
     }
 
-    private function assertConfigured(): void
+    public function assertConfigured(): void
     {
         if (
             blank(config('services.cloudinary.cloud_name'))
@@ -167,5 +221,51 @@ class CloudinaryService
         ) {
             throw new RuntimeException('Cloudinary is not configured. Set CLOUDINARY_* in backend/.env.');
         }
+    }
+
+    /**
+     * @return array{secure_url: string, public_id: string}|null
+     */
+    private function findResource(string $publicId): ?array
+    {
+        $encodedPublicId = implode('/', array_map('rawurlencode', explode('/', $publicId)));
+        $response = Http::withOptions($this->httpOptions())
+            ->withBasicAuth($this->apiKey(), (string) config('services.cloudinary.api_secret'))
+            ->acceptJson()
+            ->get(
+                sprintf(
+                    'https://api.cloudinary.com/v1_1/%s/resources/image/upload/%s',
+                    $this->cloudName(),
+                    $encodedPublicId,
+                )
+            );
+
+        if ($response->status() === 404) {
+            return null;
+        }
+
+        if (! $response->successful() || blank($response->json('secure_url'))) {
+            throw new RuntimeException(
+                'Cloudinary resource lookup failed (HTTP '.$response->status().').'
+            );
+        }
+
+        return [
+            'secure_url' => (string) $response->json('secure_url'),
+            'public_id' => (string) $response->json('public_id'),
+        ];
+    }
+
+    /**
+     * @return array{verify: string|true}
+     */
+    private function httpOptions(): array
+    {
+        $caBundle = trim((string) config('services.cloudinary.ca_bundle', ''));
+        if ($caBundle !== '' && ! is_file($caBundle)) {
+            throw new RuntimeException('Configured Cloudinary CA bundle file is missing.');
+        }
+
+        return ['verify' => $caBundle !== '' ? $caBundle : true];
     }
 }

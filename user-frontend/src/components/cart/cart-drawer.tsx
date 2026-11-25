@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Lock, Minus, Plus, Trash2, X } from "lucide-react";
 import { useFormatMoney } from "@/hooks/use-format-money";
 import { useCartStore } from "@/stores/cart-store";
+import { ImageWithFallback } from "@/components/product/image-with-fallback";
 
 function CartItemQuantity({
   productId,
@@ -130,7 +130,7 @@ export function CartDrawer() {
               {items.map((item) => (
                 <li key={item.product.id} className="flex gap-3 border-b border-border pb-4">
                   <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
-                    <Image
+                    <ImageWithFallback
                       src={item.product.image}
                       alt={item.product.name}
                       fill

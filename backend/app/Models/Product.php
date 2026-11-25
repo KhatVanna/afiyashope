@@ -33,6 +33,8 @@ class Product extends Model
         'meta_title',
         'meta_description',
         'published_at',
+        'is_demo',
+        'product_key',
     ];
 
     protected function casts(): array
@@ -45,6 +47,7 @@ class Product extends Model
             'track_inventory' => 'boolean',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
+            'is_demo' => 'boolean',
             'published_at' => 'datetime',
         ];
     }

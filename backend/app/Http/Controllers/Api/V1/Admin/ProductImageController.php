@@ -23,23 +23,31 @@ class ProductImageController extends Controller
         $this->ensurePermission($request->user(), 'products.update');
 
         $data = $request->validate([
-            'path' => ['required', 'string', 'max:2048'],
+            'path' => ['nullable', 'required_without:url', 'string', 'max:2048'],
+            'url' => ['nullable', 'required_without:path', 'url', 'max:2048'],
+            'cloudinary_public_id' => ['nullable', 'string', 'max:255'],
             'alt_text' => ['nullable', 'string', 'max:255'],
             'is_primary' => ['sometimes', 'boolean'],
             'sort_order' => ['sometimes', 'integer', 'min:0'],
         ]);
+        $path = $data['path'] ?? $data['url'];
+        $url = $data['url'] ?? (filter_var($path, FILTER_VALIDATE_URL) ? $path : null);
+        $publicId = $data['cloudinary_public_id']
+            ?? ($url ? $this->cloudinary->extractPublicIdFromUrl($url) : null);
 
         $isPrimary = array_key_exists('is_primary', $data)
             ? (bool) $data['is_primary']
             : ! $product->images()->exists();
 
-        $image = DB::transaction(function () use ($product, $data, $isPrimary) {
+        $image = DB::transaction(function () use ($product, $data, $isPrimary, $path, $url, $publicId) {
             if ($isPrimary) {
                 $product->images()->update(['is_primary' => false]);
             }
 
             return $product->images()->create([
-                'path' => $data['path'],
+                'path' => $path,
+                'url' => $url,
+                'cloudinary_public_id' => $publicId,
                 'alt_text' => $data['alt_text'] ?? null,
                 'sort_order' => $data['sort_order'] ?? (($product->images()->max('sort_order') ?? -1) + 1),
                 'is_primary' => $isPrimary,
@@ -53,7 +61,8 @@ class ProductImageController extends Controller
         return ApiResponse::success([
             'image' => [
                 'id' => $image->id,
-                'path' => $image->path,
+                'path' => $image->url ?: $image->path,
+                'url' => $image->url ?: $image->path,
                 'alt_text' => $image->alt_text,
                 'is_primary' => $image->is_primary,
                 'sort_order' => $image->sort_order,
@@ -71,7 +80,12 @@ class ProductImageController extends Controller
         }
 
         $wasPrimary = $image->is_primary;
-        $publicId = $this->cloudinary->extractPublicIdFromUrl($image->path);
+        $publicId = $image->cloudinary_public_id
+            ?: $this->cloudinary->extractPublicIdFromUrl($image->url ?: $image->path);
+
+        if ($publicId !== null && ! $this->cloudinary->destroy($publicId)) {
+            abort(502, 'Cloudinary image deletion failed; the image was not deleted.');
+        }
 
         $image->delete();
 
@@ -80,10 +94,6 @@ class ProductImageController extends Controller
             if ($next) {
                 $next->update(['is_primary' => true]);
             }
-        }
-
-        if ($publicId) {
-            $this->cloudinary->destroy($publicId);
         }
 
         $product->load(['category:id,name,slug', 'brand:id,name,slug', 'primaryImage', 'images']);
