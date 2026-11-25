@@ -1,9 +1,12 @@
+export type ProductCurrency = "USD" | "KHR";
+
 export type CatalogProduct = {
   id: string;
   slug: string;
   name: string;
   brand: string | null;
   price: number;
+  currency?: ProductCurrency | null;
   compareAtPrice?: number;
   image: string;
   images: string[];

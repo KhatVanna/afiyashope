@@ -39,6 +39,7 @@ class UpdateProductRequest extends FormRequest
             'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'price' => ['sometimes', 'required', 'numeric', 'min:0'],
+            'currency' => ['nullable', 'in:USD,KHR'],
             'compare_at_price' => ['nullable', 'numeric', 'min:0'],
             'cost_price' => ['nullable', 'numeric', 'min:0'],
             'stock_quantity' => ['sometimes', 'required', 'integer', 'min:0'],

@@ -8,6 +8,11 @@ import { useCartStore } from "@/stores/cart-store";
 import { ProductImage } from "@/components/product-image";
 import { getProductImageUrls } from "@/lib/product-images";
 import { useLocaleText } from "@/components/i18n/locale-text";
+import {
+  getDisplayMoney,
+  useRegionStore,
+  type CurrencyCode,
+} from "@/stores/region-store";
 
 function CartItemQuantity({
   productId,
@@ -86,10 +91,20 @@ export function CartDrawer() {
   const items = useCartStore((state) => state.items);
   const closeCart = useCartStore((state) => state.closeCart);
   const removeItem = useCartStore((state) => state.removeItem);
-  const subtotal = items.reduce(
-    (total, item) => total + item.product.price * item.quantity,
-    0
-  );
+  const region = useRegionStore((state) => state.region());
+  const subtotals = new Map<CurrencyCode, number>();
+  for (const item of items) {
+    const display = getDisplayMoney(
+      item.product.price * item.quantity,
+      item.product.currency,
+      region
+    );
+    subtotals.set(
+      display.currency,
+      (subtotals.get(display.currency) ?? 0) + display.amount
+    );
+  }
+  const subtotalEntries = Array.from(subtotals.entries());
 
   if (!isOpen) {
     return null;
@@ -146,7 +161,7 @@ export function CartDrawer() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">{item.product.name}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      {formatMoney(item.product.price)}
+                      {formatMoney(item.product.price, item.product.currency)}
                     </p>
                     <div className="mt-3 flex items-center gap-2">
                       <CartItemQuantity
@@ -177,10 +192,21 @@ export function CartDrawer() {
 
         {items.length > 0 ? (
           <div className="border-t border-border px-5 py-5">
-            <div className="mb-1 flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">{t("Estimated total", "សរុបប៉ាន់ស្មាន")}</span>
-              <span className="text-lg font-bold">{formatMoney(subtotal)}</span>
-            </div>
+            {subtotalEntries.map(([currency, amount]) => (
+              <div
+                key={currency}
+                className="mb-1 flex items-center justify-between text-sm"
+              >
+                <span className="text-muted-foreground">
+                  {subtotalEntries.length > 1
+                    ? t(`${currency} subtotal`, `សរុបជា ${currency}`)
+                    : t("Estimated total", "សរុបប៉ាន់ស្មាន")}
+                </span>
+                <span className="text-lg font-bold">
+                  {formatMoney(amount, currency)}
+                </span>
+              </div>
+            ))}
             <p className="mb-4 text-xs text-muted-foreground">
               {t(
                 "Tax included. Shipping and discounts calculated at checkout.",

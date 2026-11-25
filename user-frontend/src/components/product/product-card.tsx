@@ -56,11 +56,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         <div className="mt-auto flex flex-wrap items-baseline justify-center gap-2 pt-1">
           {product.compareAtPrice && product.compareAtPrice > product.price ? (
             <span className="text-sm text-muted-foreground line-through">
-              {formatMoney(product.compareAtPrice)}
+              {formatMoney(product.compareAtPrice, product.currency)}
             </span>
           ) : null}
           <span className="text-lg font-bold text-[#139bc6]">
-            {formatMoney(product.price)}
+            {formatMoney(product.price, product.currency)}
           </span>
         </div>
 

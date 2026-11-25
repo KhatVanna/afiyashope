@@ -4,6 +4,8 @@ export type CatalogOption = {
   slug: string;
 };
 
+export type ProductCurrency = "USD" | "KHR";
+
 export type AdminProduct = {
   id: number;
   category_id: number | null;
@@ -14,6 +16,7 @@ export type AdminProduct = {
   short_description: string | null;
   description: string | null;
   price: number;
+  currency: ProductCurrency | null;
   compare_at_price: number | null;
   cost_price: number | null;
   stock_quantity: number;
@@ -45,6 +48,7 @@ export type ProductFormValues = {
   description: string;
   price: string;
   discount: string;
+  currency: ProductCurrency | "";
   stock_quantity: string;
 };
 

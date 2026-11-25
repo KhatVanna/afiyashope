@@ -1,11 +1,16 @@
 import type { ApiResponse } from "@/types/api";
-import type { CatalogCategory, CatalogProduct } from "@/data/demo-catalog.types";
+import type {
+  CatalogCategory,
+  CatalogProduct,
+  ProductCurrency,
+} from "@/data/demo-catalog.types";
 
 type ApiProduct = {
   id: number;
   slug: string;
   name: string;
   price: number;
+  currency?: ProductCurrency | null;
   compare_at_price?: number | null;
   stock_quantity?: number;
   average_rating?: number;
@@ -138,6 +143,7 @@ export function mapApiProduct(product: ApiProduct): CatalogProduct {
     name: product.name,
     brand: product.brand?.name ?? null,
     price: Number(product.price),
+    currency: product.currency ?? null,
     compareAtPrice:
       product.compare_at_price != null ? Number(product.compare_at_price) : undefined,
     image: primary,

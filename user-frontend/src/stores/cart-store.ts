@@ -19,7 +19,6 @@ type CartState = {
   removeItem: (productId: string) => void;
   clearCart: () => void;
   itemCount: () => number;
-  subtotal: () => number;
 };
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -68,6 +67,4 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
   clearCart: () => set({ items: [] }),
   itemCount: () => get().items.reduce((total, item) => total + item.quantity, 0),
-  subtotal: () =>
-    get().items.reduce((total, item) => total + item.product.price * item.quantity, 0),
 }));

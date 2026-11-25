@@ -13,6 +13,8 @@ export type RegionPreset = {
   flagSrc: string;
 };
 
+export type CurrencyCode = RegionPreset["currency"];
+
 export const REGION_PRESETS: RegionPreset[] = [
   {
     id: "kh-usd-en",
@@ -110,4 +112,43 @@ export function formatMoneyForRegion(amount: number, preset?: RegionPreset) {
     minimumFractionDigits: region.currency === "KHR" ? 0 : 2,
     maximumFractionDigits: region.currency === "KHR" ? 0 : 2,
   }).format(value);
+}
+
+export function getDisplayMoney(
+  amount: number,
+  currency?: CurrencyCode | null,
+  preset?: RegionPreset
+) {
+  const region = preset ?? REGION_PRESETS[0];
+  if (currency) {
+    return { amount, currency };
+  }
+
+  return {
+    amount: region.currency === "KHR" ? amount * USD_TO_KHR : amount,
+    currency: region.currency,
+  };
+}
+
+export function formatMoneyForCurrency(
+  amount: number,
+  currency: CurrencyCode,
+  preset?: RegionPreset
+) {
+  const region = preset ?? REGION_PRESETS[0];
+
+  if (currency === "KHR") {
+    const formattedAmount = new Intl.NumberFormat(
+      region.locale === "km-KH" ? "km-KH" : "en-US",
+      { maximumFractionDigits: 0 }
+    ).format(amount);
+    return `${formattedAmount} ៛`;
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
 }

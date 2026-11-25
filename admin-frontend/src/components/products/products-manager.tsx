@@ -33,6 +33,7 @@ const EMPTY_FORM: ProductFormValues = {
   description: "",
   price: "",
   discount: "",
+  currency: "",
   stock_quantity: "0",
 };
 
@@ -44,7 +45,13 @@ function primaryImageUrl(product?: AdminProduct | null): string | null {
   );
 }
 
-function money(value: number) {
+function money(value: number, currency: AdminProduct["currency"]) {
+  if (currency === "KHR") {
+    return `${new Intl.NumberFormat("en-US", {
+      maximumFractionDigits: 0,
+    }).format(value)} ៛`;
+  }
+
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -67,6 +74,7 @@ function toFormValues(product: AdminProduct): ProductFormValues {
     description: product.description ?? "",
     price: String(hasDiscount ? product.compare_at_price : product.price),
     discount: hasDiscount ? String(product.price) : "",
+    currency: product.currency ?? "",
     stock_quantity: String(product.stock_quantity),
   };
 }
@@ -84,6 +92,7 @@ function toPayload(form: ProductFormValues) {
     description: form.description.trim() || null,
     price: discountPrice ?? regularPrice,
     compare_at_price: discountPrice === null ? null : regularPrice,
+    currency: form.currency || null,
     stock_quantity: Number(form.stock_quantity),
   };
 }
@@ -486,7 +495,7 @@ export function ProductsManager() {
                       )}
                     </td>
                     <td className="px-4 py-4 font-semibold text-slate-800">
-                      {money(product.price)}
+                      {money(product.price, product.currency)}
                     </td>
                     <td className="px-4 py-4 text-slate-700">
                       <span
@@ -716,6 +725,23 @@ export function ProductsManager() {
                     }
                     className={inputClass}
                   />
+                </Field>
+                <Field label="Currency" error={formErrors.currency?.[0]}>
+                  <select
+                    value={form.currency}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setForm((current) => ({
+                        ...current,
+                        currency: value === "USD" || value === "KHR" ? value : "",
+                      }));
+                    }}
+                    className={inputClass}
+                  >
+                    <option value="">{t("Follow visitor's region")}</option>
+                    <option value="USD">{t("USD ($)")}</option>
+                    <option value="KHR">{t("KHR (៛)")}</option>
+                  </select>
                 </Field>
                 <Field
                   label="Stock quantity"

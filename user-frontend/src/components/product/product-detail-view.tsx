@@ -85,10 +85,10 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
         <div className="apple-reveal__item apple-reveal__item--4 space-y-4 sm:space-y-5">
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:rounded-2xl sm:p-5">
             <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-              <span className="text-2xl font-bold sm:text-3xl">{formatMoney(product.price)}</span>
+              <span className="text-2xl font-bold sm:text-3xl">{formatMoney(product.price, product.currency)}</span>
               {product.compareAtPrice ? (
                 <span className="text-base text-muted-foreground line-through sm:text-lg">
-                  {formatMoney(product.compareAtPrice)}
+                  {formatMoney(product.compareAtPrice, product.currency)}
                 </span>
               ) : null}
             </div>
