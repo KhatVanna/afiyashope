@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Kantumruy_Pro } from "next/font/google";
 import { StoreShell } from "@/components/layout/store-shell";
 import { ThemeProvider } from "@/providers/theme-provider";
+import {
+  DEFAULT_OG_IMAGE_PATH,
+  DEFAULT_SOCIAL_DESCRIPTION,
+  DEFAULT_SOCIAL_TITLE,
+  getSiteMetadataBase,
+} from "@/lib/site-seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,48 +28,42 @@ const kantumruyPro = Kantumruy_Pro({
   display: "swap",
 });
 
-const socialShareTitle =
-  "Afiya Shope | Luxury Abaya & Modest Fashion in Cambodia";
-const socialShareDescription =
-  "Discover elegant Abaya and modest fashion at Afiya Shope. Explore curated styles for every occasion, with wholesale and retail shopping across Cambodia.";
-const socialShareImage = "/afiya-social-preview.png?v=20261125";
-
 export const metadata: Metadata = {
   title: {
     default: "Afiya Shope — Luxury Abaya Boutique",
     template: "%s | Afiya Shope",
   },
-  description: socialShareDescription,
+  description: DEFAULT_SOCIAL_DESCRIPTION,
   applicationName: "Afiya Shope",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: getSiteMetadataBase(),
   icons: {
     icon: "/favicon.ico",
     apple: "/images/afiya-icon.png",
   },
   openGraph: {
-    title: socialShareTitle,
-    description: socialShareDescription,
+    title: DEFAULT_SOCIAL_TITLE,
+    description: DEFAULT_SOCIAL_DESCRIPTION,
     siteName: "Afiya Shope",
-    url: "/",
     locale: "en_KH",
     type: "website",
     images: [
       {
-        url: socialShareImage,
+        url: DEFAULT_OG_IMAGE_PATH,
         width: 1200,
         height: 630,
-        alt: "Afiya Shope | Luxury Abaya and modest fashion in Cambodia",
+        type: "image/jpeg",
+        alt: DEFAULT_SOCIAL_TITLE,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: socialShareTitle,
-    description: socialShareDescription,
+    title: DEFAULT_SOCIAL_TITLE,
+    description: DEFAULT_SOCIAL_DESCRIPTION,
     images: [
       {
-        url: socialShareImage,
-        alt: "Afiya Shope | Luxury Abaya and modest fashion in Cambodia",
+        url: DEFAULT_OG_IMAGE_PATH,
+        alt: DEFAULT_SOCIAL_TITLE,
       },
     ],
   },

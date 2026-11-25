@@ -1,13 +1,19 @@
+import type { Metadata } from "next";
 import { CategoryGrid } from "@/components/home/category-grid";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { ProductSection } from "@/components/home/product-section";
 import { PromoBanner } from "@/components/home/promo-banner";
 import { TrustBar } from "@/components/home/trust-bar";
 import { VideoBanner } from "@/components/home/video-banner";
+import { LocaleText } from "@/components/i18n/locale-text";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchProducts } from "@/lib/catalog-api";
 import { fetchSiteBanners } from "@/lib/site-content-api";
-import { LocaleText } from "@/components/i18n/locale-text";
+import { generateHomePageMetadata } from "@/lib/site-seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateHomePageMetadata();
+}
 
 export default async function HomePage() {
   const [featured, catalog, banners] = await Promise.all([
