@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronUp } from "lucide-react";
 import { Logo } from "@/components/logo";
-import { RegionSelector } from "@/components/layout/region-selector";
 
 const menuLinks = [
   { label: "Home", href: "/" },
@@ -143,16 +141,6 @@ export function SiteFooter() {
                 ))}
               </div>
 
-              <RegionSelector />
-
-              <button
-                type="button"
-                aria-label="Back to top"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-white transition hover:border-zinc-500 hover:bg-zinc-800"
-              >
-                <ChevronUp className="h-4 w-4" />
-              </button>
             </div>
           </div>
         </div>
