@@ -6,19 +6,13 @@ import { Lock, Search } from "@/components/ui/emoji-icons";
 import { Logo } from "@/components/logo";
 import { RegionSelector } from "@/components/layout/region-selector";
 import { ThemeToggle } from "@/components/theme-toggle";
+import type { CatalogCategory } from "@/data/demo-catalog.types";
 import { useRegionLanguage } from "@/stores/region-store";
-
-const departmentLinks = [
-  { labelEn: "Shop All", labelKm: "ទាំងអស់", href: "/products" },
-  { labelEn: "Pastel Colors", labelKm: "ពណ៌ប៉ាស្តែល", href: "/products?tag=pastel", icon: "🌸" },
-  { labelEn: "Luxury Styles", labelKm: "ម៉ូដប្រណិត", href: "/products?tag=luxury", icon: "✨" },
-  { labelEn: "Matching Sets", labelKm: "ឈុតពេញ", href: "/products?tag=set", icon: "👗" },
-];
 
 const iconButtonClass =
   "relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted sm:h-10 sm:w-10";
 
-export function SiteHeader() {
+export function SiteHeader({ categories }: { categories: CatalogCategory[] }) {
   const language = useRegionLanguage();
   const isKhmer = language === "KM";
   const [query, setQuery] = useState("");
@@ -87,18 +81,19 @@ export function SiteHeader() {
             aria-label={isKhmer ? "ម៉ឺនុយប្រភេទទំនិញ" : "Category menu"}
             className="flex justify-start gap-2 overflow-x-auto sm:justify-center xl:w-auto xl:flex-none xl:justify-end"
           >
-            {departmentLinks.map((link, index) => (
+            <Link
+              href="/products"
+              className="inline-flex whitespace-nowrap items-center gap-1.5 rounded-full border border-primary bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition"
+            >
+              {isKhmer ? "ទាំងអស់" : "Shop All"}
+            </Link>
+            {categories.map((category) => (
               <Link
-                key={link.href}
-                href={link.href}
-                className={`inline-flex whitespace-nowrap items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition ${
-                  index === 0
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card text-foreground hover:border-primary hover:text-primary"
-                }`}
+                key={category.id}
+                href={`/products?category=${encodeURIComponent(category.slug)}`}
+                className="inline-flex whitespace-nowrap items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground transition hover:border-primary hover:text-primary"
               >
-                {"icon" in link ? <span aria-hidden="true">{link.icon}</span> : null}
-                {isKhmer ? link.labelKm : link.labelEn}
+                {isKhmer ? category.nameKm || category.name : category.name}
               </Link>
             ))}
           </nav>

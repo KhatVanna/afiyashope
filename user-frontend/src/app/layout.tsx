@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Kantumruy_Pro } from "next/font/google";
 import { StoreShell } from "@/components/layout/store-shell";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { fetchCategories } from "@/lib/catalog-api";
 import {
   DEFAULT_OG_IMAGE_PATH,
   DEFAULT_SOCIAL_DESCRIPTION,
@@ -75,7 +76,9 @@ export const viewport = {
   maximumScale: 5,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const { items: categories } = await fetchCategories();
+
   return (
     <html
       lang="en"
@@ -85,7 +88,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
-          <StoreShell>{children}</StoreShell>
+          <StoreShell categories={categories}>{children}</StoreShell>
         </ThemeProvider>
       </body>
     </html>
