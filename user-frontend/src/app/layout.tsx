@@ -22,13 +22,18 @@ const kantumruyPro = Kantumruy_Pro({
   display: "swap",
 });
 
+const socialShareTitle =
+  "Afiya Shope | Luxury Abaya & Modest Fashion in Cambodia";
+const socialShareDescription =
+  "Discover elegant Abaya and modest fashion at Afiya Shope. Explore curated styles for every occasion, with wholesale and retail shopping across Cambodia.";
+const socialShareImage = "/afiya-social-preview.png?v=20261125";
+
 export const metadata: Metadata = {
   title: {
     default: "Afiya Shope — Luxury Abaya Boutique",
     template: "%s | Afiya Shope",
   },
-  description:
-    "Discover elegant Abaya styles for wholesale and retail customers across Cambodia.",
+  description: socialShareDescription,
   applicationName: "Afiya Shope",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   icons: {
@@ -36,15 +41,29 @@ export const metadata: Metadata = {
     apple: "/images/afiya-icon.png",
   },
   openGraph: {
-    title: "Afiya Shope — Luxury Abaya Boutique",
-    description:
-      "Discover elegant, modest Abaya styles made with premium fabrics.",
+    title: socialShareTitle,
+    description: socialShareDescription,
     siteName: "Afiya Shope",
+    url: "/",
+    locale: "en_KH",
     type: "website",
     images: [
       {
-        url: "/images/afiyashope_logo.png",
-        alt: "Afiya Shope",
+        url: socialShareImage,
+        width: 1200,
+        height: 630,
+        alt: "Afiya Shope | Luxury Abaya and modest fashion in Cambodia",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: socialShareTitle,
+    description: socialShareDescription,
+    images: [
+      {
+        url: socialShareImage,
+        alt: "Afiya Shope | Luxury Abaya and modest fashion in Cambodia",
       },
     ],
   },
