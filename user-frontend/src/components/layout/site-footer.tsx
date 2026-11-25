@@ -8,21 +8,22 @@ import {
   siTiktok,
 } from "simple-icons";
 import { Logo } from "@/components/logo";
+import { useRegionLanguage } from "@/stores/region-store";
 
 const menuLinks = [
-  { label: "Home", href: "/" },
-  { label: "Shop", href: "/products" },
-  { label: "Categories", href: "/categories" },
-  { label: "Blog & News", href: "/blog" },
-  { label: "Contact", href: "/contact" },
+  { labelEn: "Home", labelKm: "ទំព័រដើម", href: "/" },
+  { labelEn: "Shop", labelKm: "ទិញទំនិញ", href: "/products" },
+  { labelEn: "Categories", labelKm: "ប្រភេទទំនិញ", href: "/categories" },
+  { labelEn: "Blog & News", labelKm: "ព័ត៌មាន និងអត្ថបទ", href: "/blog" },
+  { labelEn: "Contact", labelKm: "ទំនាក់ទំនង", href: "/contact" },
 ];
 
 const aboutLinks = [
-  { label: "Imprint", href: "/about" },
-  { label: "Data protection", href: "/privacy" },
-  { label: "Refund policy", href: "/refunds" },
-  { label: "Shipping guidelines", href: "/shipping" },
-  { label: "Terms of Use", href: "/terms" },
+  { labelEn: "Imprint", labelKm: "ព័ត៌មានអំពីហាង", href: "/about" },
+  { labelEn: "Data protection", labelKm: "ការការពារទិន្នន័យ", href: "/privacy" },
+  { labelEn: "Refund policy", labelKm: "គោលការណ៍សងប្រាក់", href: "/refunds" },
+  { labelEn: "Shipping guidelines", labelKm: "គោលការណ៍ដឹកជញ្ជូន", href: "/shipping" },
+  { labelEn: "Terms of Use", labelKm: "លក្ខខណ្ឌប្រើប្រាស់", href: "/terms" },
 ];
 
 const paymentMethods = [
@@ -59,6 +60,8 @@ const socialIcons = {
 const snowflakePattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.07' stroke-width='1'%3E%3Cpath d='M40 12v56M18 26l44 28M18 54l44-28'/%3E%3Cpath d='M40 20l4 6-4 2-4-2zM40 54l4 6-4 2-4-2zM24 30l7 1-1 4-5 1zM49 45l7 1-1 4-5 1zM24 50l7-1-1-4-5-1zM49 35l7-1-1-4-5-1z'/%3E%3C/g%3E%3C/svg%3E")`;
 
 export function SiteFooter() {
+  const isKhmer = useRegionLanguage() === "KM";
+
   return (
     <footer
       className="relative mt-auto overflow-hidden bg-[#21A8D8] text-white"
@@ -68,13 +71,17 @@ export function SiteFooter() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           <div className="space-y-4">
             <Logo height={44} priority={false} />
-            <p className="max-w-xs text-sm leading-relaxed text-slate-200">
-              Abaya Collection • បោះដុំ និងលក់រាយ ២៥ ខេត្ត-ក្រុង
+            <p lang={isKhmer ? "km" : "en"} className="max-w-xs text-sm leading-relaxed text-slate-200">
+              {isKhmer
+                ? "ឈុតអាបាយ៉ា • បោះដុំ និងលក់រាយទូទាំង ២៥ ខេត្ត-ក្រុង"
+                : "Abaya Collection • Wholesale and retail across 25 provinces and cities"}
             </p>
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-white">menu</h3>
+            <h3 className="mb-4 text-sm font-semibold text-white">
+              {isKhmer ? "ម៉ឺនុយ" : "Menu"}
+            </h3>
             <ul className="space-y-2.5">
               {menuLinks.map((link) => (
                 <li key={link.href}>
@@ -82,7 +89,7 @@ export function SiteFooter() {
                     href={link.href}
                     className="text-sm font-medium text-white transition hover:text-[#F9318D]"
                   >
-                    {link.label}
+                    {isKhmer ? link.labelKm : link.labelEn}
                   </Link>
                 </li>
               ))}
@@ -90,7 +97,9 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-white">About Us</h3>
+            <h3 className="mb-4 text-sm font-semibold text-white">
+              {isKhmer ? "អំពីយើង" : "About Us"}
+            </h3>
             <ul className="space-y-2.5">
               {aboutLinks.map((link) => (
                 <li key={link.href}>
@@ -98,7 +107,7 @@ export function SiteFooter() {
                     href={link.href}
                     className="text-sm font-medium text-white transition hover:text-[#F9318D]"
                   >
-                    {link.label}
+                    {isKhmer ? link.labelKm : link.labelEn}
                   </Link>
                 </li>
               ))}
@@ -106,15 +115,19 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-white">Help & Contact</h3>
+            <h3 className="mb-4 text-sm font-semibold text-white">
+              {isKhmer ? "ជំនួយ និងទំនាក់ទំនង" : "Help & Contact"}
+            </h3>
             <p className="mb-3 max-w-xs text-sm leading-relaxed text-slate-200">
-              Need any advice before you buy? We&apos;re here to help.
+              {isKhmer
+                ? "ត្រូវការដំបូន្មានមុនពេលទិញមែនទេ? យើងរីករាយជួយអ្នក។"
+                : "Need any advice before you buy? We&apos;re here to help."}
             </p>
             <Link
               href="/contact"
               className="text-sm font-medium text-white underline underline-offset-4 transition hover:text-zinc-200"
             >
-              Contact Us
+              {isKhmer ? "ទាក់ទងមកយើង" : "Contact Us"}
             </Link>
           </div>
         </div>
@@ -139,7 +152,8 @@ export function SiteFooter() {
         <div className="mt-10 border-t border-zinc-800 pt-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <p className="text-xs text-slate-300">
-              © {new Date().getFullYear()}. Afiya Shope. Luxury Abaya Boutique
+              © {new Date().getFullYear()}. Afiya Shope.{" "}
+              {isKhmer ? "ហាងអាបាយ៉ាប្រណិត" : "Luxury Abaya Boutique"}
             </p>
 
             <div className="flex flex-wrap items-center gap-4 sm:gap-5">

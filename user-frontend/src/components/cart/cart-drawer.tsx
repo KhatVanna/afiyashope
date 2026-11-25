@@ -7,6 +7,7 @@ import { useFormatMoney } from "@/hooks/use-format-money";
 import { useCartStore } from "@/stores/cart-store";
 import { ProductImage } from "@/components/product-image";
 import { getProductImageUrls } from "@/lib/product-images";
+import { useLocaleText } from "@/components/i18n/locale-text";
 
 function CartItemQuantity({
   productId,
@@ -17,6 +18,7 @@ function CartItemQuantity({
   quantity: number;
   maxQuantity: number;
 }) {
+  const t = useLocaleText();
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const [quantityInput, setQuantityInput] = useState(String(quantity));
 
@@ -38,7 +40,7 @@ function CartItemQuantity({
       <button
         type="button"
         className="px-2 py-1"
-        aria-label="Decrease quantity"
+        aria-label={t("Decrease quantity", "បន្ថយចំនួន")}
         onClick={() => updateQuantity(productId, quantity - 1)}
       >
         <Minus className="h-3.5 w-3.5" />
@@ -48,7 +50,7 @@ function CartItemQuantity({
         inputMode="numeric"
         min={1}
         max={maxQuantity}
-        aria-label="Quantity"
+        aria-label={t("Quantity", "ចំនួន")}
         value={quantityInput}
         onChange={(event) => {
           const raw = event.target.value;
@@ -67,7 +69,7 @@ function CartItemQuantity({
       <button
         type="button"
         className="px-2 py-1"
-        aria-label="Increase quantity"
+        aria-label={t("Increase quantity", "បង្កើនចំនួន")}
         disabled={quantity >= maxQuantity}
         onClick={() => applyQuantity(quantity + 1)}
       >
@@ -78,6 +80,7 @@ function CartItemQuantity({
 }
 
 export function CartDrawer() {
+  const t = useLocaleText();
   const formatMoney = useFormatMoney();
   const isOpen = useCartStore((state) => state.isOpen);
   const items = useCartStore((state) => state.items);
@@ -97,18 +100,18 @@ export function CartDrawer() {
       <button
         type="button"
         className="absolute inset-0 bg-black/50"
-        aria-label="Close cart overlay"
+        aria-label={t("Close cart overlay", "បិទផ្ទាំងកន្ត្រក")}
         onClick={closeCart}
       />
 
       <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-card shadow-2xl">
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="text-lg font-semibold">Your cart</h2>
+          <h2 className="text-lg font-semibold">{t("Your cart", "កន្ត្រករបស់អ្នក")}</h2>
           <button
             type="button"
             onClick={closeCart}
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border"
-            aria-label="Close cart"
+            aria-label={t("Close cart", "បិទកន្ត្រក")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -117,13 +120,13 @@ export function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-              <p className="text-muted-foreground">Your cart is empty :(</p>
+              <p className="text-muted-foreground">{t("Your cart is empty :(", "កន្ត្រករបស់អ្នកមិនទាន់មានទំនិញទេ")}</p>
               <button
                 type="button"
                 onClick={closeCart}
                 className="rounded-lg border border-foreground px-5 py-2.5 text-sm font-semibold uppercase tracking-wide"
               >
-                Continue shopping
+                {t("Continue shopping", "បន្តទិញទំនិញ")}
               </button>
             </div>
           ) : (
@@ -160,7 +163,7 @@ export function CartDrawer() {
                         type="button"
                         onClick={() => removeItem(item.product.id)}
                         className="ml-auto text-muted-foreground hover:text-error"
-                        aria-label={`Remove ${item.product.name}`}
+                        aria-label={t(`Remove ${item.product.name}`, `ដក ${item.product.name} ចេញ`)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -175,11 +178,14 @@ export function CartDrawer() {
         {items.length > 0 ? (
           <div className="border-t border-border px-5 py-5">
             <div className="mb-1 flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Estimated total</span>
+              <span className="text-muted-foreground">{t("Estimated total", "សរុបប៉ាន់ស្មាន")}</span>
               <span className="text-lg font-bold">{formatMoney(subtotal)}</span>
             </div>
             <p className="mb-4 text-xs text-muted-foreground">
-              Tax included. Shipping and discounts calculated at checkout.
+              {t(
+                "Tax included. Shipping and discounts calculated at checkout.",
+                "រួមបញ្ចូលពន្ធរួចហើយ។ ថ្លៃដឹកជញ្ជូន និងការបញ្ចុះតម្លៃនឹងគណនានៅពេលទូទាត់។"
+              )}
             </p>
             <Link
               href="/checkout"
@@ -187,7 +193,7 @@ export function CartDrawer() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-3 text-sm font-semibold uppercase tracking-wide text-background"
             >
               <Lock className="h-4 w-4" />
-              Checkout
+              {t("Checkout", "ទូទាត់ប្រាក់")}
             </Link>
           </div>
         ) : null}

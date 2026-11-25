@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
+import { useLocaleText } from "@/components/i18n/locale-text";
 
 type VideoBannerProps = {
   src?: string;
@@ -12,6 +13,7 @@ export function VideoBanner({
   src = "/videos/banner.mp4",
   poster = "/videos/banner-poster.png",
 }: VideoBannerProps) {
+  const t = useLocaleText();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [playing, setPlaying] = useState(true);
 
@@ -48,7 +50,7 @@ export function VideoBanner({
 
             <button
               type="button"
-              aria-label={playing ? "Pause video" : "Play video"}
+              aria-label={playing ? t("Pause video", "ផ្អាកវីដេអូ") : t("Play video", "ចាក់វីដេអូ")}
               onClick={togglePlay}
               className="absolute bottom-4 right-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-zinc-900 shadow-lg transition hover:bg-zinc-100 sm:bottom-5 sm:right-5"
             >

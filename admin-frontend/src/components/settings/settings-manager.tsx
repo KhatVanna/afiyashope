@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loader2, Save } from "lucide-react";
 import { adminApi } from "@/lib/admin-api";
+import { useAdminText } from "@/components/layout/admin-language-selector";
 import { useAuthStore } from "@/stores/auth-store";
 import type { SettingGroup, SettingItem, SettingsData } from "@/types/settings";
 
@@ -11,6 +12,7 @@ function canManageSettings(roleSlugs: string[]) {
 }
 
 export function SettingsManager() {
+  const t = useAdminText();
   const user = useAuthStore((state) => state.user);
   const roleSlugs = useMemo(
     () => user?.roles?.map((role) => role.slug) ?? [],
@@ -116,9 +118,9 @@ export function SettingsManager() {
   if (!canManage) {
     return (
       <div className="rounded-2xl border border-white bg-white p-8 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-        <h1 className="text-2xl font-semibold text-slate-800">Settings</h1>
+        <h1 className="text-2xl font-semibold text-slate-800">{t("Settings")}</h1>
         <p className="mt-2 text-slate-500">
-          Only Super Admin can manage store settings.
+          {t("Only Super Admin can manage store settings.")}
         </p>
       </div>
     );
@@ -129,10 +131,10 @@ export function SettingsManager() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-800">
-            Settings
+            {t("Settings")}
           </h1>
           <p className="mt-2 text-slate-500">
-            Configure store profile, checkout, notifications, and system options.
+            {t("Configure store profile, checkout, notifications, and system options.")}
           </p>
         </div>
         <button
@@ -142,25 +144,25 @@ export function SettingsManager() {
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-cyan-700/20 disabled:opacity-60"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          Save changes
+          {t("Save changes")}
         </button>
       </div>
 
       {notice ? (
         <div className="rounded-xl border border-[#beeafa] bg-[#e2f5fc] px-4 py-3 text-sm text-[#075985]">
-          {notice}
+          {t(notice)}
         </div>
       ) : null}
       {error ? (
         <div className="rounded-xl border border-[#ffd5c8] bg-[#fdede8] px-4 py-3 text-sm text-[#c2410c]">
-          {error}
+          {t(error)}
         </div>
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
         <aside className="rounded-2xl border border-white bg-white p-3 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
           <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-            Sections
+            {t("Sections")}
           </p>
           <div className="space-y-1">
             {groups.map((group) => (
@@ -174,7 +176,7 @@ export function SettingsManager() {
                     : "text-slate-600 hover:bg-[#e2f5fc] hover:text-[#0077b6]"
                 }`}
               >
-                {group.label}
+                {t(group.label)}
               </button>
             ))}
           </div>
@@ -184,18 +186,18 @@ export function SettingsManager() {
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-16 text-slate-500">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Loading settings...
+              {t("Loading settings...")}
             </div>
           ) : !currentGroup ? (
-            <p className="py-16 text-center text-slate-500">No settings found.</p>
+            <p className="py-16 text-center text-slate-500">{t("No settings found.")}</p>
           ) : (
             <div className="space-y-6">
               <div>
                 <h2 className="text-xl font-semibold text-slate-800">
-                  {currentGroup.label}
+                  {t(currentGroup.label)}
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  Update values below, then click Save changes.
+                  {t("Update values below, then click Save changes.")}
                 </p>
               </div>
 
@@ -207,12 +209,12 @@ export function SettingsManager() {
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-slate-800">{setting.label}</p>
+                        <p className="font-semibold text-slate-800">{t(setting.label)}</p>
                         <p className="mt-1 text-sm text-slate-500">
-                          {setting.description}
+                          {t(setting.description)}
                         </p>
                         <p className="mt-2 text-xs text-slate-400">
-                          Key: {setting.key}
+                          {t("Key")}: {setting.key}
                         </p>
                       </div>
 
@@ -227,7 +229,7 @@ export function SettingsManager() {
                               }
                               className="h-4 w-4 rounded border-slate-300 text-[#0077b6]"
                             />
-                            Enabled
+                            {t("Enabled")}
                           </label>
                         ) : (
                           <input

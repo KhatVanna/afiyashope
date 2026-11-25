@@ -15,6 +15,10 @@ import {
 } from "lucide-react";
 import { adminApi } from "@/lib/admin-api";
 import { canAccessNavItem, ADMIN_NAV } from "@/lib/admin-nav";
+import {
+  useAdminLanguage,
+  useAdminText,
+} from "@/components/layout/admin-language-selector";
 import { useAuthStore } from "@/stores/auth-store";
 import type { CatalogOptionsData, CatalogOption } from "@/types/product";
 import type {
@@ -40,9 +44,9 @@ function money(value: number) {
   }).format(value);
 }
 
-function formatDay(value: string | null) {
+function formatDay(value: string | null, locale: string) {
   if (!value) return "All time";
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(locale, {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -58,6 +62,9 @@ function csvCell(value: string | number | null) {
 }
 
 export function ProductReports() {
+  const t = useAdminText();
+  const language = useAdminLanguage();
+  const dateLocale = language === "km" ? "km-KH" : "en-US";
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const navItem = ADMIN_NAV.find((item) => item.href === "/reports");
@@ -251,7 +258,7 @@ export function ProductReports() {
   if (!allowed) {
     return (
       <div className="rounded-2xl border border-white bg-white p-8 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-        <p className="text-sm text-slate-500">You do not have access to this module.</p>
+        <p className="text-sm text-slate-500">{t("You do not have access to this module.")}</p>
       </div>
     );
   }
@@ -261,14 +268,14 @@ export function ProductReports() {
     {
       label: "Product revenue",
       value: summary ? money(summary.revenue) : "—",
-      hint: summary ? `${summary.orders_count.toLocaleString()} orders` : "In selected period",
+      hint: summary ? `${summary.orders_count.toLocaleString()} ${t("orders")}` : "In selected period",
       icon: Wallet,
       tone: "bg-[#e2f5fc] text-[#0da9d6]",
     },
     {
       label: "Units sold",
       value: summary ? summary.units_sold.toLocaleString() : "—",
-      hint: summary ? `${money(summary.average_order_value)} avg order` : "Paid and open orders",
+      hint: summary ? `${money(summary.average_order_value)} ${t("avg order")}` : "Paid and open orders",
       icon: ShoppingCart,
       tone: "bg-[#e2f5fc] text-[#0077b6]",
     },
@@ -307,14 +314,14 @@ export function ProductReports() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-800">
-            Product reports
+            {t("Product reports")}
           </h1>
           <p className="mt-2 max-w-2xl text-slate-500">
-            Sales, margin, and stock for the catalog
+            {t("Sales, margin, and stock for the catalog")}
             {report?.range
               ? report.range.from
-                ? ` · ${formatDay(report.range.from)} – ${formatDay(report.range.to)}`
-                : " · All time"
+                ? ` · ${formatDay(report.range.from, dateLocale)} – ${formatDay(report.range.to, dateLocale)}`
+                : ` · ${t("All time")}`
               : ""}
             .
           </p>
@@ -330,7 +337,7 @@ export function ProductReports() {
           ) : (
             <Download className="h-4 w-4" />
           )}
-          Export CSV
+          {t("Export CSV")}
         </button>
       </div>
 
@@ -341,7 +348,7 @@ export function ProductReports() {
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search by name or SKU..."
+              placeholder={t("Search by name or SKU...")}
               className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] pl-10 pr-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
             />
           </div>
@@ -355,7 +362,7 @@ export function ProductReports() {
           >
             {PERIODS.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.label}
+                {t(option.label)}
               </option>
             ))}
           </select>
@@ -367,7 +374,7 @@ export function ProductReports() {
             }}
             className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
-            <option value="">All categories</option>
+            <option value="">{t("All categories")}</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -382,7 +389,7 @@ export function ProductReports() {
             }}
             className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
-            <option value="">All brands</option>
+            <option value="">{t("All brands")}</option>
             {brands.map((brand) => (
               <option key={brand.id} value={brand.id}>
                 {brand.name}
@@ -397,12 +404,12 @@ export function ProductReports() {
             }}
             className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
-            <option value="all">All status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="featured">Featured</option>
-            <option value="low_stock">Low stock</option>
-            <option value="out_of_stock">Out of stock</option>
+            <option value="all">{t("All status")}</option>
+            <option value="active">{t("Active")}</option>
+            <option value="inactive">{t("Inactive")}</option>
+            <option value="featured">{t("Featured")}</option>
+            <option value="low_stock">{t("Low stock")}</option>
+            <option value="out_of_stock">{t("Out of stock")}</option>
           </select>
         </div>
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-12">
@@ -436,20 +443,20 @@ export function ProductReports() {
             }}
             className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
           >
-            <option value="all">All products</option>
-            <option value="with">With sales in period</option>
-            <option value="without">No sales in period</option>
+            <option value="all">{t("All products")}</option>
+            <option value="with">{t("With sales in period")}</option>
+            <option value="without">{t("No sales in period")}</option>
           </select>
           <div className="flex items-center rounded-xl bg-[#f1f9fd] px-3 text-sm text-slate-500 lg:col-span-3">
-            {(report?.meta.total ?? 0).toLocaleString()} products
-            {loading ? " · updating..." : ""}
+            {(report?.meta.total ?? 0).toLocaleString()} {t("products")}
+            {loading ? ` · ${t("updating...")}` : ""}
           </div>
         </div>
       </section>
 
       {error ? (
         <div className="rounded-xl border border-[#ffd5c8] bg-[#fdede8] px-4 py-3 text-sm text-[#c2410c]">
-          {error}
+          {t(error)}
         </div>
       ) : null}
 
@@ -466,9 +473,9 @@ export function ProductReports() {
               >
                 <Icon className="h-5 w-5" />
               </div>
-              <p className="text-sm text-slate-500">{stat.label}</p>
+              <p className="text-sm text-slate-500">{t(stat.label)}</p>
               <p className="mt-1 text-2xl font-semibold text-slate-800">{stat.value}</p>
-              <p className="mt-1 text-xs text-slate-400">{stat.hint}</p>
+              <p className="mt-1 text-xs text-slate-400">{t(stat.hint)}</p>
             </article>
           );
         })}
@@ -477,8 +484,8 @@ export function ProductReports() {
       <section className="grid gap-6 xl:grid-cols-12">
         <div className="rounded-2xl border border-white bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] xl:col-span-7">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-slate-800">Sales trend</h2>
-            <p className="text-sm text-slate-500">Product revenue in the selected period</p>
+            <h2 className="text-lg font-semibold text-slate-800">{t("Sales trend")}</h2>
+            <p className="text-sm text-slate-500">{t("Product revenue in the selected period")}</p>
           </div>
           {report && report.trend.length > 0 ? (
             <div className="overflow-x-auto">
@@ -493,7 +500,7 @@ export function ProductReports() {
                   >
                     <div className="flex h-44 w-full items-end justify-center">
                       <div
-                        title={`${point.label}: ${money(point.revenue)} · ${point.units} units`}
+                        title={`${point.label}: ${money(point.revenue)} · ${point.units} ${t("units")}`}
                         className="w-3 rounded-t-md bg-[#0077b6]"
                         style={{
                           height: `${Math.max((point.revenue / maxRevenue) * 100, point.revenue > 0 ? 6 : 0)}%`,
@@ -509,7 +516,7 @@ export function ProductReports() {
             </div>
           ) : (
             <p className="py-16 text-center text-sm text-slate-500">
-              {loading ? "Loading sales trend..." : "No product sales in this period."}
+              {loading ? t("Loading sales trend...") : t("No product sales in this period.")}
             </p>
           )}
         </div>
@@ -536,15 +543,15 @@ export function ProductReports() {
             <thead>
               <tr className="border-b border-[#e2edf4] text-slate-400">
                 <SortHeader label="Product" column="name" sort={sort} direction={direction} onSort={changeSort} />
-                <th className="px-4 py-3 font-medium">SKU</th>
-                <th className="px-4 py-3 font-medium">Category</th>
+                <th className="px-4 py-3 font-medium">{t("SKU")}</th>
+                <th className="px-4 py-3 font-medium">{t("Category")}</th>
                 <SortHeader label="Price" column="price" sort={sort} direction={direction} onSort={changeSort} />
                 <SortHeader label="Stock" column="stock" sort={sort} direction={direction} onSort={changeSort} />
                 <SortHeader label="Units" column="units" sort={sort} direction={direction} onSort={changeSort} />
                 <SortHeader label="Orders" column="orders" sort={sort} direction={direction} onSort={changeSort} />
                 <SortHeader label="Revenue" column="revenue" sort={sort} direction={direction} onSort={changeSort} />
                 <SortHeader label="Margin" column="margin" sort={sort} direction={direction} onSort={changeSort} />
-                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">{t("Status")}</th>
               </tr>
             </thead>
             <tbody>
@@ -553,14 +560,14 @@ export function ProductReports() {
                   <td colSpan={10} className="px-4 py-16 text-center text-slate-500">
                     <span className="inline-flex items-center gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Loading product report...
+                      {t("Loading product report...")}
                     </span>
                   </td>
                 </tr>
               ) : (report?.items.length ?? 0) === 0 ? (
                 <tr>
                   <td colSpan={10} className="px-4 py-16 text-center text-slate-500">
-                    No products match these filters.
+                    {t("No products match these filters.")}
                   </td>
                 </tr>
               ) : (
@@ -568,7 +575,7 @@ export function ProductReports() {
                   <tr key={product.id} className="border-b border-[#edf6fa] last:border-0">
                     <td className="px-4 py-4">
                       <p className="min-w-45 font-semibold text-slate-800">{product.name}</p>
-                      <p className="text-xs text-slate-400">{product.brand ?? "No brand"}</p>
+                      <p className="text-xs text-slate-400">{product.brand ?? t("No brand")}</p>
                     </td>
                     <td className="px-4 py-4 font-medium text-slate-700">{product.sku}</td>
                     <td className="px-4 py-4 text-slate-600">{product.category ?? "—"}</td>
@@ -600,7 +607,7 @@ export function ProductReports() {
                             : "bg-[#f1f5f9] text-slate-500"
                         }`}
                       >
-                        {product.is_active ? "Active" : "Inactive"}
+                        {product.is_active ? t("Active") : t("Inactive")}
                       </span>
                     </td>
                   </tr>
@@ -611,7 +618,7 @@ export function ProductReports() {
         </div>
         <div className="flex items-center justify-between gap-3 border-t border-[#e2edf4] px-4 py-3">
           <p className="text-sm text-slate-500">
-            Page {report?.meta.current_page ?? 1} of {report?.meta.last_page ?? 1}
+            {t("Page")} {report?.meta.current_page ?? 1} {t("of")} {report?.meta.last_page ?? 1}
           </p>
           <div className="flex gap-2">
             <button
@@ -620,7 +627,7 @@ export function ProductReports() {
               onClick={() => setPage((value) => Math.max(1, value - 1))}
               className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
-              Previous
+              {t("Previous")}
             </button>
             <button
               type="button"
@@ -628,7 +635,7 @@ export function ProductReports() {
               onClick={() => setPage((value) => value + 1)}
               className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
-              Next
+              {t("Next")}
             </button>
           </div>
         </div>
@@ -648,13 +655,14 @@ function BreakdownCard({
   maxRevenue: number;
   loading: boolean;
 }) {
+  const t = useAdminText();
   return (
     <div className="rounded-2xl border border-white bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-      <h2 className="text-lg font-semibold text-slate-800">{title}</h2>
+      <h2 className="text-lg font-semibold text-slate-800">{t(title)}</h2>
       <div className="mt-4 space-y-3">
         {rows.length === 0 ? (
           <p className="py-6 text-sm text-slate-500">
-            {loading ? "Loading..." : `No ${title.toLowerCase()} to show.`}
+            {loading ? t("Loading...") : t(`No ${title.toLowerCase()} to show.`)}
           </p>
         ) : (
           rows.map((row) => (
@@ -670,7 +678,7 @@ function BreakdownCard({
                 />
               </div>
               <p className="mt-1 text-xs text-slate-400">
-                {row.units.toLocaleString()} units · {row.products.toLocaleString()} products
+                {row.units.toLocaleString()} {t("units")} · {row.products.toLocaleString()} {t("products")}
               </p>
             </div>
           ))
@@ -693,6 +701,7 @@ function SortHeader({
   direction: "asc" | "desc";
   onSort: (column: ReportSort) => void;
 }) {
+  const t = useAdminText();
   const active = sort === column;
   return (
     <th className="px-4 py-3 font-medium">
@@ -701,7 +710,7 @@ function SortHeader({
         onClick={() => onSort(column)}
         className={`inline-flex items-center gap-1 ${active ? "text-[#0077b6]" : "text-slate-400"}`}
       >
-        {label}
+        {t(label)}
         <span className="text-[10px]">{active ? (direction === "asc" ? "↑" : "↓") : ""}</span>
       </button>
     </th>

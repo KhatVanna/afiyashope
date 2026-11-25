@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useAdminText } from "@/components/layout/admin-language-selector";
 
 type LogoProps = {
   href?: string;
@@ -17,13 +20,14 @@ export function Logo({
   priority = true,
   showAdminLabel = true,
 }: LogoProps) {
+  const t = useAdminText();
   const width = Math.round(height * (2045 / 769));
 
   return (
     <Link
       href={href}
       className={`inline-flex items-center gap-3 ${className}`}
-      aria-label="Afiya Shope Admin home"
+      aria-label={`Afiya Shope ${t("Admin home")}`}
     >
       <Image
         src="/images/afiyashope_logo.png"
@@ -37,7 +41,7 @@ export function Logo({
       />
       {showAdminLabel ? (
         <span className="hidden text-sm font-medium uppercase tracking-wider text-muted-foreground sm:inline">
-          Admin
+          {t("Admin")}
         </span>
       ) : null}
     </Link>

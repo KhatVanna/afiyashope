@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductImage } from "@/components/product-image";
+import { useLocaleText } from "@/components/i18n/locale-text";
 
 type ProductGalleryProps = {
   images: string[];
@@ -11,6 +12,7 @@ type ProductGalleryProps = {
 };
 
 export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
+  const t = useLocaleText();
   const gallery = images.filter((image) => typeof image === "string" && image.trim());
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -44,7 +46,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
                 key={`desk-${image}-${index}`}
                 type="button"
                 onClick={() => setActiveIndex(index)}
-                aria-label={`View image ${index + 1}`}
+                aria-label={t(`View image ${index + 1}`, `មើលរូបភាពទី ${index + 1}`)}
                 className={`relative aspect-square w-full shrink-0 overflow-hidden rounded-lg border bg-white transition ${
                   isActive
                     ? "border-foreground ring-1 ring-foreground"
@@ -93,7 +95,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
                     key={`mob-${image}-${index}`}
                     type="button"
                     onClick={() => setActiveIndex(index)}
-                    aria-label={`View image ${index + 1}`}
+                    aria-label={t(`View image ${index + 1}`, `មើលរូបភាពទី ${index + 1}`)}
                     className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border bg-white transition sm:h-20 sm:w-20 ${
                       isActive
                         ? "border-foreground ring-1 ring-foreground"
@@ -117,7 +119,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
               <button
                 type="button"
                 onClick={() => goTo(activeIndex - 1)}
-                aria-label="Previous image"
+                aria-label={t("Previous image", "រូបភាពមុន")}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -125,7 +127,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
               <button
                 type="button"
                 onClick={() => goTo(activeIndex + 1)}
-                aria-label="Next image"
+                aria-label={t("Next image", "រូបភាពបន្ទាប់")}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted"
               >
                 <ChevronRight className="h-4 w-4" />

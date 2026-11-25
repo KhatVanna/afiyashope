@@ -8,6 +8,7 @@ import { ProductGallery } from "@/components/product/product-gallery";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import type { CatalogProduct } from "@/data/demo-catalog.types";
 import { useFormatMoney } from "@/hooks/use-format-money";
+import { useLocaleText } from "@/components/i18n/locale-text";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { getProductImageUrls } from "@/lib/product-images";
@@ -18,6 +19,7 @@ type ProductDetailViewProps = {
 };
 
 export function ProductDetailView({ product, related }: ProductDetailViewProps) {
+  const t = useLocaleText();
   const formatMoney = useFormatMoney();
   const addItem = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggleItem);
@@ -54,11 +56,11 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
     <div className="apple-reveal mx-auto w-full max-w-7xl px-3 py-5 sm:px-6 sm:py-8">
       <nav className="apple-reveal__item mb-4 truncate text-xs text-muted-foreground sm:mb-6 sm:text-sm">
         <Link href="/" className="hover:text-foreground">
-          Home
+          {t("Home", "ទំព័រដើម")}
         </Link>
         <span className="mx-2">/</span>
         <Link href="/products" className="hover:text-foreground">
-          Products
+          {t("Products", "ទំនិញ")}
         </Link>
         <span className="mx-2">/</span>
         <span className="text-foreground">{product.name}</span>
@@ -98,26 +100,29 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
                   />
                 ))}
               </div>
-              <span>{product.rating?.toFixed(1) ?? "0.0"} rating</span>
+              <span>{t(
+                `${product.rating?.toFixed(1) ?? "0.0"} rating`,
+                `${product.rating?.toFixed(1) ?? "0.0"} ពិន្ទុ`
+              )}</span>
             </div>
 
             {typeof product.stockLeft === "number" ? (
               <p className="mt-3 text-sm text-accent">
                 {product.stockLeft > 0
-                  ? `In stock — only ${product.stockLeft} left`
-                  : "Out of stock"}
+                  ? t(`In stock — only ${product.stockLeft} left`, `មានក្នុងស្តុក — នៅសល់តែ ${product.stockLeft} មុខ`)
+                  : t("Out of stock", "អស់ពីស្តុក")}
               </p>
             ) : null}
 
             <div className="mt-5">
               <label className="mb-2 block text-sm font-medium" htmlFor="qty">
-                Quantity
+                {t("Quantity", "ចំនួន")}
               </label>
               <div className="inline-flex items-center rounded-lg border border-border">
                 <button
                   type="button"
                   className="px-3 py-2"
-                  aria-label="Decrease quantity"
+                  aria-label={t("Decrease quantity", "បន្ថយចំនួន")}
                   onClick={() => applyQuantity(quantity - 1)}
                 >
                   <Minus className="h-4 w-4" />
@@ -146,7 +151,7 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
                 <button
                   type="button"
                   className="px-3 py-2"
-                  aria-label="Increase quantity"
+                  aria-label={t("Increase quantity", "បង្កើនចំនួន")}
                   disabled={quantity >= maxQuantity}
                   onClick={() => applyQuantity(quantity + 1)}
                 >
@@ -161,7 +166,7 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
               className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-foreground bg-card px-4 py-3 text-sm font-semibold uppercase tracking-wide transition hover:bg-foreground hover:text-background"
             >
               <ShoppingCart className="h-4 w-4" />
-              Add to Cart
+              {t("Add to Cart", "បន្ថែមទៅកន្ត្រក")}
             </button>
 
             <button
@@ -169,7 +174,7 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
               onClick={() => addItem(product, quantity)}
               className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-[#FFC439] px-4 py-3 text-sm font-semibold text-[#003087] transition hover:brightness-95"
             >
-              Buy Now
+              {t("Buy Now", "ទិញឥឡូវនេះ")}
             </button>
 
             <button
@@ -183,22 +188,29 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
               }`}
             >
               <Heart className={`h-4 w-4 ${wishlisted ? "fill-current" : ""}`} />
-              {wishlisted ? "Saved to Wishlist" : "Add to Wishlist"}
+              {wishlisted
+                ? t("Saved to Wishlist", "បានរក្សាទុកក្នុងបញ្ជីចំណូលចិត្ត")
+                : t("Add to Wishlist", "បន្ថែមទៅបញ្ជីចំណូលចិត្ត")}
             </button>
 
             <p className="mt-4 text-sm font-medium text-foreground">
-              Free shipping on qualifying orders
+              {t(
+                "Free shipping on qualifying orders",
+                "ដឹកជញ្ជូនឥតគិតថ្លៃសម្រាប់ការបញ្ជាទិញដែលមានលក្ខខណ្ឌ"
+              )}
             </p>
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="mb-2 flex items-center gap-2 font-semibold">
               <ShieldCheck className="h-5 w-5 text-primary" />
-              Shop safely
+              {t("Shop safely", "ទិញទំនិញដោយសុវត្ថិភាព")}
             </div>
             <p className="text-sm text-muted-foreground">
-              Secure your shopping experience with trusted payment methods and easy
-              returns on eligible items.
+              {t(
+                "Secure your shopping experience with trusted payment methods and easy returns on eligible items.",
+                "ទិញទំនិញដោយមានសុវត្ថិភាពតាមរយៈវិធីបង់ប្រាក់ដែលគួរឱ្យទុកចិត្ត និងអាចប្រគល់ទំនិញវិញបានយ៉ាងងាយស្រួលតាមលក្ខខណ្ឌ។"
+              )}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {[
@@ -236,26 +248,30 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
           </h2>
           <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
             {product.description ||
-              `Experience premium quality with the ${product.name} from ${product.brand}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`}
+              t(
+                `Experience premium quality with the ${product.name} from ${product.brand}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`,
+                `ស្វែងយល់ពីគុណភាពល្អរបស់ ${product.name} ពី ${product.brand}។ រចនាឡើងសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ ជាមួយនឹងរូបរាងស្អាត និងគុណភាពជឿទុកចិត្តបាន។`
+              )}
           </p>
         </div>
 
         <div className="border-t border-border pt-8">
-          <h3 className="text-xl font-semibold text-navy">Highlights</h3>
+          <h3 className="text-xl font-semibold text-navy">{t("Highlights", "ចំណុចសំខាន់ៗ")}</h3>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
             <li>
-              <strong className="text-foreground">Trusted brand:</strong> {product.brand}
+              <strong className="text-foreground">{t("Trusted brand:", "ម៉ាកដែលគួរឱ្យទុកចិត្ត៖")}</strong> {product.brand}
             </li>
             <li>
-              <strong className="text-foreground">Customer rating:</strong>{" "}
-              {product.rating?.toFixed(1) ?? "N/A"} / 5
+              <strong className="text-foreground">{t("Customer rating:", "ការវាយតម្លៃពីអតិថិជន៖")}</strong>{" "}
+              {product.rating?.toFixed(1) ?? t("N/A", "មិនមានទិន្នន័យ")} / 5
             </li>
             <li>
-              <strong className="text-foreground">Fast delivery options</strong> available at
-              checkout
+              <strong className="text-foreground">{t("Fast delivery options", "ជម្រើសដឹកជញ្ជូនរហ័ស")}</strong>{" "}
+              {t("available at checkout", "មាននៅពេលទូទាត់")}
             </li>
             <li>
-              <strong className="text-foreground">Easy returns</strong> on eligible purchases
+              <strong className="text-foreground">{t("Easy returns", "ការប្រគល់ទំនិញវិញងាយស្រួល")}</strong>{" "}
+              {t("on eligible purchases", "សម្រាប់ការទិញដែលមានលក្ខខណ្ឌ")}
             </li>
           </ul>
         </div>
@@ -265,7 +281,7 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
         <section className="mt-14">
           <ScrollReveal variant="apple">
             <h2 className="mb-6 text-2xl font-semibold tracking-tight text-navy sm:text-3xl">
-              You might also like
+              {t("You might also like", "អ្នកប្រហែលជាចូលចិត្តទំនិញទាំងនេះផងដែរ")}
             </h2>
           </ScrollReveal>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">

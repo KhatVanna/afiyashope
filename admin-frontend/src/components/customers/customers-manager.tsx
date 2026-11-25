@@ -3,6 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Eye, Loader2, Search, X } from "lucide-react";
 import { adminApi } from "@/lib/admin-api";
+import {
+  useAdminLanguage,
+  useAdminText,
+  type AdminLanguage,
+} from "@/components/layout/admin-language-selector";
 import { useAuthStore } from "@/stores/auth-store";
 import type { AdminCustomer, CustomersListData } from "@/types/customer";
 
@@ -13,9 +18,9 @@ function money(value: number, currency = "USD") {
   }).format(value);
 }
 
-function formatDate(value: string | null | undefined) {
+function formatDate(value: string | null | undefined, language: AdminLanguage) {
   if (!value) return "—";
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(language === "km" ? "km-KH" : "en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
@@ -46,6 +51,8 @@ function statusTone(status: string) {
 }
 
 export function CustomersManager() {
+  const t = useAdminText();
+  const language = useAdminLanguage();
   const user = useAuthStore((state) => state.user);
   const roleSlugs = useMemo(
     () => user?.roles?.map((role) => role.slug) ?? [],
@@ -175,7 +182,7 @@ export function CustomersManager() {
     }
 
     setSelected(payload.data.customer);
-    setNotice(`Customer ${payload.data.customer.name} updated.`);
+    setNotice("Customer updated.");
     await loadCustomers();
   }
 
@@ -207,10 +214,10 @@ export function CustomersManager() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-800">
-          Customers
+          {t("Customers")}
         </h1>
         <p className="mt-2 text-slate-500">
-          View storefront customer accounts, addresses, and order history.
+          {t("View storefront customer accounts, addresses, and order history.")}
         </p>
       </div>
 
@@ -224,7 +231,7 @@ export function CustomersManager() {
                 setPage(1);
                 setSearch(event.target.value);
               }}
-              placeholder="Search by name, email, or phone..."
+              placeholder={t("Search by name, email, or phone...")}
               className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] pl-10 pr-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
             />
           </div>
@@ -236,24 +243,24 @@ export function CustomersManager() {
             }}
             className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
           >
-            <option value="all">All status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="all">{t("All status")}</option>
+            <option value="active">{t("Active")}</option>
+            <option value="inactive">{t("Inactive")}</option>
           </select>
           <div className="flex items-center rounded-xl bg-[#f1f9fd] px-3 text-sm text-slate-500 lg:col-span-2">
-            {meta.total.toLocaleString()} customers
+            {meta.total.toLocaleString()} {t("customers")}
           </div>
         </div>
       </section>
 
       {notice ? (
         <div className="rounded-xl border border-[#beeafa] bg-[#e2f5fc] px-4 py-3 text-sm text-[#075985]">
-          {notice}
+          {t(notice)}
         </div>
       ) : null}
       {error ? (
         <div className="rounded-xl border border-[#ffd5c8] bg-[#fdede8] px-4 py-3 text-sm text-[#c2410c]">
-          {error}
+          {t(error)}
         </div>
       ) : null}
 
@@ -262,13 +269,13 @@ export function CustomersManager() {
           <table className="min-w-full text-left text-sm">
             <thead>
               <tr className="border-b border-[#e2edf4] text-slate-400">
-                <th className="px-4 py-3 font-medium">Customer</th>
-                <th className="px-4 py-3 font-medium">Phone</th>
-                <th className="px-4 py-3 font-medium">Orders</th>
-                <th className="px-4 py-3 font-medium">Addresses</th>
-                <th className="px-4 py-3 font-medium">Joined</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 text-right font-medium">Actions</th>
+                <th className="px-4 py-3 font-medium">{t("Customer")}</th>
+                <th className="px-4 py-3 font-medium">{t("Phone")}</th>
+                <th className="px-4 py-3 font-medium">{t("Orders")}</th>
+                <th className="px-4 py-3 font-medium">{t("Addresses")}</th>
+                <th className="px-4 py-3 font-medium">{t("Joined")}</th>
+                <th className="px-4 py-3 font-medium">{t("Status")}</th>
+                <th className="px-4 py-3 text-right font-medium">{t("Actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -277,14 +284,14 @@ export function CustomersManager() {
                   <td colSpan={7} className="px-4 py-16 text-center text-slate-500">
                     <span className="inline-flex items-center gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Loading customers...
+                      {t("Loading customers...")}
                     </span>
                   </td>
                 </tr>
               ) : items.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-16 text-center text-slate-500">
-                    No customers found.
+                    {t("No customers found.")}
                   </td>
                 </tr>
               ) : (
@@ -307,7 +314,7 @@ export function CustomersManager() {
                       {customer.addresses_count ?? 0}
                     </td>
                     <td className="px-4 py-4 text-slate-600">
-                      {formatDate(customer.created_at)}
+                      {formatDate(customer.created_at, language)}
                     </td>
                     <td className="px-4 py-4">
                       {canUpdate ? (
@@ -320,7 +327,7 @@ export function CustomersManager() {
                               : "bg-[#f1f5f9] text-slate-500"
                           }`}
                         >
-                          {customer.is_active ? "Active" : "Inactive"}
+                          {customer.is_active ? t("Active") : t("Inactive")}
                         </button>
                       ) : (
                         <span
@@ -330,7 +337,7 @@ export function CustomersManager() {
                               : "bg-[#f1f5f9] text-slate-500"
                           }`}
                         >
-                          {customer.is_active ? "Active" : "Inactive"}
+                          {customer.is_active ? t("Active") : t("Inactive")}
                         </span>
                       )}
                     </td>
@@ -342,7 +349,7 @@ export function CustomersManager() {
                           className="inline-flex items-center gap-1.5 rounded-lg border border-[#d6e8f2] px-3 py-2 text-sm font-medium text-slate-600 hover:bg-[#f1f9fd]"
                         >
                           <Eye className="h-4 w-4" />
-                          View
+                          {t("View")}
                         </button>
                       </div>
                     </td>
@@ -355,7 +362,7 @@ export function CustomersManager() {
 
         <div className="flex items-center justify-between gap-3 border-t border-[#e2edf4] px-4 py-3">
           <p className="text-sm text-slate-500">
-            Page {meta.current_page} of {meta.last_page}
+            {t("Page")} {meta.current_page} {t("of")} {meta.last_page}
           </p>
           <div className="flex gap-2">
             <button
@@ -364,7 +371,7 @@ export function CustomersManager() {
               onClick={() => setPage((value) => Math.max(1, value - 1))}
               className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
-              Previous
+              {t("Previous")}
             </button>
             <button
               type="button"
@@ -372,7 +379,7 @@ export function CustomersManager() {
               onClick={() => setPage((value) => value + 1)}
               className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
-              Next
+              {t("Next")}
             </button>
           </div>
         </div>
@@ -392,7 +399,7 @@ export function CustomersManager() {
                 type="button"
                 onClick={closeDetail}
                 className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
-                aria-label="Close"
+                aria-label={t("Close")}
               >
                 <X className="h-5 w-5" />
               </button>
@@ -401,38 +408,38 @@ export function CustomersManager() {
             {detailLoading ? (
               <div className="flex items-center justify-center gap-2 px-5 py-16 text-slate-500">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Loading customer details...
+                {t("Loading customer details...")}
               </div>
             ) : (
               <div className="space-y-6 px-5 py-5">
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <InfoCard
-                    label="Orders"
+                    label={t("Orders")}
                     value={String(selected.orders_count ?? selected.orders?.length ?? 0)}
                   />
                   <InfoCard
-                    label="Addresses"
+                    label={t("Addresses")}
                     value={String(
                       selected.addresses_count ?? selected.addresses?.length ?? 0
                     )}
                   />
                   <InfoCard
-                    label="Joined"
-                    value={formatDate(selected.created_at)}
+                    label={t("Joined")}
+                    value={formatDate(selected.created_at, language)}
                   />
                   <InfoCard
-                    label="Status"
-                    value={selected.is_active ? "Active" : "Inactive"}
+                    label={t("Status")}
+                    value={selected.is_active ? t("Active") : t("Inactive")}
                   />
                 </div>
 
                 <div className="rounded-xl border border-[#e2edf4] bg-[#f1f9fd] p-4">
                   <h3 className="text-sm font-semibold text-slate-800">
-                    Account details
+                    {t("Account details")}
                   </h3>
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
                     <label className="block space-y-1.5">
-                      <span className="text-sm font-medium text-slate-700">Name</span>
+                      <span className="text-sm font-medium text-slate-700">{t("Name")}</span>
                       <input
                         value={editName}
                         disabled={!canUpdate}
@@ -441,12 +448,12 @@ export function CustomersManager() {
                       />
                       {formErrors.name?.[0] ? (
                         <span className="text-xs text-[#fa896b]">
-                          {formErrors.name[0]}
+                          {t(formErrors.name[0])}
                         </span>
                       ) : null}
                     </label>
                     <label className="block space-y-1.5">
-                      <span className="text-sm font-medium text-slate-700">Email</span>
+                      <span className="text-sm font-medium text-slate-700">{t("Email")}</span>
                       <input
                         type="email"
                         value={editEmail}
@@ -456,12 +463,12 @@ export function CustomersManager() {
                       />
                       {formErrors.email?.[0] ? (
                         <span className="text-xs text-[#fa896b]">
-                          {formErrors.email[0]}
+                          {t(formErrors.email[0])}
                         </span>
                       ) : null}
                     </label>
                     <label className="block space-y-1.5">
-                      <span className="text-sm font-medium text-slate-700">Phone</span>
+                      <span className="text-sm font-medium text-slate-700">{t("Phone")}</span>
                       <input
                         value={editPhone}
                         disabled={!canUpdate}
@@ -477,18 +484,18 @@ export function CustomersManager() {
                         onChange={(event) => setEditActive(event.target.checked)}
                         className="h-4 w-4 rounded border-slate-300 text-[#0077b6]"
                       />
-                      Active account
+                      {t("Active account")}
                     </label>
                   </div>
                 </div>
 
                 <div className="overflow-hidden rounded-xl border border-[#e2edf4]">
                   <div className="border-b border-[#e2edf4] bg-[#f1f9fd] px-4 py-3 text-sm font-semibold text-slate-700">
-                    Addresses
+                    {t("Addresses")}
                   </div>
                   {(selected.addresses ?? []).length === 0 ? (
                     <p className="px-4 py-8 text-center text-sm text-slate-500">
-                      No addresses on file.
+                      {t("No addresses on file.")}
                     </p>
                   ) : (
                     <ul className="divide-y divide-[#edf6fa]">
@@ -497,7 +504,7 @@ export function CustomersManager() {
                           <div className="flex items-start justify-between gap-3">
                             <div>
                               <p className="font-medium text-slate-800">
-                                {address.label ?? "Address"} · {address.full_name}
+                                {t(address.label ?? "Address")} · {address.full_name}
                               </p>
                               <p className="mt-1 text-slate-600">
                                 {address.line1}
@@ -512,7 +519,7 @@ export function CustomersManager() {
                             </div>
                             {address.is_default ? (
                               <span className="rounded-full bg-[#e2f5fc] px-2.5 py-1 text-xs font-semibold text-[#0077b6]">
-                                Default
+                                {t("Default")}
                               </span>
                             ) : null}
                           </div>
@@ -524,17 +531,17 @@ export function CustomersManager() {
 
                 <div className="overflow-hidden rounded-xl border border-[#e2edf4]">
                   <div className="border-b border-[#e2edf4] bg-[#f1f9fd] px-4 py-3 text-sm font-semibold text-slate-700">
-                    Recent orders
+                    {t("Recent orders")}
                   </div>
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-left text-sm">
                       <thead>
                         <tr className="border-b border-[#e2edf4] text-slate-400">
-                          <th className="px-4 py-3 font-medium">Order</th>
-                          <th className="px-4 py-3 font-medium">Placed</th>
-                          <th className="px-4 py-3 font-medium">Status</th>
-                          <th className="px-4 py-3 font-medium">Payment</th>
-                          <th className="px-4 py-3 font-medium">Total</th>
+                          <th className="px-4 py-3 font-medium">{t("Order")}</th>
+                          <th className="px-4 py-3 font-medium">{t("Placed")}</th>
+                          <th className="px-4 py-3 font-medium">{t("Status")}</th>
+                          <th className="px-4 py-3 font-medium">{t("Payment")}</th>
+                          <th className="px-4 py-3 font-medium">{t("Total")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -544,7 +551,7 @@ export function CustomersManager() {
                               colSpan={5}
                               className="px-4 py-8 text-center text-slate-500"
                             >
-                              No orders yet.
+                              {t("No orders yet.")}
                             </td>
                           </tr>
                         ) : (
@@ -557,20 +564,20 @@ export function CustomersManager() {
                                 {order.order_number}
                               </td>
                               <td className="px-4 py-3 text-slate-600">
-                                {formatDate(order.placed_at ?? order.created_at)}
+                                {formatDate(order.placed_at ?? order.created_at, language)}
                               </td>
                               <td className="px-4 py-3">
                                 <span
                                   className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${statusTone(order.status)}`}
                                 >
-                                  {order.status}
+                                  {t(order.status)}
                                 </span>
                               </td>
                               <td className="px-4 py-3">
                                 <span
                                   className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${statusTone(order.payment_status)}`}
                                 >
-                                  {order.payment_status}
+                                  {t(order.payment_status)}
                                 </span>
                               </td>
                               <td className="px-4 py-3 font-semibold text-slate-800">
@@ -590,7 +597,7 @@ export function CustomersManager() {
                     onClick={closeDetail}
                     className="rounded-xl border border-[#d6e8f2] px-4 py-2.5 text-sm font-semibold text-slate-600"
                   >
-                    Close
+                    {t("Close")}
                   </button>
                   {canUpdate ? (
                     <button
@@ -600,7 +607,7 @@ export function CustomersManager() {
                       className="inline-flex items-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                     >
                       {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                      Save changes
+                      {t("Save changes")}
                     </button>
                   ) : null}
                 </div>
@@ -614,9 +621,10 @@ export function CustomersManager() {
 }
 
 function InfoCard({ label, value }: { label: string; value: string }) {
+  const t = useAdminText();
   return (
     <div className="rounded-xl border border-[#e2edf4] bg-[#f1f9fd] px-4 py-3">
-      <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
+      <p className="text-xs uppercase tracking-wide text-slate-400">{t(label)}</p>
       <p className="mt-1 font-semibold text-slate-800">{value}</p>
     </div>
   );

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useLocaleText } from "@/components/i18n/locale-text";
 
 type LogoProps = {
   href?: string;
@@ -14,13 +17,14 @@ export function Logo({
   height = 40,
   priority = true,
 }: LogoProps) {
+  const t = useLocaleText();
   const width = Math.round(height * (2045 / 769));
 
   return (
     <Link
       href={href}
       className={`inline-flex items-center ${className}`}
-      aria-label="Afiya Shope home"
+      aria-label={t("Afiya Shope home", "ទំព័រដើម Afiya Shope")}
     >
       <Image
         src="/images/afiyashope_logo.png"

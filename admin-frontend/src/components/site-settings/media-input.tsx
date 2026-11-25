@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useId, useState, type ChangeEvent } from "react";
 import { Loader2, Upload, X } from "lucide-react";
+import { useAdminText } from "@/components/layout/admin-language-selector";
 import type { SiteMediaKind } from "@/lib/site-settings-api";
 
 type MediaType = "image" | "video";
@@ -74,6 +75,7 @@ export function MediaInput({
     onUploaded: (url: string) => void
   ) => void;
 }) {
+  const t = useAdminText();
   const generatedId = useId();
   const [mode, setMode] = useState<InputMode>("upload");
   const [clientError, setClientError] = useState<string | null>(null);
@@ -132,17 +134,17 @@ export function MediaInput({
 
   return (
     <section
-      aria-label={label}
+      aria-label={t(label)}
       className="min-w-0 space-y-3 rounded-xl border border-[#d6e8f2] bg-white p-3"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h4 className="text-sm font-semibold text-slate-800">
-          {label}
-          {optional ? <span className="ml-1 font-normal text-slate-400">(optional)</span> : null}
+          {t(label)}
+          {optional ? <span className="ml-1 font-normal text-slate-400">({t("optional")})</span> : null}
         </h4>
         <div
           role="radiogroup"
-          aria-label={`${label} input method`}
+          aria-label={`${t(label)} ${t("input method")}`}
           className="inline-flex rounded-lg bg-slate-100 p-1"
         >
           {([
@@ -164,7 +166,7 @@ export function MediaInput({
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              {caption}
+              {t(caption)}
             </button>
           ))}
         </div>
@@ -182,7 +184,7 @@ export function MediaInput({
           ) : (
             <Upload className="h-4 w-4" aria-hidden="true" />
           )}
-          {uploading ? "Uploading..." : "Choose a file"}
+          {uploading ? t("Uploading...") : t("Choose a file")}
           <input
             id={inputId}
             type="file"
@@ -195,7 +197,7 @@ export function MediaInput({
       ) : (
         <div>
           <label htmlFor={`${inputId}-url`} className="sr-only">
-            {label} HTTPS URL
+            {t(label)} HTTPS URL
           </label>
           <input
             id={`${inputId}-url`}
@@ -214,7 +216,7 @@ export function MediaInput({
             }`}
           />
           <p id={`${inputId}-hint`} className="mt-1.5 text-xs text-slate-500">
-            YouTube/Facebook links will not work as background. Use a direct file link.
+            {t("YouTube/Facebook links will not work as background. Use a direct file link.")}
           </p>
         </div>
       )}
@@ -233,7 +235,7 @@ export function MediaInput({
           ) : (
             <Image
               src={previewSrc}
-              alt={`${label} preview`}
+              alt={`${t(label)} ${t("preview")}`}
               fill
               unoptimized
               sizes="(max-width: 768px) 100vw, 600px"
@@ -241,7 +243,7 @@ export function MediaInput({
             />
           )}
           <span className="absolute left-2 top-2 rounded-full bg-slate-900/75 px-2 py-1 text-[11px] font-semibold text-white">
-            {mediaType === "video" ? "Video" : mediaType === "image" ? "Image" : "Unsupported"}
+            {mediaType === "video" ? t("Video") : mediaType === "image" ? t("Image") : t("Unsupported")}
           </span>
           <button
             type="button"
@@ -252,24 +254,24 @@ export function MediaInput({
             className="absolute right-2 top-2 inline-flex min-h-8 items-center gap-1 rounded-full bg-white/95 px-2.5 text-xs font-semibold text-slate-700 shadow hover:bg-white"
           >
             <X className="h-3.5 w-3.5" aria-hidden="true" />
-            Remove
+            {t("Remove")}
           </button>
         </div>
       ) : (
         <p className="rounded-lg bg-slate-50 px-3 py-4 text-center text-xs text-slate-500">
-          {optional ? "No media selected (optional)." : "Select or link media before saving."}
+          {optional ? t("No media selected (optional).") : t("Select or link media before saving.")}
         </p>
       )}
 
       <p className="text-xs text-slate-500">
-        Images: 5 MB max · Videos: 15 MB max
+        {t("Images")}: 5 MB {t("max")} · {t("Videos")}: 15 MB {t("max")}
       </p>
       <p
         id={`${inputId}-error`}
         role={fieldError ? "alert" : undefined}
         className={`text-xs ${fieldError ? "text-red-700" : "sr-only"}`}
       >
-        {fieldError ?? ""}
+        {fieldError ? t(fieldError) : ""}
       </p>
     </section>
   );

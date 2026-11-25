@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import {
+  getLanguageName,
   REGION_PRESETS,
   useRegionStore,
+  useRegionLanguage,
 } from "@/stores/region-store";
 
 type RegionSelectorProps = {
@@ -23,11 +25,14 @@ export function RegionSelector({
   const hydrated = useRegionStore((state) => state.hydrated);
   const hydrate = useRegionStore((state) => state.hydrate);
   const setRegionId = useRegionStore((state) => state.setRegionId);
+  const displayLanguage = useRegionLanguage();
+  const isKhmer = displayLanguage === "KM";
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
   const current =
     REGION_PRESETS.find((preset) => preset.id === regionId) ?? REGION_PRESETS[0];
+  const currentLanguageName = getLanguageName(current.language, displayLanguage);
 
   useEffect(() => {
     hydrate();
@@ -66,7 +71,7 @@ export function RegionSelector({
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={`Language: ${current.languageLabel}`}
+        aria-label={`${isKhmer ? "ភាសា" : "Language"}: ${currentLanguageName}`}
         onClick={() => setOpen((value) => !value)}
         className={
           isHeader
@@ -83,7 +88,7 @@ export function RegionSelector({
           className="h-4 w-6 rounded-sm object-cover"
         />
         <span className={compact ? "sr-only" : ""}>
-          {hydrated ? current.languageLabel : "English"}
+          {hydrated ? currentLanguageName : getLanguageName(current.language, displayLanguage)}
         </span>
         <ChevronDown
           className={`h-3.5 w-3.5 transition ${
@@ -95,7 +100,7 @@ export function RegionSelector({
       {open ? (
         <div
           role="listbox"
-          aria-label="Language selection"
+          aria-label={isKhmer ? "ការជ្រើសរើសភាសា" : "Language selection"}
           className={
             isHeader
               ? "absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
@@ -108,11 +113,12 @@ export function RegionSelector({
             }`}
           >
             <p
+              lang={isKhmer ? "km" : "en"}
               className={`text-[11px] font-semibold uppercase tracking-wide ${
                 isHeader ? "text-muted-foreground" : "text-zinc-500"
               }`}
             >
-              Language / ភាសា
+              {isKhmer ? "ភាសា" : "Language"}
             </p>
           </div>
           <ul className="max-h-72 overflow-y-auto p-1.5">
@@ -145,8 +151,11 @@ export function RegionSelector({
                       className="mt-0.5 h-4 w-6 rounded-sm object-cover"
                     />
                     <span className="min-w-0 flex-1">
-                      <span className="block text-sm font-medium">
-                        {preset.languageLabel}
+                      <span
+                        lang={isKhmer ? "km" : "en"}
+                        className="block text-sm font-medium"
+                      >
+                        {getLanguageName(preset.language, displayLanguage)}
                       </span>
                     </span>
                     {selected ? (

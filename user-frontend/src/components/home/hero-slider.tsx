@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { siFacebook } from "simple-icons";
 import type { PublicSiteBanner } from "@/lib/site-content-api";
+import { useRegionLanguage } from "@/stores/region-store";
 
 const FALLBACK_BANNER: PublicSiteBanner = {
   id: 0,
@@ -39,6 +40,7 @@ function mediaTypeFor(url: string, fallback: PublicSiteBanner["media_type"]) {
 }
 
 export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
+  const isKhmer = useRegionLanguage() === "KM";
   const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
   const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
   const [playing, setPlaying] = useState(true);
@@ -62,10 +64,11 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
       : banner.text_align === "right"
         ? "items-end text-right"
         : "items-start text-left";
-  const headline = banner.headline_km || banner.headline_en;
-  const eyebrow = banner.eyebrow_en || banner.eyebrow_km;
-  const subtitle = banner.subtitle_km || banner.subtitle_en;
-  const buttonText = banner.button_text_km || banner.button_text_en;
+  const headline = isKhmer ? banner.headline_km : banner.headline_en;
+  const eyebrow = isKhmer ? banner.eyebrow_km : banner.eyebrow_en;
+  const subtitle = isKhmer ? banner.subtitle_km : banner.subtitle_en;
+  const buttonText = isKhmer ? banner.button_text_km : banner.button_text_en;
+  const textLanguage = isKhmer ? "km" : "en";
   const buttonUrl = banner.button_url || "";
   const externalButton = /^https:\/\//i.test(buttonUrl);
 
@@ -120,7 +123,9 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
           playsInline
           preload="metadata"
           onError={() => setMediaErrorKey(mediaKey)}
-          aria-label="Afiya Shope promotional video"
+          aria-label={
+            isKhmer ? "វីដេអូផ្សព្វផ្សាយរបស់ Afiya Shope" : "Afiya Shope promotional video"
+          }
           className="absolute inset-0 h-full w-full object-cover"
         />
       );
@@ -144,7 +149,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
   return (
     <section
       aria-roledescription={hasCarousel ? "carousel" : undefined}
-      aria-label="Storefront hero"
+      aria-label={isKhmer ? "ផ្ទាំងផ្សព្វផ្សាយចម្បង" : "Storefront hero"}
       className="relative isolate min-h-[28rem] overflow-hidden bg-[#21A8D8] text-white sm:min-h-[32rem] lg:min-h-[36rem]"
     >
       <div className="absolute inset-0 hidden sm:block">
@@ -161,17 +166,17 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
 
       <div className={`relative mx-auto flex min-h-[28rem] w-full max-w-7xl flex-col justify-center px-4 py-16 sm:min-h-[32rem] sm:px-6 lg:min-h-[36rem] lg:py-24 ${align}`}>
         {eyebrow ? (
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">
+          <p lang={textLanguage} className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">
             {eyebrow}
           </p>
         ) : null}
         {headline ? (
-          <h1 className="max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 lang={textLanguage} className="max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
             {headline}
           </h1>
         ) : null}
         {subtitle ? (
-          <p className="mt-4 max-w-xl text-base text-zinc-200 sm:text-lg">
+          <p lang={textLanguage} className="mt-4 max-w-xl text-base text-zinc-200 sm:text-lg">
             {subtitle}
           </p>
         ) : null}
@@ -179,6 +184,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
           <div className="mt-8">
             <Link
               href={buttonUrl}
+              lang={textLanguage}
               target={externalButton ? "_blank" : undefined}
               rel={externalButton ? "noopener noreferrer" : undefined}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wide text-primary-foreground transition hover:opacity-90"
@@ -198,7 +204,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
         <>
           <button
             type="button"
-            aria-label="Previous banner"
+            aria-label={isKhmer ? "ផ្ទាំងមុន" : "Previous banner"}
             onClick={() =>
               setSlideIndex((current) => (current + slides.length - 1) % slides.length)
             }
@@ -208,7 +214,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
           </button>
           <button
             type="button"
-            aria-label="Next banner"
+            aria-label={isKhmer ? "ផ្ទាំងបន្ទាប់" : "Next banner"}
             onClick={() => setSlideIndex((current) => (current + 1) % slides.length)}
             className="absolute right-3 top-1/2 z-10 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-slate-950/45 text-white hover:bg-slate-950/70 sm:right-6"
           >
@@ -222,7 +228,11 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
 
       <button
         type="button"
-        aria-label={playing ? "Pause banner" : "Play banner"}
+        aria-label={
+          isKhmer
+            ? playing ? "ផ្អាកផ្ទាំងផ្សព្វផ្សាយ" : "ចាក់ផ្ទាំងផ្សព្វផ្សាយ"
+            : playing ? "Pause banner" : "Play banner"
+        }
         onClick={() => setPlaying((value) => !value)}
         className="absolute bottom-4 right-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-zinc-900 shadow-lg transition hover:bg-zinc-100 sm:bottom-6 sm:right-6"
       >

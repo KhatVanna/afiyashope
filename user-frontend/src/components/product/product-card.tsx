@@ -8,6 +8,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { ProductImage } from "@/components/product-image";
 import { getProductImageUrls } from "@/lib/product-images";
+import { useLocaleText } from "@/components/i18n/locale-text";
 
 type ProductCardProps = {
   product: CatalogProduct;
@@ -15,6 +16,7 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
+  const t = useLocaleText();
   const formatMoney = useFormatMoney();
   const addItem = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggleItem);
@@ -45,10 +47,12 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
         {productImages.length > 0 ? (
           <span
-            aria-label={`${productImages.length} photos`}
+            aria-label={
+              t(`${productImages.length} photos`, `${productImages.length} រូប`)
+            }
             className="absolute bottom-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm"
           >
-            {productImages.length} photos
+            {t(`${productImages.length} photos`, `${productImages.length} រូប`)}
           </span>
         ) : null}
 
@@ -62,8 +66,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           type="button"
           aria-label={
             wishlisted
-              ? `Remove ${product.name} from wishlist`
-              : `Save ${product.name} to wishlist`
+              ? t(`Remove ${product.name} from wishlist`, `ដក ${product.name} ចេញពីបញ្ជីចំណូលចិត្ត`)
+              : t(`Save ${product.name} to wishlist`, `រក្សាទុក ${product.name} ក្នុងបញ្ជីចំណូលចិត្ត`)
           }
           aria-pressed={wishlisted}
           onClick={(event) => {
@@ -92,7 +96,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {typeof product.stockLeft === "number" && product.stockLeft <= 15 ? (
           <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#fce7f3] px-2.5 py-1 text-xs font-medium text-accent dark:bg-[#4a1532]/40">
             <span className="h-1.5 w-1.5 rounded-full bg-error" />
-            Only {product.stockLeft} left
+            {t(`Only ${product.stockLeft} left`, `នៅសល់តែ ${product.stockLeft} មុខ`)}
           </span>
         ) : (
           <span className="h-6" />
@@ -114,7 +118,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           onClick={() => addItem(product)}
           className="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-foreground bg-card px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-foreground transition hover:bg-foreground hover:text-background"
         >
-          + Cart
+          {t("+ Cart", "បន្ថែមទៅកន្ត្រក")}
         </button>
       </div>
     </article>

@@ -4,6 +4,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchCategories } from "@/lib/catalog-api";
 import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
 import { ProductImage } from "@/components/product-image";
+import { LocaleText } from "@/components/i18n/locale-text";
 
 export const metadata: Metadata = {
   title: "Categories",
@@ -18,17 +19,24 @@ export default async function CategoriesPage() {
       <ScrollReveal>
         <nav className="mb-4 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">
-            Home
+            <LocaleText en="Home" km="ទំព័រដើម" />
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-foreground">Categories</span>
+          <span className="text-foreground">
+            <LocaleText en="Categories" km="ប្រភេទទំនិញ" />
+          </span>
         </nav>
       </ScrollReveal>
 
       <ScrollReveal delay={40}>
-        <h1 className="text-3xl font-semibold tracking-tight text-navy">Categories</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-navy">
+          <LocaleText en="Categories" km="ប្រភេទទំនិញ" />
+        </h1>
         <p className="mt-2 text-muted-foreground">
-          Find the right collection for everyday life and premium upgrades.
+          <LocaleText
+            en="Find the right collection for everyday life and premium upgrades."
+            km="ស្វែងរកម៉ូដដែលស័ក្តិសមសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ និងឱកាសពិសេស។"
+          />
         </p>
       </ScrollReveal>
 
@@ -55,7 +63,10 @@ export default async function CategoriesPage() {
               <div className="p-4">
                 <h2 className="text-lg font-semibold">{category.name}</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {category.productCount} products
+                  <LocaleText
+                    en={`${category.productCount} products`}
+                    km={`${category.productCount} មុខ`}
+                  />
                 </p>
               </div>
             </Link>

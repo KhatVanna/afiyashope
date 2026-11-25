@@ -13,27 +13,30 @@ import {
 import { Logo } from "@/components/logo";
 import { RegionSelector } from "@/components/layout/region-selector";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useRegionLanguage } from "@/stores/region-store";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 
 const departmentLinks = [
-  { label: "ពណ៌ Pastel", href: "/products?tag=pastel" },
-  { label: "ម៉ូដប្រណិត", href: "/products?tag=luxury" },
-  { label: "ឈុតពេញ", href: "/products?tag=set" },
+  { labelEn: "Pastel Colors", labelKm: "ពណ៌ប៉ាស្តែល", href: "/products?tag=pastel" },
+  { labelEn: "Luxury Styles", labelKm: "ម៉ូដប្រណិត", href: "/products?tag=luxury" },
+  { labelEn: "Matching Sets", labelKm: "ឈុតពេញ", href: "/products?tag=set" },
 ];
 
 const exploreLinks = [
-  { label: "Shop All", href: "/products" },
-  { label: "Categories", href: "/categories" },
-  { label: "New Arrivals", href: "/products?sort=latest" },
-  { label: "Blog & News", href: "/blog" },
-  { label: "Contact", href: "/contact" },
+  { labelEn: "Shop All", labelKm: "ទិញទំនិញទាំងអស់", href: "/products" },
+  { labelEn: "Categories", labelKm: "ប្រភេទទំនិញ", href: "/categories" },
+  { labelEn: "New Arrivals", labelKm: "ម៉ូដថ្មី", href: "/products?sort=latest" },
+  { labelEn: "Blog & News", labelKm: "ព័ត៌មាន និងអត្ថបទ", href: "/blog" },
+  { labelEn: "Contact", labelKm: "ទំនាក់ទំនង", href: "/contact" },
 ];
 
 const iconButtonClass =
   "relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted sm:h-10 sm:w-10";
 
 export function SiteHeader() {
+  const language = useRegionLanguage();
+  const isKhmer = language === "KM";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const openCart = useCartStore((state) => state.openCart);
@@ -55,18 +58,23 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 bg-background shadow-sm">
       <div className="bg-[#21A8D8] text-white">
         <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-center gap-2 px-3 text-center text-[11px] sm:px-6 sm:text-xs">
-          <span className="hidden font-semibold tracking-[0.16em] text-white sm:inline">
-            សួស្តីមិត្តភក្តិ
+          <span lang={isKhmer ? "km" : "en"} className="hidden font-semibold tracking-[0.16em] text-white sm:inline">
+            {isKhmer ? "សូមស្វាគមន៍មកកាន់ Afiya Shope" : "Welcome to Afiya Shope"}
           </span>
           <span className="hidden text-white/50 sm:inline" aria-hidden="true">
             |
           </span>
-          <span>NEW COLLECTION 2026 • ២៥ ខេត្ត-ក្រុង</span>
+          <span lang={isKhmer ? "km" : "en"}>
+            {isKhmer
+              ? "ការប្រមូលថ្មី ២០២៦ • ២៥ ខេត្ត-ក្រុង"
+              : "NEW COLLECTION 2026 • 25 Provinces & Cities"}
+          </span>
           <Link
             href="/products"
+            lang={isKhmer ? "km" : "en"}
             className="font-semibold text-white underline decoration-[#F9318D] underline-offset-2 hover:text-[#F9318D]"
           >
-            មើលម៉ូដ
+            {isKhmer ? "ទិញឥឡូវនេះ" : "Shop now"}
           </Link>
         </div>
       </div>
@@ -77,7 +85,7 @@ export function SiteHeader() {
             <button
               type="button"
               className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted lg:hidden"
-              aria-label="Open menu"
+              aria-label={isKhmer ? "បើកម៉ឺនុយ" : "Open menu"}
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen(true)}
             >
@@ -85,7 +93,8 @@ export function SiteHeader() {
             </button>
 
             <nav
-              aria-label="Shop departments"
+              aria-label={isKhmer ? "ទិញតាមប្រភេទ" : "Shop departments"}
+              lang={isKhmer ? "km" : "en"}
               className="hidden items-center gap-5 lg:flex xl:gap-7"
             >
               {departmentLinks.map((link) => (
@@ -94,16 +103,13 @@ export function SiteHeader() {
                   href={link.href}
                   className="whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-foreground transition hover:text-primary xl:text-sm"
                 >
-                  {link.label}
+                  {isKhmer ? link.labelKm : link.labelEn}
                 </Link>
               ))}
             </nav>
           </div>
 
-          <Logo
-            height={38}
-            className="justify-self-center"
-          />
+          <Logo height={50} className="justify-self-center" />
 
           <div className="flex min-w-0 items-center justify-end gap-0.5 sm:gap-1.5">
             <form
@@ -112,21 +118,22 @@ export function SiteHeader() {
               className="hidden h-10 w-48 items-center overflow-hidden rounded-full border border-border bg-background focus-within:border-primary xl:flex"
             >
               <label className="sr-only" htmlFor="desktop-site-search">
-                Search products
+                {isKhmer ? "ស្វែងរកទំនិញ" : "Search products"}
               </label>
               <input
                 id="desktop-site-search"
+                lang={isKhmer ? "km" : "en"}
                 name="q"
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="ស្វែងរកម៉ូដ Abaya..."
+                placeholder={isKhmer ? "ស្វែងរកម៉ូដអាបាយ៉ា..." : "Search Abayas..."}
                 className="h-full min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground"
               />
               <button
                 type="submit"
                 className="inline-flex h-full w-10 shrink-0 items-center justify-center text-muted-foreground transition hover:text-primary"
-                aria-label="Search"
+                aria-label={isKhmer ? "ស្វែងរក" : "Search"}
               >
                 <Search className="h-4 w-4" />
               </button>
@@ -146,9 +153,11 @@ export function SiteHeader() {
               href="/wishlist"
               className={`${iconButtonClass} hidden sm:inline-flex`}
               aria-label={
-                wishlistCount > 0
-                  ? `Wishlist, ${wishlistCount} items`
-                  : "Wishlist"
+                isKhmer
+                  ? `បញ្ជីចំណូលចិត្ត${wishlistCount > 0 ? `, ${wishlistCount} មុខ` : ""}`
+                  : wishlistCount > 0
+                    ? `Wishlist, ${wishlistCount} items`
+                    : "Wishlist"
               }
             >
               <Heart className="h-5 w-5" />
@@ -162,7 +171,7 @@ export function SiteHeader() {
             <Link
               href="/account"
               className={`${iconButtonClass} hidden md:inline-flex`}
-              aria-label="Account"
+              aria-label={isKhmer ? "គណនី" : "Account"}
             >
               <User className="h-5 w-5" />
             </Link>
@@ -172,7 +181,11 @@ export function SiteHeader() {
               onClick={openCart}
               className={iconButtonClass}
               aria-label={
-                itemCount > 0 ? `Open cart, ${itemCount} items` : "Open cart"
+                isKhmer
+                  ? `បើកកន្ត្រក${itemCount > 0 ? `, ${itemCount} មុខ` : ""}`
+                  : itemCount > 0
+                    ? `Open cart, ${itemCount} items`
+                    : "Open cart"
               }
             >
               <ShoppingBag className="h-5 w-5" />
@@ -191,21 +204,22 @@ export function SiteHeader() {
           className="flex items-center gap-2 border-t border-border px-3 py-2 xl:hidden sm:px-6"
         >
           <label className="sr-only" htmlFor="mobile-site-search">
-            Search products
+            {isKhmer ? "ស្វែងរកទំនិញ" : "Search products"}
           </label>
           <input
             id="mobile-site-search"
+            lang={isKhmer ? "km" : "en"}
             name="q"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="ស្វែងរកម៉ូដ Abaya..."
+            placeholder={isKhmer ? "ស្វែងរកម៉ូដអាបាយ៉ា..." : "Search Abayas..."}
             className="h-9 min-w-0 flex-1 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-primary"
           />
           <button
             type="submit"
             className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition hover:opacity-90"
-            aria-label="Search"
+            aria-label={isKhmer ? "ស្វែងរក" : "Search"}
           >
             <Search className="h-4 w-4" />
           </button>
@@ -213,7 +227,7 @@ export function SiteHeader() {
       </div>
 
       <nav
-        aria-label="Main navigation"
+        aria-label={isKhmer ? "ម៉ឺនុយចម្បង" : "Main navigation"}
         className="hidden border-b border-border bg-card lg:block"
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-8 px-6 py-2.5">
@@ -223,14 +237,14 @@ export function SiteHeader() {
               href={link.href}
               className="text-xs font-medium text-muted-foreground transition hover:text-primary"
             >
-              {link.label}
+              {isKhmer ? link.labelKm : link.labelEn}
             </Link>
           ))}
           <Link
             href="/products?sort=offers"
             className="text-xs font-semibold text-accent transition hover:opacity-75"
           >
-            Sale
+            {isKhmer ? "បញ្ចុះតម្លៃ" : "Sale"}
           </Link>
         </div>
       </nav>
@@ -240,7 +254,7 @@ export function SiteHeader() {
           <button
             type="button"
             className="absolute inset-0 bg-black/50"
-            aria-label="Close menu overlay"
+            aria-label={isKhmer ? "បិទផ្ទាំងម៉ឺនុយ" : "Close menu overlay"}
             onClick={() => setMobileOpen(false)}
           />
           <aside className="absolute left-0 top-0 flex h-full w-[min(88vw,22rem)] flex-col bg-card shadow-xl">
@@ -250,7 +264,7 @@ export function SiteHeader() {
                 type="button"
                 onClick={() => setMobileOpen(false)}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition hover:bg-muted"
-                aria-label="Close menu"
+                aria-label={isKhmer ? "បិទម៉ឺនុយ" : "Close menu"}
               >
                 <X className="h-4 w-4" />
               </button>
@@ -258,7 +272,7 @@ export function SiteHeader() {
 
             <nav className="flex flex-col gap-1 overflow-y-auto p-4">
               <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                Shop by department
+                {isKhmer ? "ទិញតាមប្រភេទ" : "Shop by department"}
               </p>
               {departmentLinks.map((link) => (
                 <Link
@@ -267,7 +281,7 @@ export function SiteHeader() {
                   onClick={() => setMobileOpen(false)}
                   className="rounded-lg px-3 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted hover:text-primary"
                 >
-                  {link.label}
+                  {isKhmer ? link.labelKm : link.labelEn}
                 </Link>
               ))}
 
@@ -280,7 +294,7 @@ export function SiteHeader() {
                   onClick={() => setMobileOpen(false)}
                   className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
                 >
-                  {link.label}
+                  {isKhmer ? link.labelKm : link.labelEn}
                 </Link>
               ))}
               <Link
@@ -288,14 +302,14 @@ export function SiteHeader() {
                 onClick={() => setMobileOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm font-semibold text-accent transition hover:bg-muted"
               >
-                Sale
+                {isKhmer ? "បញ្ចុះតម្លៃ" : "Sale"}
               </Link>
               <Link
                 href="/account"
                 onClick={() => setMobileOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
               >
-                My Account
+                {isKhmer ? "គណនីរបស់ខ្ញុំ" : "My Account"}
               </Link>
             </nav>
 

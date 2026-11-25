@@ -6,6 +6,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/logo";
+import {
+  AdminLanguageSelector,
+  useAdminText,
+} from "@/components/layout/admin-language-selector";
 import { useAuthStore } from "@/stores/auth-store";
 
 const loginSchema = z.object({
@@ -16,6 +20,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function AdminLoginPage() {
+  const t = useAdminText();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
@@ -72,7 +77,7 @@ export function AdminLoginPage() {
   if (user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="text-sm text-muted-foreground">Redirecting to dashboard...</p>
+        <p className="text-sm text-muted-foreground">{t("Redirecting to dashboard...")}</p>
       </div>
     );
   }
@@ -82,21 +87,24 @@ export function AdminLoginPage() {
       <header className="border-b border-[#d6e8f2] bg-white">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <Logo height={44} />
-          <span className="text-sm text-slate-400">Staff access only</span>
+          <div className="flex items-center gap-3">
+            <AdminLanguageSelector />
+            <span className="text-sm text-slate-400">{t("Staff access only")}</span>
+          </div>
         </div>
       </header>
 
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 py-16 sm:px-6">
         <section className="mx-auto w-full max-w-md rounded-2xl border border-white bg-white p-8 shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-800">Admin sign in</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-800">{t("Admin sign in")}</h1>
           <p className="mt-2 text-sm text-slate-500">
-            Super Admin, Admin, and Staff only. Customer accounts cannot sign in here.
+            {t("Super Admin, Admin, and Staff only. Customer accounts cannot sign in here.")}
           </p>
 
           <form className="mt-8 space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
             <div>
               <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">
-                Email
+                {t("Email")}
               </label>
               <input
                 id="email"
@@ -106,13 +114,13 @@ export function AdminLoginPage() {
                 {...register("email")}
               />
               {errors.email ? (
-                <p className="mt-1 text-xs text-[#fa896b]">{errors.email.message}</p>
+                <p className="mt-1 text-xs text-[#fa896b]">{t(errors.email.message ?? "")}</p>
               ) : null}
             </div>
 
             <div>
               <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-slate-700">
-                Password
+                {t("Password")}
               </label>
               <input
                 id="password"
@@ -122,13 +130,13 @@ export function AdminLoginPage() {
                 {...register("password")}
               />
               {errors.password ? (
-                <p className="mt-1 text-xs text-[#fa896b]">{errors.password.message}</p>
+                <p className="mt-1 text-xs text-[#fa896b]">{t(errors.password.message ?? "")}</p>
               ) : null}
             </div>
 
             {errors.root ? (
               <p className="rounded-xl bg-[#fdede8] px-3 py-2 text-sm text-[#fa896b]">
-                {errors.root.message}
+                {t(errors.root.message ?? "")}
               </p>
             ) : null}
 
@@ -137,7 +145,7 @@ export function AdminLoginPage() {
               disabled={isSubmitting}
               className="inline-flex w-full items-center justify-center rounded-xl bg-[#0077b6] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-cyan-700/20 disabled:opacity-60"
             >
-              {isSubmitting ? "Signing in..." : "Sign in"}
+              {isSubmitting ? t("Signing in...") : t("Sign in")}
             </button>
           </form>
 

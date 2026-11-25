@@ -1,15 +1,16 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { ProductCard } from "@/components/product/product-card";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
 import type { CatalogProduct } from "@/data/demo-catalog.types";
 
 type ProductSectionProps = {
-  title: string;
-  subtitle?: string;
+  title: ReactNode;
+  subtitle?: ReactNode;
   products: CatalogProduct[];
   href?: string;
-  ctaLabel?: string;
+  ctaLabel?: ReactNode;
   staggerCards?: boolean;
   error?: boolean;
 };

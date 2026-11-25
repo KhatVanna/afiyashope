@@ -17,6 +17,7 @@ import {
   uploadProductImageToCloudinary,
 } from "@/lib/cloudinary-upload";
 import { useAuthStore } from "@/stores/auth-store";
+import { useAdminText } from "@/components/layout/admin-language-selector";
 import type {
   AdminProduct,
   CatalogOption,
@@ -109,6 +110,7 @@ function toPayload(form: ProductFormValues) {
 }
 
 export function ProductsManager() {
+  const t = useAdminText();
   const user = useAuthStore((state) => state.user);
   const roleSlugs = useMemo(
     () => user?.roles?.map((role) => role.slug) ?? [],
@@ -291,7 +293,7 @@ export function ProductsManager() {
   async function onDelete(product: AdminProduct) {
     if (
       !window.confirm(
-        `Delete “${product.name}”? This soft-deletes the product from the catalog.`
+        `${t("Delete")} “${product.name}”? ${t("This soft-deletes the product from the catalog.")}`
       )
     ) {
       return;
@@ -342,10 +344,10 @@ export function ProductsManager() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-800">
-            Products
+            {t("Products")}
           </h1>
           <p className="mt-2 text-slate-500">
-            Manage the Afiya Shope catalog, inventory levels, pricing, and visibility.
+            {t("Manage the Afiya Shope catalog, inventory levels, pricing, and visibility.")}
           </p>
         </div>
         {canManage ? (
@@ -355,7 +357,7 @@ export function ProductsManager() {
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-cyan-700/20"
           >
             <Plus className="h-4 w-4" />
-            Add product
+            {t("Add product")}
           </button>
         ) : null}
       </div>
@@ -370,7 +372,7 @@ export function ProductsManager() {
                 setPage(1);
                 setSearch(event.target.value);
               }}
-              placeholder="Search by name, SKU, or slug..."
+              placeholder={t("Search by name, SKU, or slug...")}
               className="h-11 w-full rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] pl-10 pr-3 text-sm outline-none focus:border-[#0077b6] focus:bg-white"
             />
           </div>
@@ -382,7 +384,7 @@ export function ProductsManager() {
             }}
             className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
           >
-            <option value="">All categories</option>
+            <option value="">{t("All categories")}</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -397,24 +399,24 @@ export function ProductsManager() {
             }}
             className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-2"
           >
-            <option value="all">All status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="all">{t("All status")}</option>
+            <option value="active">{t("Active")}</option>
+            <option value="inactive">{t("Inactive")}</option>
           </select>
           <div className="flex items-center rounded-xl bg-[#f1f9fd] px-3 text-sm text-slate-500 lg:col-span-2">
-            {meta.total.toLocaleString()} products
+            {meta.total.toLocaleString()} {t("products")}
           </div>
         </div>
       </section>
 
       {notice ? (
         <div className="rounded-xl border border-[#beeafa] bg-[#e2f5fc] px-4 py-3 text-sm text-[#075985]">
-          {notice}
+          {t(notice)}
         </div>
       ) : null}
       {error ? (
         <div className="rounded-xl border border-[#ffd5c8] bg-[#fdede8] px-4 py-3 text-sm text-[#c2410c]">
-          {error}
+          {t(error)}
         </div>
       ) : null}
 
@@ -423,15 +425,15 @@ export function ProductsManager() {
           <table className="min-w-full text-left text-sm">
             <thead>
               <tr className="border-b border-[#e2edf4] text-slate-400">
-                <th className="px-4 py-3 font-medium">Product</th>
-                <th className="px-4 py-3 font-medium">SKU</th>
-                <th className="px-4 py-3 font-medium">Category</th>
-                <th className="px-4 py-3 font-medium">Price</th>
-                <th className="px-4 py-3 font-medium">Stock</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Featured</th>
+                <th className="px-4 py-3 font-medium">{t("Product")}</th>
+                <th className="px-4 py-3 font-medium">{t("SKU")}</th>
+                <th className="px-4 py-3 font-medium">{t("Category")}</th>
+                <th className="px-4 py-3 font-medium">{t("Price")}</th>
+                <th className="px-4 py-3 font-medium">{t("Stock")}</th>
+                <th className="px-4 py-3 font-medium">{t("Status")}</th>
+                <th className="px-4 py-3 font-medium">{t("Featured")}</th>
                 {canManage ? (
-                  <th className="px-4 py-3 text-right font-medium">Actions</th>
+                  <th className="px-4 py-3 text-right font-medium">{t("Actions")}</th>
                 ) : null}
               </tr>
             </thead>
@@ -444,7 +446,7 @@ export function ProductsManager() {
                   >
                     <span className="inline-flex items-center gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Loading products...
+                      {t("Loading products...")}
                     </span>
                   </td>
                 </tr>
@@ -454,7 +456,7 @@ export function ProductsManager() {
                     colSpan={canManage ? 8 : 7}
                     className="px-4 py-16 text-center text-slate-500"
                   >
-                    No products found.
+                    {t("No products found.")}
                   </td>
                 </tr>
               ) : (
@@ -514,7 +516,7 @@ export function ProductsManager() {
                               : "bg-[#f1f5f9] text-slate-500"
                           }`}
                         >
-                          {product.is_active ? "Active" : "Inactive"}
+                          {product.is_active ? t("Active") : t("Inactive")}
                         </button>
                       ) : (
                         <span
@@ -524,7 +526,7 @@ export function ProductsManager() {
                               : "bg-[#f1f5f9] text-slate-500"
                           }`}
                         >
-                          {product.is_active ? "Active" : "Inactive"}
+                          {product.is_active ? t("Active") : t("Inactive")}
                         </span>
                       )}
                     </td>
@@ -532,10 +534,10 @@ export function ProductsManager() {
                       {product.is_featured ? (
                         <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#0077b6]">
                           <Check className="h-3.5 w-3.5" />
-                          Yes
+                          {t("Yes")}
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-400">No</span>
+                        <span className="text-xs text-slate-400">{t("No")}</span>
                       )}
                     </td>
                     {canManage ? (
@@ -545,7 +547,7 @@ export function ProductsManager() {
                             type="button"
                             onClick={() => openEdit(product)}
                             className="rounded-lg border border-[#d6e8f2] p-2 text-slate-600 hover:bg-[#f1f9fd]"
-                            aria-label={`Edit ${product.name}`}
+                            aria-label={`${t("Edit")} ${product.name}`}
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
@@ -554,7 +556,7 @@ export function ProductsManager() {
                             onClick={() => void onDelete(product)}
                             disabled={deletingId === product.id}
                             className="rounded-lg border border-[#ffd5c8] p-2 text-[#fa896b] hover:bg-[#fdede8] disabled:opacity-50"
-                            aria-label={`Delete ${product.name}`}
+                            aria-label={`${t("Delete")} ${product.name}`}
                           >
                             {deletingId === product.id ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
@@ -574,7 +576,7 @@ export function ProductsManager() {
 
         <div className="flex items-center justify-between gap-3 border-t border-[#e2edf4] px-4 py-3">
           <p className="text-sm text-slate-500">
-            Page {meta.current_page} of {meta.last_page}
+            {t("Page")} {meta.current_page} {t("of")} {meta.last_page}
           </p>
           <div className="flex gap-2">
             <button
@@ -583,7 +585,7 @@ export function ProductsManager() {
               onClick={() => setPage((value) => Math.max(1, value - 1))}
               className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
-              Previous
+              {t("Previous")}
             </button>
             <button
               type="button"
@@ -591,7 +593,7 @@ export function ProductsManager() {
               onClick={() => setPage((value) => value + 1)}
               className="rounded-lg border border-[#d6e8f2] px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40"
             >
-              Next
+              {t("Next")}
             </button>
           </div>
         </div>
@@ -603,17 +605,17 @@ export function ProductsManager() {
             <div className="flex items-center justify-between border-b border-[#e2edf4] px-5 py-4">
               <div>
                 <h2 className="text-lg font-semibold text-slate-800">
-                  {editing ? "Edit product" : "Add product"}
+                  {editing ? t("Edit product") : t("Add product")}
                 </h2>
                 <p className="text-sm text-slate-500">
-                  Fill in catalog details, pricing, and stock.
+                  {t("Fill in catalog details, pricing, and stock.")}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={closeModal}
                 className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
-                aria-label="Close"
+                aria-label={t("Close")}
               >
                 <X className="h-5 w-5" />
               </button>
@@ -625,7 +627,7 @@ export function ProductsManager() {
                   <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
                     <ProductImage
                       src={imagePreview}
-                      alt="Product preview"
+                      alt={t("Product preview")}
                       fill
                       className="object-cover"
                       sizes="112px"
@@ -633,10 +635,10 @@ export function ProductsManager() {
                   </div>
                   <div className="min-w-0 flex-1 space-y-2">
                     <p className="text-sm font-medium text-slate-700">
-                      Product image (Cloudinary)
+                      {t("Product image (Cloudinary)")}
                     </p>
                     <p className="text-xs text-slate-500">
-                      JPG, PNG, or WebP. Uploads to your Cloudinary cloud{" "}
+                      {t("JPG, PNG, or WebP. Uploads to your Cloudinary cloud")}{" "}
                       <span className="font-semibold">Afiya Shope</span>.
                     </p>
                     <input
@@ -653,7 +655,7 @@ export function ProductsManager() {
                         onClick={() => onImageSelected(null)}
                         className="text-xs font-medium text-[#fa896b]"
                       >
-                        Clear selected file
+                        {t("Clear selected file")}
                       </button>
                     ) : null}
                   </div>
@@ -699,7 +701,7 @@ export function ProductsManager() {
                         slug: event.target.value,
                       }))
                     }
-                    placeholder="Auto-generated if empty"
+                    placeholder={t("Auto-generated if empty")}
                     className={inputClass}
                   />
                 </Field>
@@ -782,7 +784,7 @@ export function ProductsManager() {
                     }
                     className={inputClass}
                   >
-                    <option value="">No category</option>
+                    <option value="">{t("No category")}</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}
@@ -801,7 +803,7 @@ export function ProductsManager() {
                     }
                     className={inputClass}
                   >
-                    <option value="">No brand</option>
+                    <option value="">{t("No brand")}</option>
                     {brands.map((brand) => (
                       <option key={brand.id} value={brand.id}>
                         {brand.name}
@@ -905,7 +907,7 @@ export function ProductsManager() {
                   onClick={closeModal}
                   className="rounded-xl border border-[#d6e8f2] px-4 py-2.5 text-sm font-semibold text-slate-600"
                 >
-                  Cancel
+                  {t("Cancel")}
                 </button>
                 <button
                   type="submit"
@@ -913,7 +915,7 @@ export function ProductsManager() {
                   className="inline-flex items-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                 >
                   {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                  {editing ? "Save changes" : "Create product"}
+                  {editing ? t("Save changes") : t("Create product")}
                 </button>
               </div>
             </form>
@@ -936,11 +938,12 @@ function Field({
   error?: string;
   children: React.ReactNode;
 }) {
+  const t = useAdminText();
   return (
     <label className="block space-y-1.5">
-      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <span className="text-sm font-medium text-slate-700">{t(label)}</span>
       {children}
-      {error ? <span className="block text-xs text-[#fa896b]">{error}</span> : null}
+      {error ? <span className="block text-xs text-[#fa896b]">{t(error)}</span> : null}
     </label>
   );
 }
@@ -954,6 +957,7 @@ function Toggle({
   checked: boolean;
   onChange: (checked: boolean) => void;
 }) {
+  const t = useAdminText();
   return (
     <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700">
       <input
@@ -962,7 +966,7 @@ function Toggle({
         onChange={(event) => onChange(event.target.checked)}
         className="h-4 w-4 rounded border-slate-300 text-[#0077b6]"
       />
-      {label}
+      {t(label)}
     </label>
   );
 }

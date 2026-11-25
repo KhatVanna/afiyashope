@@ -90,9 +90,13 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Kantumruy Pro", "Battambang", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   overflow-x: hidden;
   min-width: 0;
+}
+
+:lang(km) {
+  font-family: var(--font-kantumruy-pro), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Logo-only splash loader */

@@ -43,22 +43,160 @@
 }
 
 .dark {
-  --background: #071225;
-  --foreground: #eaf7fd;
-  --card: #0e1e38;
-  --card-foreground: #eaf7fd;
-  --primary: #20b6e8;
+  color-scheme: dark;
+  --background: #0f0f10;
+  --foreground: #f5f5f5;
+  --card: #171717;
+  --card-foreground: #f5f5f5;
+  --primary: #21a8d8;
   --primary-foreground: #071a2c;
-  --secondary: #102747;
-  --secondary-foreground: #eaf7fd;
-  --accent: #f04491;
-  --accent-foreground: #071225;
-  --muted: #142b48;
-  --muted-foreground: #a4bfd0;
+  --secondary: #202020;
+  --secondary-foreground: #f5f5f5;
+  --accent: #f9318d;
+  --accent-foreground: #ffffff;
+  --muted: #202020;
+  --muted-foreground: #b8b8b8;
   --success: #22c55e;
   --error: #f87171;
-  --border: #24415d;
-  --navy: #c8efff;
+  --border: #333333;
+  --navy: #21a8d8;
+}
+
+.dark [class~="bg-white"],
+.dark [class~="bg-white/90"],
+.dark [class~="bg-white/80"],
+.dark [class~="bg-white/95"] {
+  background-color: var(--card) !important;
+}
+
+.dark [class~="bg-[#f5fbff]"] {
+  background-color: var(--background) !important;
+}
+
+.dark [class~="bg-[#f1f9fd]"],
+.dark [class~="bg-[#eaf6fc]"],
+.dark [class~="bg-[#edf6fa]"],
+.dark [class~="bg-[#e2edf4]"],
+.dark [class~="bg-[#f1f5f9]"],
+.dark [class~="bg-[#f8fbff]"],
+.dark [class~="bg-[#f7fbfd]"],
+.dark [class~="bg-[#eff9fe]"],
+.dark [class~="bg-slate-100"],
+.dark [class~="bg-slate-50"],
+.dark [class~="bg-gray-50"] {
+  background-color: var(--muted) !important;
+}
+
+.dark [class~="bg-[#e2f5fc]"] {
+  background-color: #123542 !important;
+}
+
+.dark [class~="bg-[#0077b6]"] {
+  background-color: #147da1 !important;
+}
+
+.dark [class~="bg-[#005d92]"] {
+  background-color: #105f7a !important;
+}
+
+.dark [class~="bg-[#fdede8]"] {
+  background-color: #3a2421 !important;
+}
+
+.dark [class~="bg-[#fde7f3]"] {
+  background-color: #3a1c30 !important;
+}
+
+.dark [class~="bg-amber-50"],
+.dark [class~="bg-amber-50/95"] {
+  background-color: #352c18 !important;
+}
+
+.dark [class~="hover:bg-slate-50"]:hover,
+.dark [class~="hover:bg-slate-100"]:hover,
+.dark [class~="hover:bg-white"]:hover,
+.dark [class~="hover:bg-[#e2f5fc]"]:hover,
+.dark [class~="hover:bg-[#f1f9fd]"]:hover,
+.dark [class~="hover:bg-[#eff9fe]"]:hover {
+  background-color: #26333a !important;
+}
+
+.dark [class~="text-slate-900"],
+.dark [class~="text-slate-800"],
+.dark [class~="text-slate-700"],
+.dark [class~="text-[#0b1b3a]"] {
+  color: var(--foreground) !important;
+}
+
+.dark [class~="text-slate-600"],
+.dark [class~="text-slate-500"],
+.dark [class~="text-slate-400"] {
+  color: var(--muted-foreground) !important;
+}
+
+.dark [class~="text-[#0077b6]"],
+.dark [class~="text-[#075985]"],
+.dark [class~="text-[#00679e]"],
+.dark [class~="text-[#0da9d6]"] {
+  color: #7bdafa !important;
+}
+
+.dark [class~="text-[#c21868]"] {
+  color: #ff78b6 !important;
+}
+
+.dark [class~="text-[#9a3412]"] {
+  color: #ffb59d !important;
+}
+
+.dark [class~="text-amber-900"],
+.dark [class~="text-amber-800"] {
+  color: #ffdd8a !important;
+}
+
+.dark [class~="hover:text-[#0077b6]"]:hover {
+  color: #7bdafa !important;
+}
+
+.dark .dashboard-welcome {
+  background-image: linear-gradient(to right, #123542, #171717, #0f0f10);
+}
+
+.dark [class~="border-[#d6e8f2]"],
+.dark [class~="border-[#e2edf4]"],
+.dark [class~="border-[#edf6fa]"],
+.dark [class~="border-[#d9eff7]"],
+.dark [class~="border-[#d7e3f4]"] {
+  border-color: var(--border) !important;
+}
+
+.dark [class~="border-[#beeafa]"],
+.dark [class~="border-[#b8d9eb]"],
+.dark [class~="border-[#bfd7e5]"] {
+  border-color: #285466 !important;
+}
+
+.dark [class~="border-[#ffd5c8]"] {
+  border-color: #6a3931 !important;
+}
+
+.dark [class~="border-amber-200"],
+.dark [class~="border-amber-100"] {
+  border-color: #6f5a2c !important;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+  border-color: var(--border);
+  background-color: var(--muted);
+  color: var(--foreground);
+  color-scheme: dark;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--muted-foreground);
 }
 
 * {
@@ -69,4 +207,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+:lang(km) {
+  font-family: var(--font-kantumruy-pro), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }

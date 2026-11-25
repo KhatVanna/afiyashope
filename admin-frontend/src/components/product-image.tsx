@@ -2,13 +2,14 @@
 
 import Image, { type ImageProps } from "next/image";
 import { useState } from "react";
+import { useAdminText } from "@/components/layout/admin-language-selector";
 
 type ProductImageProps = Omit<ImageProps, "src" | "onError"> & {
   src?: string | null;
   compact?: boolean;
 };
 
-const EMPTY_IMAGE_LABEL = "មិនទាន់មានរូបភាព";
+const EMPTY_IMAGE_LABEL = "No image available";
 
 export function ProductImage({
   src,
@@ -20,6 +21,7 @@ export function ProductImage({
   unoptimized,
   ...imageProps
 }: ProductImageProps) {
+  const t = useAdminText();
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const imageSrc = typeof src === "string" ? src.trim() : "";
 
@@ -27,7 +29,7 @@ export function ProductImage({
     return (
       <div
         role="img"
-        aria-label={EMPTY_IMAGE_LABEL}
+        aria-label={t(EMPTY_IMAGE_LABEL)}
         className={`absolute inset-0 flex flex-col items-center justify-center gap-2 overflow-hidden border border-slate-200 bg-slate-100 p-2 text-slate-400 ${className ?? ""}`}
       >
         <svg
@@ -46,7 +48,7 @@ export function ProductImage({
         </svg>
         {!compact ? (
           <span className="text-center text-[10px] leading-tight text-slate-500 sm:text-xs">
-            {EMPTY_IMAGE_LABEL}
+            {t(EMPTY_IMAGE_LABEL)}
           </span>
         ) : null}
       </div>

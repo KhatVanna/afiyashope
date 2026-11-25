@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchBlogPostBySlug } from "@/lib/blog-api";
+import { LocaleText } from "@/components/i18n/locale-text";
 
 type BlogDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -40,11 +41,11 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       <ScrollReveal>
         <nav className="mb-4 truncate text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">
-            Home
+            <LocaleText en="Home" km="ទំព័រដើម" />
           </Link>
           <span className="mx-2">/</span>
           <Link href="/blog" className="hover:text-foreground">
-            Blog & News
+            <LocaleText en="Blog & News" km="ព័ត៌មាន និងអត្ថបទ" />
           </Link>
           <span className="mx-2">/</span>
           <span className="text-foreground">{post.title}</span>
@@ -71,7 +72,9 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-navy sm:text-4xl">
             {post.title}
           </h1>
-          <p className="mt-3 text-sm text-muted-foreground">By {post.authorName}</p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            <LocaleText en={`By ${post.authorName}`} km={`ដោយ ${post.authorName}`} />
+          </p>
         </ScrollReveal>
 
         <ScrollReveal delay={90} className="mt-8">
@@ -105,7 +108,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         <section className="mx-auto mt-16 max-w-5xl">
           <ScrollReveal>
             <h2 className="mb-6 text-2xl font-semibold tracking-tight text-navy">
-              More articles
+              <LocaleText en="More articles" km="អត្ថបទផ្សេងទៀត" />
             </h2>
           </ScrollReveal>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

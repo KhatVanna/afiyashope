@@ -9,7 +9,6 @@ export type RegionPreset = {
   currency: "USD" | "KHR";
   currencySymbol: string;
   language: "EN" | "KM";
-  languageLabel: string;
   locale: string;
   flagSrc: string;
 };
@@ -22,7 +21,6 @@ export const REGION_PRESETS: RegionPreset[] = [
     currency: "USD",
     currencySymbol: "USD $",
     language: "EN",
-    languageLabel: "English",
     locale: "en-US",
     flagSrc: "/flags/gb.svg",
   },
@@ -33,7 +31,6 @@ export const REGION_PRESETS: RegionPreset[] = [
     currency: "KHR",
     currencySymbol: "KHR ៛",
     language: "KM",
-    languageLabel: "ខ្មែរ",
     locale: "km-KH",
     flagSrc: "/flags/kh.svg",
   },
@@ -83,6 +80,21 @@ export const useRegionStore = create<RegionState>((set, get) => ({
   },
   region: () => findPreset(get().regionId),
 }));
+
+export function useRegionLanguage() {
+  const regionId = useRegionStore((state) => state.regionId);
+  return findPreset(regionId).language;
+}
+
+export function getLanguageName(
+  language: RegionPreset["language"],
+  displayLanguage: RegionPreset["language"]
+) {
+  if (displayLanguage === "KM") {
+    return language === "KM" ? "ខ្មែរ" : "អង់គ្លេស";
+  }
+  return language === "KM" ? "Khmer" : "English";
+}
 
 export function getRegionLabel(preset: RegionPreset) {
   return `${preset.country} (${preset.currencySymbol}, ${preset.language})`;

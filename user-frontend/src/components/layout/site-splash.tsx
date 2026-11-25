@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useLocaleText } from "@/components/i18n/locale-text";
 
 const STORAGE_KEY = "v2005-splash-seen";
 const MIN_VISIBLE_MS = 1500;
 const FADE_MS = 480;
 
 export function SiteSplash() {
+  const t = useLocaleText();
   const [visible, setVisible] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
@@ -70,7 +72,7 @@ export function SiteSplash() {
       className={`site-splash ${leaving ? "site-splash--leave" : ""}`}
       role="status"
       aria-live="polite"
-      aria-label="Loading Afiya Shope"
+      aria-label={t("Loading Afiya Shope", "កំពុងផ្ទុក Afiya Shope")}
     >
       <div className="site-splash__mark" aria-hidden>
         <span className="site-splash__ring" />

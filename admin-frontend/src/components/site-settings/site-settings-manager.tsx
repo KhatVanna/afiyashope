@@ -25,6 +25,11 @@ import {
 } from "react";
 import { useAuthStore } from "@/stores/auth-store";
 import {
+  useAdminText,
+  useAdminLanguage,
+  type AdminLanguage,
+} from "@/components/layout/admin-language-selector";
+import {
   detectMediaType,
   getMediaLinkError,
   MediaInput,
@@ -162,6 +167,8 @@ function emptyBanner(): SiteBanner {
 }
 
 export function SiteSettingsManager() {
+  const t = useAdminText();
+  const language = useAdminLanguage();
   const user = useAuthStore((state) => state.user);
   const canManage = useMemo(
     () =>
@@ -478,7 +485,7 @@ export function SiteSettingsManager() {
     if (!banner) return;
     if (
       banner.id !== null &&
-      !window.confirm("Delete this banner? Its uploaded media will be kept.")
+      !window.confirm(t("Delete this banner? Its uploaded media will be kept."))
     ) {
       return;
     }
@@ -531,9 +538,9 @@ export function SiteSettingsManager() {
   if (!canManage) {
     return (
       <section className="rounded-2xl border border-white bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-800">Site Settings</h1>
+        <h1 className="text-2xl font-semibold text-slate-800">{t("Site Settings")}</h1>
         <p className="mt-2 text-sm text-slate-500">
-          Only Admin and Super Admin roles can manage site settings.
+          {t("Only Admin and Super Admin roles can manage site settings.")}
         </p>
       </section>
     );
@@ -546,14 +553,13 @@ export function SiteSettingsManager() {
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0077b6]">
-            Storefront controls
+            {t("Storefront controls")}
           </p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-800">
-            Site Settings
+            {t("Site Settings")}
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-slate-500">
-            Manage the banners, branding, contact details, footer, and SEO shown
-            on the public store.
+            {t("Manage the banners, branding, contact details, footer, and SEO shown on the public store.")}
           </p>
         </div>
         {tab !== "banners" ? (
@@ -568,7 +574,7 @@ export function SiteSettingsManager() {
             ) : (
               <Save className="h-4 w-4" aria-hidden="true" />
             )}
-            {saving ? "Saving..." : "Save changes"}
+            {saving ? t("Saving...") : t("Save changes")}
           </button>
         ) : null}
       </header>
@@ -580,7 +586,7 @@ export function SiteSettingsManager() {
           className="flex items-center gap-2 rounded-xl border border-[#beeafa] bg-[#e2f5fc] px-4 py-3 text-sm text-[#075985]"
         >
           <Check className="h-4 w-4 shrink-0" aria-hidden="true" />
-          {notice}
+          {t(notice)}
         </p>
       ) : null}
       {error ? (
@@ -588,14 +594,14 @@ export function SiteSettingsManager() {
           role="alert"
           className="flex items-start justify-between gap-3 rounded-xl border border-[#ffd5c8] bg-[#fdede8] px-4 py-3 text-sm text-[#9a3412]"
         >
-          <p>{error}</p>
+          <p>{t(error)}</p>
           {loading ? null : (
             <button
               type="button"
               onClick={() => void load()}
               className="shrink-0 font-semibold underline underline-offset-2"
             >
-              Retry
+              {t("Retry")}
             </button>
           )}
         </div>
@@ -604,7 +610,7 @@ export function SiteSettingsManager() {
       <div className="rounded-2xl border border-[#dcecf4] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
         <div
           role="tablist"
-          aria-label="Site settings sections"
+          aria-label={t("Site settings sections")}
           onKeyDown={onTabKeyDown}
           className="flex gap-1 overflow-x-auto border-b border-[#e2edf4] px-3 pt-3 sm:px-5"
         >
@@ -624,7 +630,7 @@ export function SiteSettingsManager() {
                   : "border-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-800"
               }`}
             >
-              {item.label}
+              {t(item.label)}
               {item.id === tab && dirty ? (
                 <span className="ml-2 inline-block h-1.5 w-1.5 rounded-full bg-amber-500 align-middle" />
               ) : null}
@@ -641,21 +647,21 @@ export function SiteSettingsManager() {
           {loading ? (
             <div className="flex min-h-72 items-center justify-center gap-2 text-sm text-slate-500">
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              Loading site settings...
+              {t("Loading site settings...")}
             </div>
           ) : error && banners.length === 0 ? (
             <p className="py-12 text-center text-sm text-slate-500">
-              Site settings are unavailable until the API responds.
+              {t("Site settings are unavailable until the API responds.")}
             </p>
           ) : tab === "banners" ? (
             <div className="space-y-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="text-xl font-semibold text-slate-800">
-                    Hero banners
+                    {t("Hero banners")}
                   </h2>
                   <p className="mt-1 text-sm text-slate-500">
-                    Reorder, schedule, and preview the storefront hero banners.
+                    {t("Reorder, schedule, and preview the storefront hero banners.")}
                   </p>
                 </div>
                 <button
@@ -669,7 +675,7 @@ export function SiteSettingsManager() {
                   className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-[#b8d9eb] px-3 py-2 text-sm font-semibold text-[#0077b6] transition hover:bg-[#f1f9fd]"
                 >
                   <Plus className="h-4 w-4" aria-hidden="true" />
-                  Add banner
+                  {t("Add banner")}
                 </button>
               </div>
               {Object.keys(bannerFieldErrors).length > 0 ? (
@@ -684,6 +690,7 @@ export function SiteSettingsManager() {
                 <div className="space-y-5">
                   <BannerList
                     banners={banners}
+                    language={language}
                     selectedIndex={selectedBanner}
                     draggedIndex={draggedIndex}
                     onSelect={setSelectedBanner}
@@ -697,6 +704,7 @@ export function SiteSettingsManager() {
                   {activeBanner ? (
                     <BannerEditor
                       banner={activeBanner}
+                      language={language}
                       index={selectedBanner}
                       bannerCount={banners.length}
                       uploading={uploading}
@@ -714,11 +722,13 @@ export function SiteSettingsManager() {
                     />
                   ) : (
                     <div className="rounded-xl border border-dashed border-[#cbdde8] p-8 text-center text-sm text-slate-500">
-                      No banners yet. Add one to configure the storefront hero.
+                      {t("No banners yet. Add one to configure the storefront hero.")}
                     </div>
                   )}
                 </div>
-                {activeBanner ? <BannerPreview banner={activeBanner} /> : null}
+                {activeBanner ? (
+                  <BannerPreview banner={activeBanner} language={language} />
+                ) : null}
               </div>
             </div>
           ) : (
@@ -739,8 +749,7 @@ export function SiteSettingsManager() {
             role="status"
             className="border-t border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-800 sm:px-6"
           >
-            You have unsaved changes. Use Save changes in each edited section
-            before leaving the page.
+            {t("You have unsaved changes. Use Save changes in each edited section before leaving the page.")}
           </div>
         ) : null}
       </div>
@@ -750,7 +759,7 @@ export function SiteSettingsManager() {
           className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/95 px-4 py-3 shadow-lg backdrop-blur"
         >
           <span className="text-sm font-semibold text-amber-900">
-            Unsaved changes
+            {t("Unsaved changes")}
           </span>
           <div className="flex items-center gap-2">
             <button
@@ -760,7 +769,7 @@ export function SiteSettingsManager() {
               className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-[#b8d9eb] bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
             >
               <RotateCcw className="h-4 w-4" aria-hidden="true" />
-              Discard
+              {t("Discard")}
             </button>
             <button
               type="button"
@@ -773,7 +782,7 @@ export function SiteSettingsManager() {
               ) : (
                 <Save className="h-4 w-4" aria-hidden="true" />
               )}
-              {saving ? "Saving..." : "Save banners"}
+              {saving ? t("Saving...") : t("Save banners")}
             </button>
           </div>
         </div>
@@ -804,6 +813,7 @@ function SettingsEditor({
     onUploaded: (url: string) => void
   ) => void;
 }) {
+  const t = useAdminText();
   if (tab === "branding") {
     const branding = settings.branding;
     return (
@@ -858,8 +868,7 @@ function SettingsEditor({
           </div>
         </div>
         <p className="rounded-xl bg-[#f1f9fd] p-3 text-xs leading-relaxed text-slate-500">
-          Brand colors are saved for later use; they will only affect storefront
-          areas that already support theming.
+          {t("Brand colors are saved for later use; they will only affect storefront areas that already support theming.")}
         </p>
       </div>
     );
@@ -882,9 +891,9 @@ function SettingsEditor({
           <TextField label="Instagram URL" type="url" value={contact.instagram_url} onChange={(value) => onChange("contact", "instagram_url", value)} />
           <TextField label="TikTok URL" type="url" value={contact.tiktok_url} onChange={(value) => onChange("contact", "tiktok_url", value)} />
           <TextField label="Telegram channel URL" type="url" value={contact.telegram_url} onChange={(value) => onChange("contact", "telegram_url", value)} />
-          <TextAreaField label="Address (Khmer)" value={contact.address_km} onChange={(value) => onChange("contact", "address_km", value)} />
+          <TextAreaField lang="km" label="Address (Khmer)" value={contact.address_km} onChange={(value) => onChange("contact", "address_km", value)} />
           <TextAreaField label="Address (English)" value={contact.address_en} onChange={(value) => onChange("contact", "address_en", value)} />
-          <TextAreaField label="Business hours (Khmer)" value={contact.business_hours_km} onChange={(value) => onChange("contact", "business_hours_km", value)} />
+          <TextAreaField lang="km" label="Business hours (Khmer)" value={contact.business_hours_km} onChange={(value) => onChange("contact", "business_hours_km", value)} />
           <TextAreaField label="Business hours (English)" value={contact.business_hours_en} onChange={(value) => onChange("contact", "business_hours_en", value)} />
         </div>
       </div>
@@ -907,12 +916,12 @@ function SettingsEditor({
           description="Edit the about text, link groups, payment options, and copyright."
         />
         <div className="grid gap-4 md:grid-cols-2">
-          <TextAreaField label="About text (Khmer)" value={footer.about_km} onChange={(value) => onChange("footer", "about_km", value)} />
+          <TextAreaField lang="km" label="About text (Khmer)" value={footer.about_km} onChange={(value) => onChange("footer", "about_km", value)} />
           <TextAreaField label="About text (English)" value={footer.about_en} onChange={(value) => onChange("footer", "about_en", value)} />
         </div>
         <section className="space-y-3 rounded-xl border border-[#e2edf4] p-4">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold text-slate-800">Quick links</h3>
+            <h3 className="font-semibold text-slate-800">{t("Quick links")}</h3>
             <button
               type="button"
               onClick={() =>
@@ -924,24 +933,24 @@ function SettingsEditor({
               className="inline-flex min-h-9 items-center gap-1 rounded-lg px-2 text-sm font-semibold text-[#0077b6] hover:bg-[#f1f9fd]"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
-              Add link
+              {t("Add link")}
             </button>
           </div>
           {footer.quick_links.map((link, index) => (
             <div key={`${index}-${link.url}`} className="grid gap-3 rounded-lg bg-[#f7fbfd] p-3 md:grid-cols-[1fr_1fr_1.2fr_auto]">
-              <TextField id={`footer-link-${index}-km`} label="Label (Khmer)" value={link.label_km} onChange={(value) => onChange("footer", "quick_links", footer.quick_links.map((item, i) => i === index ? { ...item, label_km: value } : item))} />
+              <TextField id={`footer-link-${index}-km`} lang="km" label="Label (Khmer)" value={link.label_km} onChange={(value) => onChange("footer", "quick_links", footer.quick_links.map((item, i) => i === index ? { ...item, label_km: value } : item))} />
               <TextField id={`footer-link-${index}-en`} label="Label (English)" value={link.label_en} onChange={(value) => onChange("footer", "quick_links", footer.quick_links.map((item, i) => i === index ? { ...item, label_en: value } : item))} />
               <TextField id={`footer-link-${index}-url`} label="URL" value={link.url} onChange={(value) => onChange("footer", "quick_links", footer.quick_links.map((item, i) => i === index ? { ...item, url: value } : item))} />
               <div className="flex items-end gap-1 pb-1">
-                <button type="button" aria-label={`Move quick link ${index + 1} up`} disabled={index === 0} onClick={() => onChange("footer", "quick_links", moveItem(footer.quick_links, index, index - 1))} className="rounded-lg p-2 text-slate-500 hover:bg-white disabled:opacity-40"><ArrowUp className="h-4 w-4" /></button>
-                <button type="button" aria-label={`Move quick link ${index + 1} down`} disabled={index === footer.quick_links.length - 1} onClick={() => onChange("footer", "quick_links", moveItem(footer.quick_links, index, index + 1))} className="rounded-lg p-2 text-slate-500 hover:bg-white disabled:opacity-40"><ArrowDown className="h-4 w-4" /></button>
-                <button type="button" aria-label={`Remove quick link ${index + 1}`} onClick={() => onChange("footer", "quick_links", footer.quick_links.filter((_, i) => i !== index))} className="rounded-lg p-2 text-rose-600 hover:bg-rose-50"><Trash2 className="h-4 w-4" /></button>
+                <button type="button" aria-label={`${t("Move quick link")} ${index + 1} ${t("up")}`} disabled={index === 0} onClick={() => onChange("footer", "quick_links", moveItem(footer.quick_links, index, index - 1))} className="rounded-lg p-2 text-slate-500 hover:bg-white disabled:opacity-40"><ArrowUp className="h-4 w-4" /></button>
+                <button type="button" aria-label={`${t("Move quick link")} ${index + 1} ${t("down")}`} disabled={index === footer.quick_links.length - 1} onClick={() => onChange("footer", "quick_links", moveItem(footer.quick_links, index, index + 1))} className="rounded-lg p-2 text-slate-500 hover:bg-white disabled:opacity-40"><ArrowDown className="h-4 w-4" /></button>
+                <button type="button" aria-label={`${t("Remove quick link")} ${index + 1}`} onClick={() => onChange("footer", "quick_links", footer.quick_links.filter((_, i) => i !== index))} className="rounded-lg p-2 text-rose-600 hover:bg-rose-50"><Trash2 className="h-4 w-4" /></button>
               </div>
             </div>
           ))}
         </section>
         <section className="space-y-4 rounded-xl border border-[#e2edf4] p-4">
-          <h3 className="font-semibold text-slate-800">Policy links</h3>
+          <h3 className="font-semibold text-slate-800">{t("Policy links")}</h3>
           <div className="grid gap-4 md:grid-cols-2">
             {(["privacy", "returns", "shipping", "terms"] as const).map((key) => (
               <TextField key={key} label={policyLabel(key)} value={footer.policy_links[key]} onChange={(value) => onChange("footer", "policy_links", { ...footer.policy_links, [key]: value })} />
@@ -949,7 +958,7 @@ function SettingsEditor({
           </div>
         </section>
         <section className="space-y-3 rounded-xl border border-[#e2edf4] p-4">
-          <h3 className="font-semibold text-slate-800">Payment methods</h3>
+          <h3 className="font-semibold text-slate-800">{t("Payment methods")}</h3>
           <div className="flex flex-wrap gap-2">
             {paymentMethods.map(([key, label]) => (
               <label key={key} className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-[#d6e8f2] px-3 text-sm text-slate-700">
@@ -959,14 +968,14 @@ function SettingsEditor({
                   onChange={(event) => onChange("footer", "payment_methods", { ...footer.payment_methods, [key]: event.target.checked })}
                   className="h-4 w-4 rounded border-slate-300 text-[#0077b6] focus:ring-[#0077b6]"
                 />
-                <span>{label}</span>
+                <span>{t(label)}</span>
               </label>
             ))}
           </div>
-          <p className="text-xs text-slate-500">The storefront uses its bundled local payment icons.</p>
+          <p className="text-xs text-slate-500">{t("The storefront uses its bundled local payment icons.")}</p>
         </section>
         <div className="grid gap-4 md:grid-cols-2">
-          <TextField label="Copyright (Khmer)" value={footer.copyright_km} onChange={(value) => onChange("footer", "copyright_km", value)} />
+          <TextField lang="km" label="Copyright (Khmer)" value={footer.copyright_km} onChange={(value) => onChange("footer", "copyright_km", value)} />
           <TextField label="Copyright (English)" value={footer.copyright_en} onChange={(value) => onChange("footer", "copyright_en", value)} />
         </div>
       </div>
@@ -981,9 +990,9 @@ function SettingsEditor({
         description="Set page metadata and social sharing defaults."
       />
       <div className="grid gap-4 md:grid-cols-2">
-        <TextField label="Site title (Khmer)" value={seo.site_title_km} onChange={(value) => onChange("seo", "site_title_km", value)} />
+        <TextField lang="km" label="Site title (Khmer)" value={seo.site_title_km} onChange={(value) => onChange("seo", "site_title_km", value)} />
         <TextField label="Site title (English)" value={seo.site_title_en} onChange={(value) => onChange("seo", "site_title_en", value)} />
-        <TextAreaField label="Meta description (Khmer)" value={seo.meta_description_km} onChange={(value) => onChange("seo", "meta_description_km", value)} />
+        <TextAreaField lang="km" label="Meta description (Khmer)" value={seo.meta_description_km} onChange={(value) => onChange("seo", "meta_description_km", value)} />
         <TextAreaField label="Meta description (English)" value={seo.meta_description_en} onChange={(value) => onChange("seo", "meta_description_en", value)} />
         <div className="md:col-span-2">
           <MediaPicker
@@ -1021,6 +1030,7 @@ function SettingsEditor({
 
 function BannerList({
   banners,
+  language,
   selectedIndex,
   draggedIndex,
   onSelect,
@@ -1029,6 +1039,7 @@ function BannerList({
   onDragEnd,
 }: {
   banners: SiteBanner[];
+  language: AdminLanguage;
   selectedIndex: number;
   draggedIndex: number | null;
   onSelect: (index: number) => void;
@@ -1036,16 +1047,17 @@ function BannerList({
   onDrop: (index: number) => void;
   onDragEnd: () => void;
 }) {
+  const t = useAdminText();
   if (banners.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-[#cbdde8] p-5 text-sm text-slate-500">
-        No banners have been created.
+        {t("No banners have been created.")}
       </p>
     );
   }
 
   return (
-    <ul className="space-y-2" aria-label="Banner order">
+    <ul className="space-y-2" aria-label={t("Banner order")}>
       {banners.map((banner, index) => (
         <li
           key={banner.id ?? `new-${index}`}
@@ -1078,12 +1090,13 @@ function BannerList({
               onClick={() => onSelect(index)}
               className="min-w-0 flex-1 text-left"
             >
-              <span className="block truncate text-sm font-semibold text-slate-800">
-                {banner.headline_en || banner.headline_km || `Banner ${index + 1}`}
+              <span lang={language} className="block truncate text-sm font-semibold text-slate-800">
+                {(language === "km" ? banner.headline_km : banner.headline_en) ||
+                  (language === "km" ? `បដាទី ${index + 1}` : `Banner ${index + 1}`)}
               </span>
               <span className="mt-0.5 block text-xs text-slate-500">
-                {banner.media_type === "video" ? "Video" : "Image"} ·{" "}
-                {banner.is_active ? "Active" : "Inactive"}
+                {banner.media_type === "video" ? t("Video") : t("Image")} ·{" "}
+                {banner.is_active ? t("Active") : t("Inactive")}
               </span>
             </button>
           </div>
@@ -1095,6 +1108,7 @@ function BannerList({
 
 function BannerEditor({
   banner,
+  language,
   index,
   bannerCount,
   uploading,
@@ -1105,6 +1119,7 @@ function BannerEditor({
   onUpload,
 }: {
   banner: SiteBanner;
+  language: AdminLanguage;
   index: number;
   bannerCount: number;
   uploading: string | null;
@@ -1119,14 +1134,20 @@ function BannerEditor({
     onUploaded: (url: string) => void
   ) => void;
 }) {
+  const t = useAdminText();
   const prefix = `banner-${banner.id ?? `new-${index}`}`;
   const detectedType = detectMediaType(banner.media_url);
+  const isKhmer = language === "km";
+  const headline = isKhmer ? banner.headline_km : banner.headline_en;
 
   return (
     <section className="space-y-5 rounded-2xl border border-[#e2edf4] p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-semibold text-slate-800">
-          {banner.headline_en || banner.headline_km || `Banner ${index + 1}`}
+        <h3
+          lang={language}
+          className="font-semibold text-slate-800"
+        >
+          {headline || (isKhmer ? `បដាទី ${index + 1}` : `Banner ${index + 1}`)}
         </h3>
         <div className="flex flex-wrap items-center gap-2">
           <label className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-[#d6e8f2] px-2.5 text-sm font-medium text-slate-700">
@@ -1136,11 +1157,11 @@ function BannerEditor({
               onChange={(event) => onChange({ is_active: event.target.checked })}
               className="h-4 w-4 rounded border-slate-300 text-[#0077b6] focus:ring-[#0077b6]"
             />
-            Active
+            {t("Active")}
           </label>
           <button
             type="button"
-            aria-label={`Move banner ${index + 1} up`}
+            aria-label={`${t("Move banner")} ${index + 1} ${t("up")}`}
             disabled={index === 0}
             onClick={() => onMove(index - 1)}
             className="rounded-lg border border-[#d6e8f2] p-2 text-slate-600 hover:bg-[#f1f9fd] disabled:opacity-40"
@@ -1149,7 +1170,7 @@ function BannerEditor({
           </button>
           <button
             type="button"
-            aria-label={`Move banner ${index + 1} down`}
+            aria-label={`${t("Move banner")} ${index + 1} ${t("down")}`}
             disabled={index === bannerCount - 1}
             onClick={() => onMove(index + 1)}
             className="rounded-lg border border-[#d6e8f2] p-2 text-slate-600 hover:bg-[#f1f9fd] disabled:opacity-40"
@@ -1158,7 +1179,7 @@ function BannerEditor({
           </button>
           <button
             type="button"
-            aria-label={`Delete banner ${index + 1}`}
+            aria-label={`${t("Delete banner")} ${index + 1}`}
             onClick={onRemove}
             className="rounded-lg border border-rose-100 p-2 text-rose-600 hover:bg-rose-50"
           >
@@ -1186,20 +1207,20 @@ function BannerEditor({
 
       <div className="space-y-3">
         <div>
-          <h4 className="text-sm font-semibold text-slate-800">Text</h4>
+          <h4 className="text-sm font-semibold text-slate-800">{t("Text")}</h4>
           <p className="mt-1 text-xs text-slate-500">
-            Add a headline in Khmer or English; one language is enough.
+            {t("Add a headline in Khmer or English; one language is enough.")}
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-3 rounded-xl bg-[#f7fbfd] p-3">
-            <h5 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Khmer</h5>
-            <TextField id={`${prefix}-headline-km`} label="Headline" value={banner.headline_km} error={fieldErrors.headline_km} onChange={(value) => onChange({ headline_km: value })} />
-            <TextAreaField id={`${prefix}-subtitle-km`} label="Subtitle" value={banner.subtitle_km} error={fieldErrors.subtitle_km} onChange={(value) => onChange({ subtitle_km: value })} />
-            <TextField id={`${prefix}-button-text-km`} label="Button text" value={banner.button_text_km} error={fieldErrors.button_text_km} onChange={(value) => onChange({ button_text_km: value })} />
+            <h5 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("Khmer")}</h5>
+            <TextField id={`${prefix}-headline-km`} lang="km" label="Headline" value={banner.headline_km} error={fieldErrors.headline_km} onChange={(value) => onChange({ headline_km: value })} />
+            <TextAreaField id={`${prefix}-subtitle-km`} lang="km" label="Subtitle" value={banner.subtitle_km} error={fieldErrors.subtitle_km} onChange={(value) => onChange({ subtitle_km: value })} />
+            <TextField id={`${prefix}-button-text-km`} lang="km" label="Button text" value={banner.button_text_km} error={fieldErrors.button_text_km} onChange={(value) => onChange({ button_text_km: value })} />
           </div>
           <div className="space-y-3 rounded-xl bg-[#f7fbfd] p-3">
-            <h5 className="text-xs font-semibold uppercase tracking-wide text-slate-500">English</h5>
+            <h5 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t("English")}</h5>
             <TextField id={`${prefix}-headline-en`} label="Headline" value={banner.headline_en} error={fieldErrors.headline_en} onChange={(value) => onChange({ headline_en: value })} />
             <TextAreaField id={`${prefix}-subtitle-en`} label="Subtitle" value={banner.subtitle_en} error={fieldErrors.subtitle_en} onChange={(value) => onChange({ subtitle_en: value })} />
             <TextField id={`${prefix}-button-text-en`} label="Button text" value={banner.button_text_en} error={fieldErrors.button_text_en} onChange={(value) => onChange({ button_text_en: value })} />
@@ -1214,8 +1235,8 @@ function BannerEditor({
       </div>
 
       <div className="space-y-2">
-        <span className="block text-sm font-medium text-slate-700">Text alignment</span>
-        <div role="group" aria-label="Banner text alignment" className="inline-flex rounded-lg bg-slate-100 p-1">
+        <span className="block text-sm font-medium text-slate-700">{t("Text alignment")}</span>
+        <div role="group" aria-label={t("Banner text alignment")} className="inline-flex rounded-lg bg-slate-100 p-1">
           {(["left", "center", "right"] as const).map((alignment) => (
             <button
               key={alignment}
@@ -1228,7 +1249,7 @@ function BannerEditor({
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              {alignment}
+              {t(alignment)}
             </button>
           ))}
         </div>
@@ -1236,17 +1257,17 @@ function BannerEditor({
 
       <details className="rounded-xl border border-[#e2edf4] p-3">
         <summary className="cursor-pointer select-none text-sm font-semibold text-slate-700">
-          More text options
+          {t("More text options")}
         </summary>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <TextField label="Eyebrow (Khmer)" value={banner.eyebrow_km} error={fieldErrors.eyebrow_km} onChange={(value) => onChange({ eyebrow_km: value })} />
+          <TextField lang="km" label="Eyebrow (Khmer)" value={banner.eyebrow_km} error={fieldErrors.eyebrow_km} onChange={(value) => onChange({ eyebrow_km: value })} />
           <TextField label="Eyebrow (English)" value={banner.eyebrow_en} error={fieldErrors.eyebrow_en} onChange={(value) => onChange({ eyebrow_en: value })} />
         </div>
       </details>
 
       <details className="rounded-xl border border-[#e2edf4] p-3">
         <summary className="cursor-pointer select-none text-sm font-semibold text-slate-700">
-          Advanced options
+          {t("Advanced options")}
         </summary>
         <div className="mt-4 space-y-4">
           <MediaInput
@@ -1275,7 +1296,7 @@ function BannerEditor({
           ) : null}
           <div>
             <label htmlFor={`${prefix}-overlay`} className="flex items-center justify-between text-sm font-medium text-slate-700">
-              <span>Overlay darkness</span>
+              <span>{t("Overlay darkness")}</span>
               <span className="text-xs text-slate-500">{banner.overlay_opacity}%</span>
             </label>
             <input
@@ -1310,25 +1331,34 @@ function BannerEditor({
   );
 }
 
-function BannerPreview({ banner }: { banner: SiteBanner }) {
+function BannerPreview({
+  banner,
+  language,
+}: {
+  banner: SiteBanner;
+  language: AdminLanguage;
+}) {
+  const t = useAdminText();
   const mobileSrc = banner.mobile_media_url || banner.media_url;
   return (
     <aside className="space-y-4">
       <div>
-        <h3 className="font-semibold text-slate-800">Live preview</h3>
+        <h3 className="font-semibold text-slate-800">{t("Live preview")}</h3>
         <p className="mt-1 text-xs text-slate-500">
-          Preview updates as you edit; it is not published until saved.
+          {t("Preview updates as you edit; it is not published until saved.")}
         </p>
       </div>
       <PreviewFrame
         title="Desktop"
         banner={banner}
+        language={language}
         media={banner.media_url}
         className="aspect-[16/7]"
       />
       <PreviewFrame
         title="Mobile"
         banner={banner}
+        language={language}
         media={mobileSrc}
         className="mx-auto aspect-[9/14] max-w-[16rem]"
       />
@@ -1343,6 +1373,7 @@ function BannerValidationSummary({
   errors: Record<string, string>;
   bannerNumber: number | null;
 }) {
+  const t = useAdminText();
   const fieldLabels: Record<string, string> = {
     media_url: "Media",
     mobile_media_url: "Mobile media",
@@ -1364,12 +1395,12 @@ function BannerValidationSummary({
   return (
     <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
       <p className="font-semibold">
-        Please fix these banner fields{bannerNumber ? ` (banner ${bannerNumber})` : ""}:
+        {t("Please fix these banner fields")}{bannerNumber ? ` (${t("banner")} ${bannerNumber})` : ""}:
       </p>
       <ul className="mt-2 list-inside list-disc space-y-1">
         {Object.entries(errors).map(([field, message]) => (
           <li key={field}>
-            <span className="font-medium">{fieldLabels[field] ?? field}:</span> {message}
+            <span className="font-medium">{t(fieldLabels[field] ?? field)}:</span> {t(message)}
           </li>
         ))}
       </ul>
@@ -1380,14 +1411,22 @@ function BannerValidationSummary({
 function PreviewFrame({
   title,
   banner,
+  language,
   media,
   className,
 }: {
   title: string;
   banner: SiteBanner;
+  language: AdminLanguage;
   media: string;
   className: string;
 }) {
+  const t = useAdminText();
+  const isKhmer = language === "km";
+  const eyebrow = isKhmer ? banner.eyebrow_km : banner.eyebrow_en;
+  const headline = isKhmer ? banner.headline_km : banner.headline_en;
+  const subtitle = isKhmer ? banner.subtitle_km : banner.subtitle_en;
+  const buttonText = isKhmer ? banner.button_text_km : banner.button_text_en;
   const textAlign =
     banner.text_align === "center"
       ? "items-center text-center"
@@ -1397,7 +1436,7 @@ function PreviewFrame({
   const previewType = detectMediaType(media) ?? banner.media_type;
   return (
     <div>
-      <p className="mb-1.5 text-xs font-semibold text-slate-500">{title}</p>
+      <p className="mb-1.5 text-xs font-semibold text-slate-500">{t(title)}</p>
       <div className={`relative isolate overflow-hidden rounded-xl border border-[#d6e8f2] bg-slate-200 ${className}`}>
         {media && previewType === "video" ? (
           <video
@@ -1424,20 +1463,32 @@ function PreviewFrame({
           style={{ opacity: banner.overlay_opacity / 80 }}
         />
         <div className={`absolute inset-0 flex flex-col justify-center gap-1 p-4 text-white sm:p-6 ${textAlign}`}>
-          <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-cyan-100 sm:text-xs">
-            {banner.eyebrow_en || banner.eyebrow_km || "New collection"}
+          <span
+            lang={language}
+            className="text-[9px] font-semibold uppercase tracking-[0.18em] text-cyan-100 sm:text-xs"
+          >
+            {eyebrow || (isKhmer ? "ការប្រមូលថ្មី" : "New collection")}
           </span>
-          <span className="max-w-[90%] text-lg font-bold leading-tight sm:text-2xl">
-            {banner.headline_en || banner.headline_km || "Banner headline"}
+          <span
+            lang={language}
+            className="max-w-[90%] text-lg font-bold leading-tight sm:text-2xl"
+          >
+            {headline || (isKhmer ? "ចំណងជើងបដា" : "Banner headline")}
           </span>
-          {banner.subtitle_en || banner.subtitle_km ? (
-            <span className="max-w-[90%] text-[10px] text-white/85 sm:text-xs">
-              {banner.subtitle_en || banner.subtitle_km}
+          {subtitle ? (
+            <span
+              lang={language}
+              className="max-w-[90%] text-[10px] text-white/85 sm:text-xs"
+            >
+              {subtitle}
             </span>
           ) : null}
-          {banner.button_text_en || banner.button_text_km ? (
-            <span className="mt-1 inline-flex rounded-md bg-[#0077b6] px-2.5 py-1 text-[9px] font-semibold sm:text-xs">
-              {banner.button_text_en || banner.button_text_km}
+          {buttonText ? (
+            <span
+              lang={language}
+              className="mt-1 inline-flex rounded-md bg-[#0077b6] px-2.5 py-1 text-[9px] font-semibold sm:text-xs"
+            >
+              {buttonText}
             </span>
           ) : null}
         </div>
@@ -1470,6 +1521,7 @@ function MediaPicker({
     onUploaded: (url: string) => void
   ) => void;
 }) {
+  const t = useAdminText();
   const accept =
     kind === "logo"
       ? ".jpg,.jpeg,.png,.webp,.svg"
@@ -1487,7 +1539,7 @@ function MediaPicker({
   return (
     <div className="min-w-0 rounded-xl border border-[#e2edf4] bg-[#f7fbfd] p-3">
       <label htmlFor={id} className="block text-sm font-semibold text-slate-700">
-        {label}
+        {t(label)}
       </label>
       <div className="relative mt-2 flex min-h-28 items-center justify-center overflow-hidden rounded-lg border border-dashed border-[#bfd7e5] bg-white">
         {value ? (
@@ -1502,7 +1554,7 @@ function MediaPicker({
           ) : (
             <Image
               src={value}
-              alt={`${label} preview`}
+              alt={`${t(label)} ${t("preview")}`}
               width={280}
               height={160}
               unoptimized
@@ -1511,7 +1563,7 @@ function MediaPicker({
           )
         ) : (
           <span className="px-3 text-center text-xs text-slate-400">
-            No media selected
+            {t("No media selected")}
           </span>
         )}
       </div>
@@ -1527,7 +1579,7 @@ function MediaPicker({
           ) : (
             <Upload className="h-3.5 w-3.5" aria-hidden="true" />
           )}
-          {uploading ? "Uploading..." : value ? "Replace media" : "Choose media"}
+          {uploading ? t("Uploading...") : value ? t("Replace media") : t("Choose media")}
         </label>
         {value && !required ? (
           <button
@@ -1535,12 +1587,12 @@ function MediaPicker({
             onClick={() => onChange("")}
             className="min-h-9 rounded-lg px-2 text-xs font-semibold text-rose-600 hover:bg-rose-50"
           >
-            Remove
+            {t("Remove")}
           </button>
         ) : null}
         <span className="text-[11px] text-slate-400">
-          {isVideo ? "MP4 / WebM · max 15 MB" : "JPG / PNG / WebP · max 5 MB"}
-          {kind === "logo" ? " · SVG allowed" : ""}
+          {isVideo ? t("MP4 / WebM · max 15 MB") : t("JPG / PNG / WebP · max 5 MB")}
+          {kind === "logo" ? ` · ${t("SVG allowed")}` : ""}
         </span>
       </div>
       <input
@@ -1550,7 +1602,7 @@ function MediaPicker({
         onChange={selectFile}
         disabled={uploading}
         className="sr-only"
-        aria-label={`Choose ${label.toLowerCase()}`}
+        aria-label={`${t("Choose")} ${t(label).toLowerCase()}`}
       />
     </div>
   );
@@ -1563,16 +1615,18 @@ function SectionHeading({
   title: string;
   description: string;
 }) {
+  const t = useAdminText();
   return (
     <div>
-      <h2 className="text-xl font-semibold text-slate-800">{title}</h2>
-      <p className="mt-1 text-sm text-slate-500">{description}</p>
+      <h2 className="text-xl font-semibold text-slate-800">{t(title)}</h2>
+      <p className="mt-1 text-sm text-slate-500">{t(description)}</p>
     </div>
   );
 }
 
 function TextField({
   id: suppliedId,
+  lang,
   label,
   value,
   onChange,
@@ -1587,16 +1641,19 @@ function TextField({
   hint?: string;
   error?: string;
   id?: string;
+  lang?: string;
 }) {
+  const t = useAdminText();
   const id =
     suppliedId ??
     `site-setting-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   return (
     <label htmlFor={id} className="block min-w-0 text-sm font-medium text-slate-700">
-      {label}
-      {hint ? <span className="ml-1 font-normal text-slate-400">({hint})</span> : null}
+      {t(label)}
+      {hint ? <span className="ml-1 font-normal text-slate-400">({t(hint)})</span> : null}
       <input
         id={id}
+        lang={lang}
         type={type}
         value={value}
         aria-invalid={Boolean(error)}
@@ -1606,7 +1663,7 @@ function TextField({
       />
       {error ? (
         <span id={`${id}-error`} role="alert" className="mt-1 block text-xs font-normal text-red-700">
-          {error}
+          {t(error)}
         </span>
       ) : null}
     </label>
@@ -1615,6 +1672,7 @@ function TextField({
 
 function TextAreaField({
   id: suppliedId,
+  lang,
   label,
   value,
   onChange,
@@ -1625,15 +1683,18 @@ function TextAreaField({
   onChange: (value: string) => void;
   error?: string;
   id?: string;
+  lang?: string;
 }) {
+  const t = useAdminText();
   const id =
     suppliedId ??
     `site-setting-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   return (
     <label htmlFor={id} className="block min-w-0 text-sm font-medium text-slate-700">
-      {label}
+      {t(label)}
       <textarea
         id={id}
+        lang={lang}
         rows={3}
         value={value}
         aria-invalid={Boolean(error)}
@@ -1643,7 +1704,7 @@ function TextAreaField({
       />
       {error ? (
         <span id={`${id}-error`} role="alert" className="mt-1 block text-xs font-normal text-red-700">
-          {error}
+          {t(error)}
         </span>
       ) : null}
     </label>
@@ -1659,10 +1720,11 @@ function ColorField({
   value: string;
   onChange: (value: string) => void;
 }) {
+  const t = useAdminText();
   const id = `color-${label.toLowerCase().replace(/\s+/g, "-")}`;
   return (
     <label htmlFor={id} className="block text-sm font-medium text-slate-700">
-      {label}
+      {t(label)}
       <div className="mt-1.5 flex h-[42px] items-center gap-2 rounded-xl border border-[#d6e8f2] bg-white px-2">
         <input
           id={id}
@@ -1670,7 +1732,7 @@ function ColorField({
           value={/^#[0-9a-f]{6}$/i.test(value) ? value : "#0077b6"}
           onChange={(event) => onChange(event.target.value.toUpperCase())}
           className="h-7 w-9 cursor-pointer rounded border-0 bg-transparent p-0"
-          aria-label={label}
+          aria-label={t(label)}
         />
         <span className="font-mono text-xs text-slate-600">{value}</span>
       </div>

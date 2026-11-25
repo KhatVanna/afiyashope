@@ -7,6 +7,7 @@ import { VideoBanner } from "@/components/home/video-banner";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchProducts } from "@/lib/catalog-api";
 import { fetchSiteBanners } from "@/lib/site-content-api";
+import { LocaleText } from "@/components/i18n/locale-text";
 
 export default async function HomePage() {
   const [featured, catalog, banners] = await Promise.all([
@@ -27,22 +28,32 @@ export default async function HomePage() {
       <CategoryGrid />
       <div className="bg-muted/40">
         <ProductSection
-          title="ម៉ូដពេញនិយម"
-          subtitle="ម៉ូដពិសេសដែលត្រូវពេញនិយម"
+          title={<LocaleText en="Popular Styles" km="ម៉ូដពេញនិយម" />}
+          subtitle={
+            <LocaleText
+              en="Discover styles selected by our customers."
+              km="ម៉ូដពិសេសដែលត្រូវពេញនិយម"
+            />
+          }
           products={catalog.error ? [] : popularStyles}
           error={catalog.error}
           href="/products?sort=offers"
-          ctaLabel="Show more"
+          ctaLabel={<LocaleText en="Show more" km="មើលបន្ថែម" />}
           staggerCards
         />
       </div>
       {catalog.error ? null : (
         <ProductSection
-          title="ការរក្សាទុកម៉ូដ Abaya"
-          subtitle={`${catalog.total.toLocaleString()} ម៉ូដសម្រាប់មើល និងបញ្ជាទិញ។`}
+          title={<LocaleText en="Our Abaya Collection" km="ម៉ូដអាបាយ៉ារបស់យើង" />}
+          subtitle={
+            <LocaleText
+              en={`${catalog.total.toLocaleString()} styles to browse and order.`}
+              km={`${catalog.total.toLocaleString()} ម៉ូដសម្រាប់មើល និងបញ្ជាទិញ។`}
+            />
+          }
           products={catalog.items}
           href="/products"
-          ctaLabel="Our top picks"
+          ctaLabel={<LocaleText en="Our top picks" km="ជម្រើសពេញនិយមរបស់យើង" />}
           staggerCards
         />
       )}

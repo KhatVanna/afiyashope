@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { canAccessNavItem, ADMIN_NAV } from "@/lib/admin-nav";
+import { useAdminText } from "@/components/layout/admin-language-selector";
 import { useAuthStore } from "@/stores/auth-store";
 
 type ModulePageProps = {
@@ -14,6 +15,7 @@ type ModulePageProps = {
 };
 
 export function AdminModulePage({ href, title, description, bullets }: ModulePageProps) {
+  const t = useAdminText();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const item = ADMIN_NAV.find((nav) => nav.href === href);
@@ -28,7 +30,7 @@ export function AdminModulePage({ href, title, description, bullets }: ModulePag
   if (!allowed) {
     return (
       <div className="rounded-2xl border border-white bg-white p-8 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-        <p className="text-sm text-slate-500">You do not have access to this module.</p>
+        <p className="text-sm text-slate-500">{t("You do not have access to this module.")}</p>
       </div>
     );
   }
@@ -36,28 +38,28 @@ export function AdminModulePage({ href, title, description, bullets }: ModulePag
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-800">{title}</h1>
-        <p className="mt-2 max-w-2xl text-slate-500">{description}</p>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-800">{t(title)}</h1>
+        <p className="mt-2 max-w-2xl text-slate-500">{t(description)}</p>
       </div>
 
       <section className="rounded-2xl border border-white bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-        <h2 className="text-lg font-semibold text-slate-800">What you can manage here</h2>
+        <h2 className="text-lg font-semibold text-slate-800">{t("What you can manage here")}</h2>
         <ul className="mt-4 space-y-2 text-sm text-slate-500">
           {bullets.map((bullet) => (
             <li key={bullet} className="flex gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0077b6]" />
-              <span>{bullet}</span>
+              <span>{t(bullet)}</span>
             </li>
           ))}
         </ul>
         <p className="mt-6 rounded-xl bg-[#f1f9fd] px-4 py-3 text-sm text-slate-500">
-          UI shell is ready. Connected CRUD screens will plug into the Laravel API next.
+          {t("UI shell is ready. Connected CRUD screens will plug into the Laravel API next.")}
         </p>
         <Link
           href="/dashboard"
           className="mt-4 inline-flex text-sm font-semibold text-[#0077b6] hover:underline"
         >
-          Back to dashboard
+          {t("Back to dashboard")}
         </Link>
       </section>
     </div>

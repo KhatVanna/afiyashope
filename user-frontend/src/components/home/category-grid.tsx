@@ -3,6 +3,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchCategories } from "@/lib/catalog-api";
 import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
 import { ProductImage } from "@/components/product-image";
+import { LocaleText } from "@/components/i18n/locale-text";
 
 export async function CategoryGrid() {
   const result = await fetchCategories();
@@ -13,15 +14,17 @@ export async function CategoryGrid() {
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-              ស្វែងរកដោយប្រភេទ
+              <LocaleText en="Shop by category" km="ស្វែងរកដោយប្រភេទ" />
             </p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-navy">ប្រភេទម៉ូដ</h2>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-navy">
+              <LocaleText en="Fashion categories" km="ប្រភេទម៉ូដ" />
+            </h2>
           </div>
           <Link
             href="/categories"
             className="text-sm font-medium text-primary hover:underline"
           >
-            មើលទាំងអស់
+            <LocaleText en="View all" km="មើលទាំងអស់" />
           </Link>
         </div>
       </ScrollReveal>
@@ -51,7 +54,10 @@ export async function CategoryGrid() {
                     <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                       <h3 className="text-xl font-semibold">{category.name}</h3>
                       <p className="mt-1 text-sm text-white/80">
-                        {category.productCount} products
+                        <LocaleText
+                          en={`${category.productCount} products`}
+                          km={`${category.productCount} មុខ`}
+                        />
                       </p>
                     </div>
                   </>
@@ -61,7 +67,10 @@ export async function CategoryGrid() {
                 <div className="border border-t-0 border-slate-200 bg-card p-4">
                   <h3 className="text-lg font-semibold">{category.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {category.productCount} products
+                    <LocaleText
+                      en={`${category.productCount} products`}
+                      km={`${category.productCount} មុខ`}
+                    />
                   </p>
                 </div>
               ) : null}

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchBlogPosts } from "@/lib/blog-api";
+import { LocaleText } from "@/components/i18n/locale-text";
 
 export const metadata: Metadata = {
   title: "Blog & News",
@@ -28,19 +29,34 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       <ScrollReveal>
         <nav className="mb-4 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">
-            Home
+            <LocaleText en="Home" km="ទំព័រដើម" />
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-foreground">Blog & News</span>
+          <span className="text-foreground">
+            <LocaleText en="Blog & News" km="ព័ត៌មាន និងអត្ថបទ" />
+          </span>
         </nav>
       </ScrollReveal>
 
       <ScrollReveal delay={40}>
-        <h1 className="text-3xl font-semibold tracking-tight text-navy">Blog & News</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-navy">
+          <LocaleText en="Blog & News" km="ព័ត៌មាន និងអត្ថបទ" />
+        </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          Tech insights and product guides — knowledge that moves you forward.
+          <LocaleText
+            en="Tech insights and product guides — knowledge that moves you forward."
+            km="អត្ថបទណែនាំអំពីទំនិញ និងព័ត៌មានថ្មីៗ ដើម្បីជួយអ្នកជ្រើសរើសបានកាន់តែល្អ។"
+          />
           {catalog.total > 0
-            ? ` ${catalog.total.toLocaleString()} articles · Page ${currentPage} of ${catalog.lastPage}`
+            ? (
+                <>
+                  {" "}
+                  <LocaleText
+                    en={`${catalog.total.toLocaleString()} articles · Page ${currentPage} of ${catalog.lastPage}`}
+                    km={`អត្ថបទ ${catalog.total.toLocaleString()} · ទំព័រ ${currentPage} នៃ ${catalog.lastPage}`}
+                  />
+                </>
+              )
             : ""}
         </p>
       </ScrollReveal>
@@ -48,9 +64,14 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       {catalog.items.length === 0 ? (
         <ScrollReveal delay={90} className="mt-10">
           <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center">
-            <p className="text-lg font-medium">Articles coming soon</p>
+            <p className="text-lg font-medium">
+              <LocaleText en="Articles coming soon" km="អត្ថបទនឹងមានក្នុងពេលឆាប់ៗនេះ" />
+            </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Blog posts will appear here after seeding the catalog API.
+              <LocaleText
+                en="Blog posts will appear here after seeding the catalog API."
+                km="អត្ថបទនឹងបង្ហាញនៅទីនេះនៅពេលមានការបញ្ចូលទិន្នន័យ។"
+              />
             </p>
           </div>
         </ScrollReveal>
@@ -97,7 +118,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                       </p>
                     ) : null}
                     <p className="mt-auto pt-4 text-xs text-muted-foreground">
-                      By {post.authorName}
+                      <LocaleText en={`By ${post.authorName}`} km={`ដោយ ${post.authorName}`} />
                     </p>
                   </div>
                 </Link>
@@ -113,26 +134,29 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                     href={buildHref(currentPage - 1)}
                     className="inline-flex h-10 items-center rounded-lg border border-border px-4 text-sm font-medium hover:bg-muted"
                   >
-                    Previous
+                    <LocaleText en="Previous" km="មុន" />
                   </Link>
                 ) : (
                   <span className="inline-flex h-10 items-center rounded-lg border border-border px-4 text-sm text-muted-foreground opacity-50">
-                    Previous
+                    <LocaleText en="Previous" km="មុន" />
                   </span>
                 )}
                 <span className="px-3 text-sm text-muted-foreground">
-                  Page {currentPage} / {catalog.lastPage}
+                  <LocaleText
+                    en={`Page ${currentPage} / ${catalog.lastPage}`}
+                    km={`ទំព័រ ${currentPage} / ${catalog.lastPage}`}
+                  />
                 </span>
                 {currentPage < catalog.lastPage ? (
                   <Link
                     href={buildHref(currentPage + 1)}
                     className="inline-flex h-10 items-center rounded-lg border border-border px-4 text-sm font-medium hover:bg-muted"
                   >
-                    Next
+                    <LocaleText en="Next" km="បន្ទាប់" />
                   </Link>
                 ) : (
                   <span className="inline-flex h-10 items-center rounded-lg border border-border px-4 text-sm text-muted-foreground opacity-50">
-                    Next
+                    <LocaleText en="Next" km="បន្ទាប់" />
                   </span>
                 )}
               </div>

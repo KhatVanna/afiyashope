@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { getNavForUser } from "@/lib/admin-nav";
 import { useAuthStore } from "@/stores/auth-store";
+import { useAdminText } from "@/components/layout/admin-language-selector";
 
 const STAT_CARDS = [
   {
@@ -146,6 +147,7 @@ const PRODUCT_ROWS = [
 ];
 
 export function DashboardOverview() {
+  const t = useAdminText();
   const user = useAuthStore((state) => state.user);
   const firstName = user?.name?.split(" ")[0] ?? "Admin";
   const navHrefs = new Set(getNavForUser(user).map((item) => item.href));
@@ -153,28 +155,28 @@ export function DashboardOverview() {
 
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-2xl bg-gradient-to-r from-[#e2f5fc] via-[#f5f8ff] to-white p-6 shadow-sm sm:p-8">
+      <section className="dashboard-welcome overflow-hidden rounded-2xl bg-gradient-to-r from-[#e2f5fc] via-[#f5f8ff] to-white p-6 shadow-sm sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
             <h1 className="text-3xl font-semibold tracking-tight text-slate-800 sm:text-4xl">
-              Welcome back! {firstName} 👋
+              {t("Welcome back!")} {t(firstName)} 👋
             </h1>
             <p className="mt-2 text-base text-slate-500">
-              Check your store reports, orders, and catalog performance.
+              {t("Check your store reports, orders, and catalog performance.")}
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
                 href="/orders"
                 className="inline-flex items-center gap-2 rounded-xl bg-[#0077b6] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-cyan-700/20"
               >
-                View orders
+                {t("View orders")}
                 <ArrowUpRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/reports"
                 className="inline-flex items-center rounded-xl border border-[#bfe9f8] bg-white px-4 py-2.5 text-sm font-semibold text-[#0077b6]"
               >
-                Open reports
+                {t("Open reports")}
               </Link>
             </div>
           </div>
@@ -182,7 +184,7 @@ export function DashboardOverview() {
           <div className="grid grid-cols-2 gap-3 sm:min-w-[280px]">
             <div className="rounded-2xl bg-white/80 p-4 shadow-sm backdrop-blur">
               <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Today
+                {t("Today")}
               </p>
               <p className="mt-1 text-2xl font-semibold text-slate-800">$2,480</p>
               <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-[#0da9d6]">
@@ -192,10 +194,10 @@ export function DashboardOverview() {
             </div>
             <div className="rounded-2xl bg-white/80 p-4 shadow-sm backdrop-blur">
               <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Orders
+                {t("Orders")}
               </p>
               <p className="mt-1 text-2xl font-semibold text-slate-800">48</p>
-              <p className="mt-1 text-xs text-slate-500">Awaiting fulfillment</p>
+              <p className="mt-1 text-xs text-slate-500">{t("Awaiting fulfillment")}</p>
             </div>
           </div>
         </div>
@@ -215,7 +217,7 @@ export function DashboardOverview() {
               >
                 <Icon className="h-5 w-5" />
               </div>
-              <p className="text-sm text-slate-500">{stat.label}</p>
+              <p className="text-sm text-slate-500">{t(stat.label)}</p>
               <p className="mt-1 text-2xl font-semibold text-slate-800">{stat.value}</p>
             </Link>
           );
@@ -226,8 +228,8 @@ export function DashboardOverview() {
         <div className="rounded-2xl border border-white bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] xl:col-span-7">
           <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-slate-800">Revenue Updates</h2>
-              <p className="text-sm text-slate-500">Overview of sales vs profit</p>
+              <h2 className="text-lg font-semibold text-slate-800">{t("Revenue Updates")}</h2>
+              <p className="text-sm text-slate-500">{t("Overview of sales vs profit")}</p>
             </div>
             <select
               className="h-10 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-600 outline-none"
@@ -241,10 +243,10 @@ export function DashboardOverview() {
 
           <div className="mb-4 flex items-center gap-5 text-sm">
             <span className="inline-flex items-center gap-2 text-slate-600">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#0077b6]" /> Sales
+              <span className="h-2.5 w-2.5 rounded-full bg-[#0077b6]" /> {t("Sales")}
             </span>
             <span className="inline-flex items-center gap-2 text-slate-600">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#0da9d6]" /> Profit
+              <span className="h-2.5 w-2.5 rounded-full bg-[#0da9d6]" /> {t("Profit")}
             </span>
           </div>
 
@@ -261,7 +263,7 @@ export function DashboardOverview() {
                     style={{ height: `${bar.profit}%` }}
                   />
                 </div>
-                <span className="text-xs text-slate-400">{bar.label}</span>
+                <span className="text-xs text-slate-400">{t(bar.label)}</span>
               </div>
             ))}
           </div>
@@ -269,7 +271,7 @@ export function DashboardOverview() {
 
         <div className="grid gap-6 xl:col-span-5">
           <div className="rounded-2xl border border-white bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-            <h2 className="text-lg font-semibold text-slate-800">Yearly Breakup</h2>
+            <h2 className="text-lg font-semibold text-slate-800">{t("Yearly Breakup")}</h2>
             <div className="mt-5 flex items-center gap-6">
               <div className="relative h-28 w-28 shrink-0">
                 <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
@@ -317,7 +319,7 @@ export function DashboardOverview() {
               </div>
               <div>
                 <p className="text-3xl font-semibold text-slate-800">$36,358</p>
-                <p className="mt-1 text-sm font-medium text-[#0da9d6]">+9% last year</p>
+                <p className="mt-1 text-sm font-medium text-[#0da9d6]">+9% {t("last year")}</p>
                 <div className="mt-4 space-y-1.5 text-sm text-slate-500">
                   <p className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#0077b6]" /> 2026
@@ -336,9 +338,9 @@ export function DashboardOverview() {
           <div className="rounded-2xl border border-white bg-gradient-to-br from-[#0077b6] to-[#005d92] p-6 text-white shadow-lg shadow-cyan-700/20">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-lg font-semibold">Monthly Earnings</h2>
+                <h2 className="text-lg font-semibold">{t("Monthly Earnings")}</h2>
                 <p className="mt-4 text-3xl font-semibold">$6,820</p>
-                <p className="mt-2 text-sm text-cyan-100">+9% last month</p>
+                <p className="mt-2 text-sm text-cyan-100">+9% {t("last month")}</p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15">
                 <Wallet className="h-5 w-5" />
@@ -350,8 +352,8 @@ export function DashboardOverview() {
 
       <section className="grid gap-6 xl:grid-cols-12">
         <div className="rounded-2xl border border-white bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] xl:col-span-4">
-          <h2 className="text-lg font-semibold text-slate-800">Recent Transactions</h2>
-          <p className="mt-1 text-sm text-slate-500">Latest store activity</p>
+          <h2 className="text-lg font-semibold text-slate-800">{t("Recent Transactions")}</h2>
+          <p className="mt-1 text-sm text-slate-500">{t("Latest store activity")}</p>
           <ul className="mt-6 space-y-5">
             {TRANSACTIONS.map((item) => (
               <li key={`${item.time}-${item.title}`} className="flex gap-3">
@@ -361,7 +363,7 @@ export function DashboardOverview() {
                 <div className="flex gap-3">
                   <span className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${item.tone}`} />
                   <div>
-                    <p className="text-sm font-medium text-slate-700">{item.title}</p>
+                    <p className="text-sm font-medium text-slate-700">{t(item.title)}</p>
                     <p className="text-sm text-slate-400">{item.detail}</p>
                   </div>
                 </div>
@@ -373,11 +375,11 @@ export function DashboardOverview() {
         <div className="rounded-2xl border border-white bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] xl:col-span-8">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-slate-800">Product Performance</h2>
-              <p className="text-sm text-slate-500">Top catalog movers this period</p>
+              <h2 className="text-lg font-semibold text-slate-800">{t("Product Performance")}</h2>
+              <p className="text-sm text-slate-500">{t("Top catalog movers this period")}</p>
             </div>
             <Link href="/products" className="text-sm font-semibold text-[#0077b6]">
-              View all
+              {t("View all")}
             </Link>
           </div>
 
@@ -385,11 +387,11 @@ export function DashboardOverview() {
             <table className="min-w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-[#e2edf4] text-slate-400">
-                  <th className="px-2 py-3 font-medium">Id</th>
-                  <th className="px-2 py-3 font-medium">SKU</th>
-                  <th className="px-2 py-3 font-medium">Name</th>
-                  <th className="px-2 py-3 font-medium">Priority</th>
-                  <th className="px-2 py-3 font-medium">Sales</th>
+                  <th className="px-2 py-3 font-medium">{t("Id")}</th>
+                  <th className="px-2 py-3 font-medium">{t("SKU")}</th>
+                  <th className="px-2 py-3 font-medium">{t("Name")}</th>
+                  <th className="px-2 py-3 font-medium">{t("Priority")}</th>
+                  <th className="px-2 py-3 font-medium">{t("Sales")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -397,12 +399,12 @@ export function DashboardOverview() {
                   <tr key={row.id} className="border-b border-[#edf6fa] last:border-0">
                     <td className="px-2 py-4 text-slate-500">{row.id}</td>
                     <td className="px-2 py-4 font-medium text-slate-700">{row.sku}</td>
-                    <td className="px-2 py-4 text-slate-700">{row.name}</td>
+                    <td className="px-2 py-4 text-slate-700">{t(row.name)}</td>
                     <td className="px-2 py-4">
                       <span
                         className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${row.statusTone}`}
                       >
-                        {row.status}
+                        {t(row.status)}
                       </span>
                     </td>
                     <td className="px-2 py-4 font-semibold text-slate-800">{row.sales}</td>
