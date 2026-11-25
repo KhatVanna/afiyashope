@@ -274,8 +274,6 @@ DB_PASSWORD=<set privately in Railway Variables>
 DB_SSLMODE=require
 DB_PERSISTENT=true
 DB_CONNECT_TIMEOUT=10
-# Set to true only while explicitly approving a deployment migration; remove afterward.
-ALLOW_NEON_COMMANDS=true
 
 CLOUDINARY_CLOUD_NAME=v2005
 CLOUDINARY_API_KEY=your_api_key
@@ -293,10 +291,10 @@ QUEUE_CONNECTION=sync
 
 > **💡 Tip:** Choose the Railway region closest to your Neon region to minimize latency. This project uses `ap-southeast-1` (Singapore). Cross-region connections can add ~2s per database call on cold queries.
 
-6. **Redeploy.** The entrypoint migrates using `pgsql_direct` and refuses a
-   Neon migration unless `ALLOW_NEON_COMMANDS=true` is explicitly set. Set it
-   only for an approved deployment migration, then remove it afterward. Never
-   put connection values in this README.
+6. **Redeploy.** The entrypoint runs pending migrations using `pgsql_direct`.
+   It scopes `ALLOW_NEON_COMMANDS=true` to that migration process only; other
+   Artisan database commands remain guarded. Never put connection values in
+   this README.
 7. Verify health endpoints:
    - `https://YOUR-SERVICE.up.railway.app/up`
    - `https://YOUR-SERVICE.up.railway.app/api/v1/health`
