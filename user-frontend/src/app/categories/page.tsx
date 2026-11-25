@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchCategories } from "@/lib/catalog-api";
+import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
+import { ImageWithFallback } from "@/components/product/image-with-fallback";
 
 export const metadata: Metadata = {
   title: "Categories",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CategoriesPage() {
-  const categories = await fetchCategories();
+  const result = await fetchCategories();
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6">
@@ -32,14 +33,18 @@ export default async function CategoriesPage() {
       </ScrollReveal>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category, index) => (
+        {result.error ? (
+          <div className="sm:col-span-2 lg:col-span-3">
+            <CatalogErrorMessage />
+          </div>
+        ) : result.items.map((category, index) => (
           <ScrollReveal key={category.id} delay={(index % 3) * 90}>
             <Link
               href={`/products?category=${category.slug}`}
               className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-sm"
             >
               <div className="relative aspect-[16/10]">
-                <Image
+                <ImageWithFallback
                   src={category.image}
                   alt={category.name}
                   fill

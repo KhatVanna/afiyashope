@@ -3,6 +3,48 @@ set -e
 
 cd /app
 
+if [ "${APP_ENV:-production}" = "production" ]; then
+  MISSING_VARIABLES=""
+  append_missing() {
+    if [ -n "$MISSING_VARIABLES" ]; then
+      MISSING_VARIABLES="${MISSING_VARIABLES}, "
+    fi
+    MISSING_VARIABLES="${MISSING_VARIABLES}$1"
+  }
+
+  [ -n "${APP_KEY:-}" ] || append_missing "APP_KEY"
+  [ -n "${APP_URL:-}" ] || append_missing "APP_URL"
+  [ "${DB_CONNECTION:-}" = "pgsql" ] || append_missing "DB_CONNECTION"
+  [ -n "${DB_URL:-}" ] || append_missing "DB_URL"
+
+  if [ -n "$MISSING_VARIABLES" ]; then
+    echo "ERROR: Missing required production variable(s): ${MISSING_VARIABLES}." >&2
+    exit 1
+  fi
+
+  MIGRATION_URL="${DB_DIRECT_URL:-$DB_URL}"
+  MIGRATION_HOST="${MIGRATION_URL#*://}"
+  MIGRATION_HOST="${MIGRATION_HOST#*@}"
+  MIGRATION_HOST="${MIGRATION_HOST%%/*}"
+  MIGRATION_HOST="${MIGRATION_HOST%%\?*}"
+  MIGRATION_HOST="${MIGRATION_HOST%%:*}"
+
+  case "$MIGRATION_HOST" in
+    "")
+      echo "ERROR: DB_DIRECT_URL must be set, or DB_URL must contain a direct PostgreSQL host." >&2
+      exit 1
+      ;;
+    *-pooler*)
+      if [ -n "${DB_DIRECT_URL:-}" ]; then
+        echo "ERROR: DB_DIRECT_URL must use a direct PostgreSQL host, not a -pooler endpoint." >&2
+      else
+        echo "ERROR: DB_DIRECT_URL is required when DB_URL uses a -pooler endpoint." >&2
+      fi
+      exit 1
+      ;;
+  esac
+fi
+
 mkdir -p \
   storage/framework/cache/data \
   storage/framework/sessions \
@@ -31,11 +73,6 @@ sleep 2
 # Use the direct PostgreSQL connection for production migrations.
 MIGRATION_DB=pgsql
 if [ "${APP_ENV:-production}" = "production" ]; then
-  if [ -z "${DB_DIRECT_URL:-}" ]; then
-    echo "ERROR: DB_DIRECT_URL must be set for production migrations." >&2
-    kill "${SERVER_PID}"
-    exit 1
-  fi
   MIGRATION_DB=pgsql_direct
 fi
 

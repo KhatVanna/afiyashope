@@ -9,14 +9,15 @@ import { fetchProducts } from "@/lib/catalog-api";
 
 export default async function HomePage() {
   const [featured, catalog] = await Promise.all([
-    fetchProducts({ featured: true, perPage: 5, sort: "latest" }),
+    fetchProducts({ featured: true, perPage: 20, sort: "latest" }),
     fetchProducts({ perPage: 50, sort: "latest" }),
   ]);
 
-  const topOffers =
-    featured.items.length > 0
-      ? featured.items
-      : catalog.items.filter((product) => product.compareAtPrice).slice(0, 5);
+  const featuredIds = new Set(featured.items.map((product) => product.id));
+  const popularStyles = [
+    ...featured.items,
+    ...catalog.items.filter((product) => !featuredIds.has(product.id)),
+  ].slice(0, 20);
 
   return (
     <>
@@ -26,20 +27,23 @@ export default async function HomePage() {
         <ProductSection
           title="ម៉ូដពេញនិយម"
           subtitle="ម៉ូដពិសេសដែលត្រូវពេញនិយម"
-          products={topOffers}
+          products={catalog.error ? [] : popularStyles}
+          error={catalog.error}
           href="/products?sort=offers"
           ctaLabel="Show more"
           staggerCards
         />
       </div>
-      <ProductSection
-        title="ការរក្សាទុកម៉ូដ Abaya"
-        subtitle={`${catalog.total.toLocaleString()} ម៉ូដសម្រាប់មើល និងបញ្ជាទិញ។`}
-        products={catalog.items}
-        href="/products"
-        ctaLabel="Our top picks"
-        staggerCards
-      />
+      {catalog.error ? null : (
+        <ProductSection
+          title="ការរក្សាទុកម៉ូដ Abaya"
+          subtitle={`${catalog.total.toLocaleString()} ម៉ូដសម្រាប់មើល និងបញ្ជាទិញ។`}
+          products={catalog.items}
+          href="/products"
+          ctaLabel="Our top picks"
+          staggerCards
+        />
+      )}
       <ScrollReveal>
         <PromoBanner />
       </ScrollReveal>

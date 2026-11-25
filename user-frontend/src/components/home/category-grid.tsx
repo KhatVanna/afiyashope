@@ -1,10 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchCategories } from "@/lib/catalog-api";
+import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
+import { ImageWithFallback } from "@/components/product/image-with-fallback";
 
 export async function CategoryGrid() {
-  const categories = await fetchCategories();
+  const result = await fetchCategories();
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">
@@ -26,13 +27,17 @@ export async function CategoryGrid() {
       </ScrollReveal>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category, index) => (
+        {result.error ? (
+          <div className="sm:col-span-2 lg:col-span-3">
+            <CatalogErrorMessage />
+          </div>
+        ) : result.items.map((category, index) => (
           <ScrollReveal key={category.id} delay={(index % 3) * 90}>
             <Link
               href={`/products?category=${category.slug}`}
               className="group relative block min-h-48 overflow-hidden rounded-2xl"
             >
-              <Image
+              <ImageWithFallback
                 src={category.image}
                 alt={category.name}
                 fill

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product/product-card";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
 import type { CatalogProduct } from "@/data/demo-catalog.types";
 
 type ProductSectionProps = {
@@ -10,6 +11,7 @@ type ProductSectionProps = {
   href?: string;
   ctaLabel?: string;
   staggerCards?: boolean;
+  error?: boolean;
 };
 
 export function ProductSection({
@@ -19,6 +21,7 @@ export function ProductSection({
   href = "/products",
   ctaLabel = "Show more",
   staggerCards = false,
+  error = false,
 }: ProductSectionProps) {
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6">
@@ -40,17 +43,23 @@ export function ProductSection({
       </ScrollReveal>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {products.map((product, index) => {
-          if (!staggerCards) {
-            return <ProductCard key={product.id} product={product} />;
-          }
+        {error ? (
+          <div className="col-span-full">
+            <CatalogErrorMessage />
+          </div>
+        ) : (
+          products.map((product, index) => {
+            if (!staggerCards) {
+              return <ProductCard key={product.id} product={product} />;
+            }
 
-          return (
-            <ScrollReveal key={product.id} delay={(index % 5) * 70}>
-              <ProductCard product={product} />
-            </ScrollReveal>
-          );
-        })}
+            return (
+              <ScrollReveal key={product.id} delay={(index % 5) * 70}>
+                <ProductCard product={product} />
+              </ScrollReveal>
+            );
+          })
+        )}
       </div>
     </section>
   );

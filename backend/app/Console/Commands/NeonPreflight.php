@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Support\NeonDatabaseUrl;
 use Illuminate\Console\Command;
 use Illuminate\Database\Connectors\ConnectionException;
 use Illuminate\Support\Facades\DB;
@@ -15,73 +16,75 @@ class NeonPreflight extends Command
 
     public function handle(): int
     {
-        $pooled = (array) config('database.connections.pgsql', []);
         $direct = (array) config('database.connections.pgsql_direct', []);
+        $directUrl = $direct['url'] ?? null;
+        $directConfigured = $this->hasPostgresUrl($direct)
+            && NeonDatabaseUrl::isDirect(is_string($directUrl) ? $directUrl : null);
+        $sslmodeRequired = $directConfigured && $this->requiresSsl($direct);
+        $directHost = $this->host($direct);
+        $targetNotLocal = $directConfigured && ! $this->isLocalHost($directHost);
+        $targetIsNeon = $targetNotLocal && $this->isNeonHost($directHost);
+        $connectionCanConnect = false;
+        $rolesEmpty = false;
+        $permissionsEmpty = false;
+        $ownerExists = false;
+        $readChecksCompleted = false;
+        $channelBindingUnsupported = false;
 
-        $pooledConfigured = $this->hasPostgresUrl($pooled);
-        $directConfigured = $this->hasPostgresUrl($direct);
-        $sslmodeRequired = $pooledConfigured
+        if (
+            $this->option('database') === 'pgsql_direct'
             && $directConfigured
-            && $this->requiresSsl($pooled)
-            && $this->requiresSsl($direct);
-        $targetNotLocal = $pooledConfigured
-            && $directConfigured
-            && ! $this->isLocalHost($this->host($pooled))
-            && ! $this->isLocalHost($this->host($direct));
-        $targetIsNeon = $targetNotLocal
-            && $this->isNeonHost($this->host($pooled))
-            && $this->isNeonHost($this->host($direct));
-        $selectedConnectionIsDirect = $this->option('database') === 'pgsql_direct';
+            && $sslmodeRequired
+            && $targetIsNeon
+        ) {
+            try {
+                $connection = DB::connection('pgsql_direct');
+                $connection->getPdo();
+                $connectionCanConnect = true;
+            } catch (ConnectionException|PDOException $exception) {
+                $channelBindingUnsupported = $this->isChannelBindingUnsupported($exception);
+            }
 
-        $this->line('pooled_connection_configured='.($pooledConfigured ? 'true' : 'false'));
+            if ($connectionCanConnect) {
+                try {
+                    $schema = $connection->getSchemaBuilder();
+                    $rolesEmpty = ! $schema->hasTable('roles')
+                        || $connection->table('roles')->count() === 0;
+                    $permissionsEmpty = ! $schema->hasTable('permissions')
+                        || $connection->table('permissions')->count() === 0;
+                    $ownerEmail = config('app.owner_email');
+                    $ownerExists = is_string($ownerEmail)
+                        && filter_var($ownerEmail, FILTER_VALIDATE_EMAIL) !== false
+                        && $schema->hasTable('users')
+                        && $connection->table('users')->where('email', $ownerEmail)->exists();
+                    $readChecksCompleted = true;
+                } catch (ConnectionException|PDOException) {
+                    $readChecksCompleted = false;
+                }
+            }
+        }
+
         $this->line('direct_connection_configured='.($directConfigured ? 'true' : 'false'));
         $this->line('sslmode_require='.($sslmodeRequired ? 'true' : 'false'));
         $this->line('target_not_local='.($targetNotLocal ? 'true' : 'false'));
         $this->line('target_is_neon='.($targetIsNeon ? 'true' : 'false'));
-        $this->line('selected_connection_is_direct='.($selectedConnectionIsDirect ? 'true' : 'false'));
-
-        if (! $pooledConfigured || ! $directConfigured || ! $sslmodeRequired || ! $targetIsNeon || ! $selectedConnectionIsDirect) {
-            $this->line('connection_can_connect=false');
-
-            return self::FAILURE;
-        }
-
-        try {
-            $connection = DB::connection('pgsql_direct');
-            $connection->getPdo();
-        } catch (ConnectionException|PDOException $exception) {
-            $this->line('connection_can_connect=false');
-            $this->line('connection_error_details_suppressed=true');
-
-            return self::FAILURE;
-        }
-
-        $this->line('connection_can_connect=true');
-
-        try {
-            $schema = $connection->getSchemaBuilder();
-            $rolesEmpty = ! $schema->hasTable('roles')
-                || $connection->table('roles')->count() === 0;
-            $permissionsEmpty = ! $schema->hasTable('permissions')
-                || $connection->table('permissions')->count() === 0;
-            $ownerEmail = config('app.owner_email');
-            $ownerExists = is_string($ownerEmail)
-                && filter_var($ownerEmail, FILTER_VALIDATE_EMAIL) !== false
-                && $schema->hasTable('users')
-                && $connection->table('users')->where('email', $ownerEmail)->exists();
-        } catch (ConnectionException|PDOException $exception) {
-            $this->line('read_checks_completed=false');
-            $this->line('read_error_details_suppressed=true');
-
-            return self::FAILURE;
-        }
-
+        $this->line('connection_can_connect='.($connectionCanConnect ? 'true' : 'false'));
         $this->line('roles_table_empty='.($rolesEmpty ? 'true' : 'false'));
         $this->line('permissions_table_empty='.($permissionsEmpty ? 'true' : 'false'));
         $this->line('owner_email_exists='.($ownerExists ? 'true' : 'false'));
-        $this->line('read_checks_completed=true');
 
-        return self::SUCCESS;
+        if ($channelBindingUnsupported) {
+            $this->line('sanitized_error=Current PDO_PGSQL/libpq rejected channel_binding=require; connection details suppressed.');
+        }
+
+        return $directConfigured
+            && $sslmodeRequired
+            && $targetNotLocal
+            && $targetIsNeon
+            && $connectionCanConnect
+            && $readChecksCompleted
+            ? self::SUCCESS
+            : self::FAILURE;
     }
 
     /**
@@ -136,5 +139,18 @@ class NeonPreflight extends Command
     private function isNeonHost(?string $host): bool
     {
         return is_string($host) && str_ends_with($host, '.neon.tech');
+    }
+
+    private function isChannelBindingUnsupported(ConnectionException|PDOException $exception): bool
+    {
+        $message = strtolower($exception->getMessage());
+
+        return str_contains($message, 'channel_binding')
+            && (
+                str_contains($message, 'invalid connection option')
+                || str_contains($message, 'unsupported')
+                || str_contains($message, 'unrecognized')
+                || str_contains($message, 'unknown option')
+            );
     }
 }

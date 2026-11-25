@@ -243,6 +243,8 @@ LOG_CHANNEL=stderr
 
 DB_CONNECTION=pgsql
 DB_URL=postgresql://neondb_owner:PASSWORD@ep-...neon.tech/neondb?sslmode=require
+# Optional when DB_URL is direct; required if DB_URL uses a pooler.
+DB_DIRECT_URL=YOUR_NEON_DIRECT_CONNECTION_STRING
 DB_HOST=ep-your-host.ap-southeast-1.aws.neon.tech
 DB_PORT=5432
 DB_DATABASE=neondb
@@ -288,8 +290,27 @@ Create separate Vercel projects for the two frontends:
 | Customer storefront | `user-frontend` |
 | Admin dashboard | `admin-frontend` |
 
-Set `NEXT_PUBLIC_API_URL` and `LARAVEL_API_ORIGIN` to the public Laravel API origin.
-Set the backend's `FRONTEND_USER_URL`, `FRONTEND_ADMIN_URL`, and
+For the `user-frontend` Vercel project, configure these environment variable
+names:
+
+- `LARAVEL_API_ORIGIN`
+- `NEXT_PUBLIC_API_URL`
+- `NEXT_PUBLIC_SITE_URL`
+
+`LARAVEL_API_ORIGIN` is the backend origin used by server-side route handlers;
+those handlers append `/api/...`. `NEXT_PUBLIC_API_URL` is the API base used by
+the browser client and includes `/api/v1`. `NEXT_PUBLIC_SITE_URL` supplies the
+storefront metadata base URL.
+
+The storefront requests public products from `GET /api/v1/catalog/products`.
+`catalog-api.ts` calls the Laravel API origin directly, using
+`LARAVEL_API_ORIGIN` first and `NEXT_PUBLIC_API_URL` as a fallback. The Next.js
+route `/api/proxy/v1/catalog/products` also forwards to that public catalog
+endpoint, but the product listing does not call the proxy route. Laravel's
+`GET /api/v1/products` is not the public catalog endpoint.
+
+Vercel supplies `NODE_ENV` automatically. Set the backend's
+`FRONTEND_USER_URL`, `FRONTEND_ADMIN_URL`, and
 `SANCTUM_STATEFUL_DOMAINS` to the two deployed frontend domains. Redeploy after
 changing project roots or environment variables. Never use `localhost:8000` as
 the production API origin.

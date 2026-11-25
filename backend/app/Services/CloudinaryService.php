@@ -262,10 +262,10 @@ class CloudinaryService
     private function httpOptions(): array
     {
         $caBundle = trim((string) config('services.cloudinary.ca_bundle', ''));
-        if ($caBundle !== '' && ! is_file($caBundle)) {
-            throw new RuntimeException('Configured Cloudinary CA bundle file is missing.');
+        if ($caBundle === '' || ! is_file($caBundle) || ! is_readable($caBundle)) {
+            return ['verify' => true];
         }
 
-        return ['verify' => $caBundle !== '' ? $caBundle : true];
+        return ['verify' => $caBundle];
     }
 }

@@ -1,7 +1,14 @@
 <?php
 
+use App\Support\NeonDatabaseUrl;
 use Illuminate\Support\Str;
 use Pdo\Mysql;
+
+$runtimeDatabaseUrl = env('DB_URL');
+$migrationDatabaseUrl = NeonDatabaseUrl::resolveMigrationUrl(
+    env('DB_DIRECT_URL'),
+    is_string($runtimeDatabaseUrl) ? $runtimeDatabaseUrl : null,
+);
 
 return [
 
@@ -106,7 +113,7 @@ return [
 
         'pgsql_direct' => [
             'driver' => 'pgsql',
-            'url' => env('DB_DIRECT_URL'),
+            'url' => $migrationDatabaseUrl,
             'host' => env('DB_DIRECT_HOST', '127.0.0.1'),
             'port' => env('DB_DIRECT_PORT', '5432'),
             'database' => env('DB_DIRECT_DATABASE', 'laravel'),

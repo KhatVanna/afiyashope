@@ -75,6 +75,28 @@ class CloudinaryServiceTest extends TestCase
         });
     }
 
+    public function test_missing_optional_ca_bundle_uses_the_system_ca_store(): void
+    {
+        config([
+            'services.cloudinary.ca_bundle' => storage_path('testing/missing-ca-bundle.pem'),
+        ]);
+        Http::fake([
+            '*' => Http::response([
+                'secure_url' => 'https://res.cloudinary.com/demo-cloud/image/upload/test-image.jpg',
+                'public_id' => 'test-image',
+            ]),
+        ]);
+
+        $asset = app(CloudinaryService::class)->uploadLocalFile(
+            __FILE__,
+            'test-image',
+            'test-folder',
+        );
+
+        $this->assertSame('test-image', $asset['public_id']);
+        Http::assertSentCount(1);
+    }
+
     public function test_extract_public_id_preserves_folder_after_delivery_transformations(): void
     {
         $publicId = app(CloudinaryService::class)->extractPublicIdFromUrl(

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
 import { ProductDetailView } from "@/components/product/product-detail-view";
 import { fetchProductBySlug } from "@/lib/catalog-api";
 
@@ -15,6 +16,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     if (!result) {
       return { title: "Product not found" };
     }
+    if ("error" in result) return { title: "Product" };
 
     return {
       title: result.product.name,
@@ -34,23 +36,22 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     result = await fetchProductBySlug(slug);
   } catch {
     return (
-      <div className="mx-auto flex min-h-[50vh] w-full max-w-3xl flex-col items-center justify-center px-4 py-16 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Product temporarily unavailable</h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          We could not load this product right now. Please refresh in a moment.
-        </p>
-        <a
-          href="/products"
-          className="mt-6 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
-        >
-          Back to shop
-        </a>
+      <div className="mx-auto w-full max-w-3xl px-4 py-16">
+        <CatalogErrorMessage />
       </div>
     );
   }
 
   if (!result) {
     notFound();
+  }
+
+  if ("error" in result) {
+    return (
+      <div className="mx-auto w-full max-w-3xl px-4 py-16">
+        <CatalogErrorMessage />
+      </div>
+    );
   }
 
   return <ProductDetailView product={result.product} related={result.related} />;

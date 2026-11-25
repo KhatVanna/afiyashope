@@ -29,17 +29,14 @@ class NeonPreflightTest extends TestCase
         $this->useSqliteForPreflightProbe();
 
         $this->artisan('neon:preflight', ['--database' => 'pgsql_direct'])
-            ->expectsOutput('pooled_connection_configured=true')
             ->expectsOutput('direct_connection_configured=true')
             ->expectsOutput('sslmode_require=true')
             ->expectsOutput('target_not_local=true')
             ->expectsOutput('target_is_neon=true')
-            ->expectsOutput('selected_connection_is_direct=true')
             ->expectsOutput('connection_can_connect=true')
             ->expectsOutput('roles_table_empty=true')
             ->expectsOutput('permissions_table_empty=true')
             ->expectsOutput('owner_email_exists=true')
-            ->expectsOutput('read_checks_completed=true')
             ->assertExitCode(0);
     }
 
@@ -54,9 +51,33 @@ class NeonPreflightTest extends TestCase
         $this->useSqliteForPreflightProbe();
 
         $this->artisan('neon:preflight', ['--database' => 'pgsql_direct'])
+            ->expectsOutput('direct_connection_configured=true')
+            ->expectsOutput('sslmode_require=true')
             ->expectsOutput('target_not_local=false')
             ->expectsOutput('target_is_neon=false')
             ->expectsOutput('connection_can_connect=false')
+            ->expectsOutput('roles_table_empty=false')
+            ->expectsOutput('permissions_table_empty=false')
+            ->expectsOutput('owner_email_exists=false')
+            ->assertExitCode(1);
+    }
+
+    public function test_preflight_refuses_a_pooled_direct_connection_without_connecting(): void
+    {
+        config([
+            'database.connections.pgsql_direct.driver' => 'pgsql',
+            'database.connections.pgsql_direct.url' => 'postgresql://ep-pooler.neon.tech/app?sslmode=require',
+        ]);
+
+        $this->artisan('neon:preflight', ['--database' => 'pgsql_direct'])
+            ->expectsOutput('direct_connection_configured=false')
+            ->expectsOutput('sslmode_require=false')
+            ->expectsOutput('target_not_local=false')
+            ->expectsOutput('target_is_neon=false')
+            ->expectsOutput('connection_can_connect=false')
+            ->expectsOutput('roles_table_empty=false')
+            ->expectsOutput('permissions_table_empty=false')
+            ->expectsOutput('owner_email_exists=false')
             ->assertExitCode(1);
     }
 

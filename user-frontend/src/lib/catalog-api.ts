@@ -26,6 +26,33 @@ type ApiCategory = {
   product_count?: number;
 };
 
+export type CatalogListResult<T> = {
+  items: T[];
+  error: boolean;
+};
+
+export type CatalogProductsResult = {
+  items: CatalogProduct[];
+  total: number;
+  lastPage: number;
+  page: number;
+  error: boolean;
+};
+
+export type CatalogProductDetailResult =
+  | { product: CatalogProduct; related: CatalogProduct[] }
+  | { error: true }
+  | null;
+
+class CatalogApiFailure extends Error {
+  constructor(
+    readonly status: number,
+    readonly endpoint: string
+  ) {
+    super(`Catalog request failed (${status}) at ${endpoint}`);
+  }
+}
+
 function apiOrigin(): string {
   return (
     process.env.LARAVEL_API_ORIGIN ??
@@ -34,20 +61,53 @@ function apiOrigin(): string {
   );
 }
 
-async function catalogFetch<T>(path: string): Promise<T> {
-  const response = await fetch(`${apiOrigin()}/api/v1${path}`, {
-    headers: { Accept: "application/json" },
-    next: { revalidate: 60 },
+function endpointPath(path: string): string {
+  const pathname = path.split("?")[0] || "/";
+  const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
+
+  return normalizedPath.replace(
+    /^\/catalog\/products\/[^/]+$/,
+    "/catalog/products/:slug"
+  );
+}
+
+function logCatalogFailure(status: number, endpoint: string): void {
+  console.error("[catalog-api] request failed", {
+    status,
+    endpoint: endpointPath(endpoint),
   });
+}
 
-  const payload = (await response.json()) as ApiResponse<T>;
+async function catalogFetch<T>(path: string): Promise<T> {
+  const endpoint = endpointPath(path);
+  let response: Response;
 
-  if (!response.ok || payload.success !== true) {
-    const message =
-      payload.success === false
-        ? payload.message
-        : `Catalog request failed (${response.status})`;
-    throw new Error(message);
+  try {
+    response = await fetch(`${apiOrigin()}/api/v1${path}`, {
+      headers: { Accept: "application/json" },
+      next: { revalidate: 60 },
+    });
+  } catch {
+    logCatalogFailure(0, endpoint);
+    throw new CatalogApiFailure(0, endpoint);
+  }
+
+  if (!response.ok) {
+    logCatalogFailure(response.status, endpoint);
+    throw new CatalogApiFailure(response.status, endpoint);
+  }
+
+  let payload: ApiResponse<T>;
+  try {
+    payload = (await response.json()) as ApiResponse<T>;
+  } catch {
+    logCatalogFailure(response.status, endpoint);
+    throw new CatalogApiFailure(response.status, endpoint);
+  }
+
+  if (payload.success !== true) {
+    logCatalogFailure(response.status, endpoint);
+    throw new CatalogApiFailure(response.status, endpoint);
   }
 
   return payload.data;
@@ -83,19 +143,26 @@ export function mapApiProduct(product: ApiProduct): CatalogProduct {
   };
 }
 
-export async function fetchCategories(): Promise<CatalogCategory[]> {
+export async function fetchCategories(): Promise<CatalogListResult<CatalogCategory>> {
   try {
     const data = await catalogFetch<{ items: ApiCategory[] }>("/catalog/categories");
 
-    return (data.items ?? []).map((category) => ({
-      id: String(category.id),
-      name: category.name,
-      slug: category.slug,
-      image: category.image || "/images/products/no-product-image.svg",
-      productCount: Number(category.product_count ?? 0),
-    }));
-  } catch {
-    return [];
+    return {
+      items: (data.items ?? []).map((category) => ({
+        id: String(category.id),
+        name: category.name,
+        slug: category.slug,
+        image: category.image || "/images/products/no-product-image.svg",
+        productCount: Number(category.product_count ?? 0),
+      })),
+      error: false,
+    };
+  } catch (error) {
+    if (!(error instanceof CatalogApiFailure)) {
+      throw error;
+    }
+
+    return { items: [], error: true };
   }
 }
 
@@ -106,7 +173,7 @@ export async function fetchProducts(params: {
   page?: number;
   perPage?: number;
   featured?: boolean;
-}): Promise<{ items: CatalogProduct[]; total: number; lastPage: number; page: number }> {
+}): Promise<CatalogProductsResult> {
   try {
     const search = new URLSearchParams();
     if (params.q) search.set("q", params.q);
@@ -127,49 +194,44 @@ export async function fetchProducts(params: {
       total: data.meta?.total ?? 0,
       lastPage: data.meta?.last_page ?? 1,
       page: data.meta?.current_page ?? 1,
+      error: false,
     };
-  } catch {
-    return { items: [], total: 0, lastPage: 1, page: 1 };
+  } catch (error) {
+    if (!(error instanceof CatalogApiFailure)) {
+      throw error;
+    }
+
+    return { items: [], total: 0, lastPage: 1, page: 1, error: true };
   }
 }
 
 export async function fetchProductBySlug(
   slug: string
-): Promise<{ product: CatalogProduct; related: CatalogProduct[] } | null> {
+): Promise<CatalogProductDetailResult> {
+  const endpoint = `/catalog/products/${encodeURIComponent(slug)}`;
+
   try {
-    const response = await fetch(
-      `${apiOrigin()}/api/v1/catalog/products/${encodeURIComponent(slug)}`,
-      {
-        headers: { Accept: "application/json" },
-        next: { revalidate: 60 },
-      }
-    );
-
-    if (response.status === 404) {
-      return null;
-    }
-
-    const payload = (await response.json()) as ApiResponse<{
+    const data = await catalogFetch<{
       product: ApiProduct;
       related: ApiProduct[];
-    }>;
+    }>(endpoint);
 
-    if (!response.ok || payload.success !== true || !payload.data?.product) {
-      throw new Error(
-        payload.success === false
-          ? payload.message
-          : `Product request failed (${response.status})`
-      );
+    if (!data?.product) {
+      logCatalogFailure(200, endpoint);
+
+      return { error: true };
     }
 
     return {
-      product: mapApiProduct(payload.data.product),
-      related: (payload.data.related ?? []).map(mapApiProduct),
+      product: mapApiProduct(data.product),
+      related: (data.related ?? []).map(mapApiProduct),
     };
   } catch (error) {
-    // Transient API failures must not look like a missing product.
-    console.error(`fetchProductBySlug(${slug}) failed`, error);
-    throw error;
+    if (!(error instanceof CatalogApiFailure)) {
+      throw error;
+    }
+
+    return error.status === 404 ? null : { error: true };
   }
 }
 

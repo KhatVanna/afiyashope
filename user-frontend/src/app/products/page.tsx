@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
 import { ProductCard } from "@/components/product/product-card";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchCategories, fetchProducts } from "@/lib/catalog-api";
@@ -25,7 +26,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const sort = params.sort ?? "latest";
   const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
 
-  const [categories, catalog] = await Promise.all([
+  const [categoryResult, catalog] = await Promise.all([
     fetchCategories(),
     fetchProducts({
       q: query || undefined,
@@ -36,6 +37,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     }),
   ]);
 
+  const categories = categoryResult.items;
   const total = catalog.total;
   const totalPages = Math.max(1, catalog.lastPage);
   const currentPage = Math.min(page, totalPages);
@@ -71,12 +73,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight text-navy">{categoryName}</h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {total.toLocaleString()} product{total === 1 ? "" : "s"}
-              {query ? ` matching “${params.q}”` : ""}
-              {" · "}
-              Page {currentPage} of {totalPages}
-            </p>
+            {catalog.error ? (
+              <CatalogErrorMessage className="mt-3" />
+            ) : (
+              <p className="mt-2 text-sm text-muted-foreground">
+                {total.toLocaleString()} product{total === 1 ? "" : "s"}
+                {query ? ` matching “${params.q}”` : ""}
+                {" · "}
+                Page {currentPage} of {totalPages}
+              </p>
+            )}
           </div>
         </div>
       </ScrollReveal>
@@ -95,7 +101,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                     All ({allCount})
                   </Link>
                 </li>
-                {categories.map((item) => (
+                {categoryResult.error ? (
+                  <li>
+                    <CatalogErrorMessage className="px-3 py-2 text-left text-xs" />
+                  </li>
+                ) : categories.map((item) => (
                   <li key={item.id}>
                     <Link
                       href={`/products?category=${item.slug}`}
@@ -142,7 +152,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         </ScrollReveal>
 
         <div>
-          {pageItems.length === 0 ? (
+          {catalog.error ? null : pageItems.length === 0 ? (
             <ScrollReveal>
               <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center">
                 <p className="text-lg font-medium">No products found</p>
