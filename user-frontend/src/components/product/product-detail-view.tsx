@@ -98,24 +98,16 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
           </p>
         </div>
 
-        <div className="border-t border-border pt-8">
-          <h3 className="text-xl font-semibold text-navy">{t("Highlights", "ចំណុចសំខាន់ៗ")}</h3>
-          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-            {product.brand ? (
+        {product.brand ? (
+          <div className="border-t border-border pt-8">
+            <h3 className="text-xl font-semibold text-navy">{t("Highlights", "ចំណុចសំខាន់ៗ")}</h3>
+            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
               <li>
                 <strong className="text-foreground">{t("Trusted brand:", "ម៉ាកដែលគួរឱ្យទុកចិត្ត៖")}</strong> {product.brand}
               </li>
-            ) : null}
-            <li>
-              <strong className="text-foreground">{t("Fast delivery options", "ជម្រើសដឹកជញ្ជូនរហ័ស")}</strong>{" "}
-              {t("available at checkout", "មាននៅពេលទូទាត់")}
-            </li>
-            <li>
-              <strong className="text-foreground">{t("Easy returns", "ការប្រគល់ទំនិញវិញងាយស្រួល")}</strong>{" "}
-              {t("on eligible purchases", "សម្រាប់ការទិញដែលមានលក្ខខណ្ឌ")}
-            </li>
-          </ul>
-        </div>
+            </ul>
+          </div>
+        ) : null}
       </ScrollReveal>
 
       {related.length > 0 ? (
