@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
   Loader2,
@@ -35,6 +35,13 @@ const EMPTY_FORM: ProductFormValues = {
   discount: "",
   currency: "",
   stock_quantity: "0",
+};
+
+const MAX_PRODUCT_IMAGES = 5;
+
+type SelectedProductImage = {
+  file: File;
+  preview: string;
 };
 
 function primaryImageUrl(product?: AdminProduct | null): string | null {
@@ -130,8 +137,12 @@ export function ProductsManager() {
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [existingImages, setExistingImages] = useState<
+    NonNullable<AdminProduct["images"]>
+  >([]);
+  const [imageFiles, setImageFiles] = useState<SelectedProductImage[]>([]);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const imagePreviewUrls = useRef(new Set<string>());
 
   const loadOptions = useCallback(async () => {
     const { ok, payload } = await adminApi<CatalogOptionsData>(
@@ -179,21 +190,60 @@ export function ProductsManager() {
     void loadProducts();
   }, [loadProducts]);
 
+  useEffect(
+    () => () => {
+      imagePreviewUrls.current.forEach((url) => URL.revokeObjectURL(url));
+    },
+    []
+  );
+
+  function clearSelectedImages() {
+    imageFiles.forEach(({ preview }) => {
+      URL.revokeObjectURL(preview);
+      imagePreviewUrls.current.delete(preview);
+    });
+    setImageFiles([]);
+  }
+
   function openCreate() {
     setEditing(null);
     setForm(EMPTY_FORM);
     setFormErrors({});
-    setImageFile(null);
-    setImagePreview(null);
+    setExistingImages([]);
+    clearSelectedImages();
+    setImageError(null);
     setModalOpen(true);
   }
 
-  function openEdit(product: AdminProduct) {
-    setEditing(product);
-    setForm(toFormValues(product));
+  async function openEdit(product: AdminProduct) {
+    setError(null);
+    const { ok, payload } = await adminApi<{ product: AdminProduct }>(
+      `/admin/products/${product.id}`
+    );
+    if (!ok || !payload.success) {
+      setError(payload.message || "Unable to load product images.");
+      return;
+    }
+
+    const fullProduct = payload.data.product;
+    setEditing(fullProduct);
+    setForm(toFormValues(fullProduct));
     setFormErrors({});
-    setImageFile(null);
-    setImagePreview(primaryImageUrl(product));
+    setExistingImages(
+      fullProduct.images?.length
+        ? fullProduct.images
+        : fullProduct.primary_image
+          ? [
+              {
+                ...fullProduct.primary_image,
+                is_primary: true,
+                sort_order: 0,
+              },
+            ]
+          : []
+    );
+    clearSelectedImages();
+    setImageError(null);
     setModalOpen(true);
   }
 
@@ -201,21 +251,25 @@ export function ProductsManager() {
     setModalOpen(false);
     setEditing(null);
     setFormErrors({});
-    setImageFile(null);
-    setImagePreview(null);
+    clearSelectedImages();
+    setImageError(null);
   }
 
-  function onImageSelected(file: File | null) {
-    setImageFile(file);
-    if (!file) {
-      setImagePreview(primaryImageUrl(editing));
+  function onImagesSelected(files: File[]) {
+    const availableSlots =
+      MAX_PRODUCT_IMAGES - existingImages.length - imageFiles.length;
+    if (files.length > availableSlots) {
+      setImageError(t("Maximum 5 images per product."));
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(typeof reader.result === "string" ? reader.result : null);
-    };
-    reader.readAsDataURL(file);
+
+    const selectedImages = files.map((file) => {
+      const preview = URL.createObjectURL(file);
+      imagePreviewUrls.current.add(preview);
+      return { file, preview };
+    });
+    setImageFiles((current) => [...current, ...selectedImages]);
+    setImageError(null);
   }
 
   async function onSubmit(event: React.FormEvent) {
@@ -234,6 +288,7 @@ export function ProductsManager() {
     setFormErrors({});
     setNotice(null);
     setError(null);
+    setImageError(null);
 
     const body = toPayload(form);
     const path = editing
@@ -260,24 +315,36 @@ export function ProductsManager() {
 
     const savedProduct = payload.data.product;
 
-    if (imageFile) {
-      try {
-        const uploaded = await uploadProductImageToCloudinary(imageFile);
-        await attachProductImage(
+    try {
+      for (const [index, selectedImage] of imageFiles.entries()) {
+        const uploaded = await uploadProductImageToCloudinary(
+          selectedImage.file
+        );
+        const attached = await attachProductImage(
           savedProduct.id,
           uploaded.secure_url,
-          form.name.trim() || undefined
+          form.name.trim() || undefined,
+          existingImages.length === 0 && index === 0
         );
-      } catch (uploadError) {
-        setSaving(false);
-        setError(
-          uploadError instanceof Error
-            ? uploadError.message
-            : "Product saved, but image upload failed."
-        );
-        await loadProducts();
-        return;
+        if (attached.success) {
+          setExistingImages((current) => [...current, attached.data.image]);
+          setImageFiles((current) =>
+            current.filter((image) => image !== selectedImage)
+          );
+          URL.revokeObjectURL(selectedImage.preview);
+          imagePreviewUrls.current.delete(selectedImage.preview);
+        }
       }
+    } catch (uploadError) {
+      const uploadMessage =
+        uploadError instanceof Error
+          ? uploadError.message
+          : "Product saved, but image upload failed.";
+      await loadProducts();
+      setSaving(false);
+      setImageError(uploadMessage);
+      setError(t("Product saved, but some images could not be uploaded."));
+      return;
     }
 
     setSaving(false);
@@ -548,7 +615,7 @@ export function ProductsManager() {
                         <div className="flex justify-end gap-2">
                           <button
                             type="button"
-                            onClick={() => openEdit(product)}
+                            onClick={() => void openEdit(product)}
                             className="rounded-lg border border-[#d6e8f2] p-2 text-slate-600 hover:bg-[#f1f9fd]"
                             aria-label={`${t("Edit")} ${product.name}`}
                           >
@@ -627,39 +694,88 @@ export function ProductsManager() {
             <form onSubmit={onSubmit} className="space-y-5 px-5 py-5">
               <div className="rounded-xl border border-dashed border-[#d7e3f4] bg-[#f8fbff] p-4">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
-                    <ProductImage
-                      src={imagePreview}
-                      alt={t("Product preview")}
-                      fill
-                      className="object-cover"
-                      sizes="112px"
-                    />
+                  <div className="grid shrink-0 grid-cols-3 gap-2 sm:grid-cols-5">
+                    {existingImages.map((image) => (
+                      <div
+                        key={`existing-${image.id}`}
+                        className="relative h-16 w-16 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200"
+                      >
+                        <ProductImage
+                          src={image.url ?? image.path ?? null}
+                          alt={image.alt_text ?? t("Product preview")}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </div>
+                    ))}
+                    {imageFiles.map((image, index) => (
+                      <div
+                        key={`${image.file.name}-${index}`}
+                        className="relative h-16 w-16 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200"
+                      >
+                        <ProductImage
+                          src={image.preview}
+                          alt={image.file.name}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </div>
+                    ))}
+                    {existingImages.length + imageFiles.length === 0 ? (
+                      <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+                        <ProductImage
+                          src={primaryImageUrl(editing)}
+                          alt={t("Product preview")}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </div>
+                    ) : null}
                   </div>
                   <div className="min-w-0 flex-1 space-y-2">
                     <p className="text-sm font-medium text-slate-700">
-                      {t("Product image (Cloudinary)")}
+                      {t("Product images (up to 5)")}
                     </p>
                     <p className="text-xs text-slate-500">
-                      {t("JPG, PNG, or WebP. Uploads to your Cloudinary cloud")}{" "}
+                      {t("JPG, PNG, WebP, or GIF. Uploads to your Cloudinary cloud")}{" "}
                       <span className="font-semibold">Afiya Shope</span>.
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      {existingImages.length + imageFiles.length}/
+                      {MAX_PRODUCT_IMAGES} {t("images")}
                     </p>
                     <input
                       type="file"
                       accept="image/png,image/jpeg,image/webp,image/gif"
-                      onChange={(event) =>
-                        onImageSelected(event.target.files?.[0] ?? null)
+                      multiple
+                      disabled={
+                        saving ||
+                        existingImages.length + imageFiles.length >=
+                          MAX_PRODUCT_IMAGES
                       }
+                      onChange={(event) => {
+                        void onImagesSelected(
+                          Array.from(event.target.files ?? [])
+                        );
+                        event.target.value = "";
+                      }}
                       className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0077b6] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
                     />
-                    {imageFile ? (
+                    {imageFiles.length ? (
                       <button
                         type="button"
-                        onClick={() => onImageSelected(null)}
+                        onClick={clearSelectedImages}
+                        disabled={saving}
                         className="text-xs font-medium text-[#fa896b]"
                       >
-                        {t("Clear selected file")}
+                        {t("Clear selected images")}
                       </button>
+                    ) : null}
+                    {imageError ? (
+                      <p className="text-xs text-red-600">{imageError}</p>
                     ) : null}
                   </div>
                 </div>

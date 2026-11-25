@@ -13,9 +13,12 @@ use App\Support\CatalogCache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ProductImageController extends Controller
 {
+    private const MAX_IMAGES_PER_PRODUCT = 5;
+
     public function __construct(private readonly CloudinaryService $cloudinary) {}
 
     public function store(Request $request, Product $product): JsonResponse
@@ -40,16 +43,23 @@ class ProductImageController extends Controller
             : ! $product->images()->exists();
 
         $image = DB::transaction(function () use ($product, $data, $isPrimary, $path, $url, $publicId) {
-            if ($isPrimary) {
-                $product->images()->update(['is_primary' => false]);
+            $lockedProduct = Product::query()->lockForUpdate()->findOrFail($product->id);
+            if ($lockedProduct->images()->count() >= self::MAX_IMAGES_PER_PRODUCT) {
+                throw ValidationException::withMessages([
+                    'images' => 'A product can have up to 5 images.',
+                ]);
             }
 
-            return $product->images()->create([
+            if ($isPrimary) {
+                $lockedProduct->images()->update(['is_primary' => false]);
+            }
+
+            return $lockedProduct->images()->create([
                 'path' => $path,
                 'url' => $url,
                 'cloudinary_public_id' => $publicId,
                 'alt_text' => $data['alt_text'] ?? null,
-                'sort_order' => $data['sort_order'] ?? (($product->images()->max('sort_order') ?? -1) + 1),
+                'sort_order' => $data['sort_order'] ?? (($lockedProduct->images()->max('sort_order') ?? -1) + 1),
                 'is_primary' => $isPrimary,
             ]);
         });

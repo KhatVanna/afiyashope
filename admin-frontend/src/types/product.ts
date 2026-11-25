@@ -39,6 +39,14 @@ export type AdminProduct = {
     url?: string | null;
     alt_text: string | null;
   } | null;
+  images?: Array<{
+    id: number;
+    path?: string | null;
+    url?: string | null;
+    alt_text: string | null;
+    is_primary: boolean;
+    sort_order: number;
+  }>;
 };
 
 export type ProductFormValues = {

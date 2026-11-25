@@ -92,7 +92,12 @@ class ProductController extends Controller
     {
         $this->ensurePermission($request->user(), 'products.view');
 
-        $product->load(['category:id,name,slug', 'brand:id,name,slug', 'primaryImage']);
+        $product->load([
+            'category:id,name,slug',
+            'brand:id,name,slug',
+            'primaryImage',
+            'images' => fn ($query) => $query->orderBy('sort_order')->orderBy('id'),
+        ]);
 
         return ApiResponse::success([
             'product' => new ProductResource($product),

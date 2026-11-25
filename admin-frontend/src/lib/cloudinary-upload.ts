@@ -18,6 +18,15 @@ export type CloudinaryUploadResult = {
   format?: string;
 };
 
+type AttachedProductImage = {
+  id: number;
+  path: string;
+  url: string;
+  alt_text: string | null;
+  is_primary: boolean;
+  sort_order: number;
+};
+
 export async function uploadProductImageToCloudinary(
   file: File
 ): Promise<CloudinaryUploadResult> {
@@ -57,16 +66,20 @@ export async function uploadProductImageToCloudinary(
 export async function attachProductImage(
   productId: number,
   path: string,
-  altText?: string
-): Promise<ApiResponse<{ product: unknown }>> {
-  const { ok, payload } = await adminApi<{ product: unknown }>(
+  altText?: string,
+  isPrimary = false
+): Promise<ApiResponse<{ product: unknown; image: AttachedProductImage }>> {
+  const { ok, payload } = await adminApi<{
+    product: unknown;
+    image: AttachedProductImage;
+  }>(
     `/admin/products/${productId}/images`,
     {
       method: "POST",
       body: JSON.stringify({
         path,
         alt_text: altText ?? null,
-        is_primary: true,
+        is_primary: isPrimary,
       }),
     }
   );
