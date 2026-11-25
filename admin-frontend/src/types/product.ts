@@ -44,6 +44,7 @@ export type ProductFormValues = {
   sku: string;
   description: string;
   price: string;
+  discount: string;
   stock_quantity: string;
 };
 

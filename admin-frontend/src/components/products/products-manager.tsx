@@ -32,6 +32,7 @@ const EMPTY_FORM: ProductFormValues = {
   sku: "",
   description: "",
   price: "",
+  discount: "",
   stock_quantity: "0",
 };
 
@@ -55,23 +56,34 @@ function canManageCatalog(roleSlugs: string[]) {
 }
 
 function toFormValues(product: AdminProduct): ProductFormValues {
+  const hasDiscount =
+    product.compare_at_price !== null &&
+    product.compare_at_price > product.price;
+
   return {
     category_id: product.category_id?.toString() ?? "",
     name: product.name,
     sku: product.sku,
     description: product.description ?? "",
-    price: String(product.price),
+    price: String(hasDiscount ? product.compare_at_price : product.price),
+    discount: hasDiscount ? String(product.price) : "",
     stock_quantity: String(product.stock_quantity),
   };
 }
 
 function toPayload(form: ProductFormValues) {
+  const regularPrice = Number(form.price);
+  const discountPrice = form.discount.trim()
+    ? Number(form.discount)
+    : null;
+
   return {
     category_id: form.category_id ? Number(form.category_id) : null,
     name: form.name.trim(),
     sku: form.sku.trim(),
     description: form.description.trim() || null,
-    price: Number(form.price),
+    price: discountPrice ?? regularPrice,
+    compare_at_price: discountPrice === null ? null : regularPrice,
     stock_quantity: Number(form.stock_quantity),
   };
 }
@@ -199,6 +211,16 @@ export function ProductsManager() {
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
+    const discountPrice = form.discount.trim()
+      ? Number(form.discount)
+      : null;
+    if (discountPrice !== null && discountPrice >= Number(form.price)) {
+      setFormErrors({
+        discount: ["Discounted price must be less than the regular price."],
+      });
+      return;
+    }
+
     setSaving(true);
     setFormErrors({});
     setNotice(null);
@@ -675,6 +697,21 @@ export function ProductsManager() {
                       setForm((current) => ({
                         ...current,
                         price: event.target.value,
+                      }))
+                    }
+                    className={inputClass}
+                  />
+                </Field>
+                <Field label="Discount" error={formErrors.discount?.[0]}>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.discount}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        discount: event.target.value,
                       }))
                     }
                     className={inputClass}
