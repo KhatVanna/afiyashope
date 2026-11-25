@@ -385,6 +385,7 @@ export function ProductsManager() {
             className="h-11 rounded-xl border border-[#d6e8f2] bg-[#f1f9fd] px-3 text-sm text-slate-700 outline-none lg:col-span-3"
           >
             <option value="">{t("All categories")}</option>
+            <option value="uncategorized">{t("Uncategorized")}</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -489,7 +490,13 @@ export function ProductsManager() {
                       {product.sku}
                     </td>
                     <td className="px-4 py-4 text-slate-600">
-                      {product.category?.name ?? "—"}
+                      {product.category?.name ? (
+                        product.category.name
+                      ) : (
+                        <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                          {t("Uncategorized")}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-4 font-semibold text-slate-800">
                       {money(product.price)}

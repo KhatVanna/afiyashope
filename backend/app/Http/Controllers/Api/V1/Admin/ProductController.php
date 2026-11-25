@@ -56,7 +56,9 @@ class ProductController extends Controller
             });
         }
 
-        if ($request->filled('category_id')) {
+        if ($request->query('category_id') === 'uncategorized') {
+            $query->whereNull('category_id');
+        } elseif ($request->filled('category_id')) {
             $query->where('category_id', (int) $request->query('category_id'));
         }
 

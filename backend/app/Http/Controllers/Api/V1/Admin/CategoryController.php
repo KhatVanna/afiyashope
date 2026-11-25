@@ -12,6 +12,7 @@ use App\Support\ApiResponse;
 use App\Support\CatalogCache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
@@ -60,14 +61,13 @@ class CategoryController extends Controller
     {
         Gate::authorize('delete', $category);
 
-        if (Product::withTrashed()->where('category_id', $category->id)->exists()) {
-            return ApiResponse::error(
-                'Cannot delete a category that still has products.',
-                409,
-            );
-        }
+        DB::transaction(function () use ($category): void {
+            Product::withTrashed()
+                ->where('category_id', $category->id)
+                ->update(['category_id' => null]);
 
-        $category->delete();
+            $category->delete();
+        });
         CatalogCache::bust();
 
         return ApiResponse::success(null, 'Category deleted');

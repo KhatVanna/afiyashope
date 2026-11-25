@@ -148,7 +148,10 @@ export function CategoriesManager() {
   }
 
   async function deleteCategory(category: AdminCategory) {
-    if (!window.confirm(t("Delete this category?"))) return;
+    const confirmation = `${t("Delete this category?")}\n${t(
+      "Deleting this category will make {count} products uncategorized."
+    ).replace("{count}", String(category.product_count))}`;
+    if (!window.confirm(confirmation)) return;
 
     setDeletingId(category.id);
     setNotice(null);
@@ -290,9 +293,8 @@ export function CategoriesManager() {
                           <button
                             type="button"
                             onClick={() => void deleteCategory(category)}
-                            disabled={deletingId === category.id || category.product_count > 0}
+                            disabled={deletingId === category.id}
                             aria-label={`${t("Delete")} ${category.name}`}
-                            title={category.product_count > 0 ? t("Cannot delete a category that still has products.") : undefined}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-900 dark:text-red-300 dark:hover:bg-red-950/30"
                           >
                             {deletingId === category.id ? (

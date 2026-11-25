@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Permission;
 use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
@@ -66,7 +67,7 @@ class CategoryFeatureTest extends TestCase
         ]);
     }
 
-    public function test_admin_cannot_delete_a_category_with_active_or_soft_deleted_products(): void
+    public function test_admin_can_delete_a_category_and_uncategorize_active_and_soft_deleted_products(): void
     {
         $admin = $this->userWithRole('admin');
         $category = Category::query()->create([
@@ -86,19 +87,43 @@ class CategoryFeatureTest extends TestCase
 
         $this->actingAs($admin, 'sanctum')
             ->deleteJson('/api/v1/admin/categories/'.$category->id)
-            ->assertStatus(409)
-            ->assertJsonPath('message', 'Cannot delete a category that still has products.');
+            ->assertOk();
 
-        $this->assertDatabaseHas('categories', ['id' => $category->id, 'deleted_at' => null]);
+        $this->assertSoftDeleted('categories', ['id' => $category->id]);
         $this->assertDatabaseHas('products', [
             'id' => $activeProduct->id,
-            'category_id' => $category->id,
+            'category_id' => null,
+            'name' => 'Product active-category-product',
         ]);
         $this->assertDatabaseHas('products', [
             'id' => $deletedProduct->id,
-            'category_id' => $category->id,
+            'category_id' => null,
+            'name' => 'Product deleted-category-product',
         ]);
         $this->assertSoftDeleted('products', ['id' => $deletedProduct->id]);
+
+        $permission = Permission::query()->create([
+            'name' => 'View Products',
+            'slug' => 'products.view',
+            'group' => 'products',
+        ]);
+        $admin->roles()->firstOrFail()->permissions()->attach($permission);
+
+        $this->getJson('/api/v1/admin/products?category_id=uncategorized')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.items')
+            ->assertJsonPath('data.items.0.category_id', null)
+            ->assertJsonPath('data.items.0.category', null);
+
+        $this->getJson('/api/v1/catalog/products?per_page=50')
+            ->assertOk()
+            ->assertJsonPath('data.items.0.category_id', null)
+            ->assertJsonPath('data.items.0.category', null);
+
+        $this->getJson('/api/v1/catalog/products/'.$activeProduct->slug)
+            ->assertOk()
+            ->assertJsonPath('data.product.category_id', null)
+            ->assertJsonPath('data.product.category', null);
     }
 
     public function test_admin_can_delete_an_unused_category(): void
