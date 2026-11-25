@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { adminApi } from "@/lib/admin-api";
+import { ProductImage } from "@/components/product-image";
 import {
   attachProductImage,
   uploadProductImageToCloudinary,
@@ -42,6 +43,14 @@ const EMPTY_FORM: ProductFormValues = {
   meta_title: "",
   meta_description: "",
 };
+
+function primaryImageUrl(product?: AdminProduct | null): string | null {
+  return (
+    product?.primary_image?.url?.trim() ||
+    product?.primary_image?.path?.trim() ||
+    null
+  );
+}
 
 function money(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -196,7 +205,7 @@ export function ProductsManager() {
     setForm(toFormValues(product));
     setFormErrors({});
     setImageFile(null);
-    setImagePreview(product.primary_image?.path ?? null);
+    setImagePreview(primaryImageUrl(product));
     setModalOpen(true);
   }
 
@@ -211,7 +220,7 @@ export function ProductsManager() {
   function onImageSelected(file: File | null) {
     setImageFile(file);
     if (!file) {
-      setImagePreview(editing?.primary_image?.path ?? null);
+      setImagePreview(primaryImageUrl(editing));
       return;
     }
     const reader = new FileReader();
@@ -456,19 +465,15 @@ export function ProductsManager() {
                   >
                     <td className="px-4 py-4">
                       <div className="flex min-w-[220px] items-center gap-3">
-                        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-[#f1f9fd] ring-1 ring-[#d6e8f2]">
-                          {product.primary_image?.path ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              src={product.primary_image.path}
-                              alt={product.primary_image.alt_text ?? product.name}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center text-[10px] text-slate-400">
-                              No img
-                            </div>
-                          )}
+                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+                          <ProductImage
+                            src={primaryImageUrl(product)}
+                            alt={product.primary_image?.alt_text ?? product.name}
+                            fill
+                            compact
+                            className="object-cover"
+                            sizes="48px"
+                          />
                         </div>
                         <div>
                           <p className="font-semibold text-slate-800">
@@ -617,19 +622,14 @@ export function ProductsManager() {
             <form onSubmit={onSubmit} className="space-y-5 px-5 py-5">
               <div className="rounded-xl border border-dashed border-[#d7e3f4] bg-[#f8fbff] p-4">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-white ring-1 ring-[#d6e8f2]">
-                    {imagePreview ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={imagePreview}
-                        alt="Product preview"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">
-                        No image
-                      </div>
-                    )}
+                  <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+                    <ProductImage
+                      src={imagePreview}
+                      alt="Product preview"
+                      fill
+                      className="object-cover"
+                      sizes="112px"
+                    />
                   </div>
                   <div className="min-w-0 flex-1 space-y-2">
                     <p className="text-sm font-medium text-slate-700">

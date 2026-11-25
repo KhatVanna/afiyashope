@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchCategories } from "@/lib/catalog-api";
 import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
-import { ImageWithFallback } from "@/components/product/image-with-fallback";
+import { ProductImage } from "@/components/product-image";
 
 export const metadata: Metadata = {
   title: "Categories",
@@ -44,7 +44,7 @@ export default async function CategoriesPage() {
               className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-sm"
             >
               <div className="relative aspect-[16/10]">
-                <ImageWithFallback
+                <ProductImage
                   src={category.image}
                   alt={category.name}
                   fill

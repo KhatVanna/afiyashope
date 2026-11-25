@@ -32,7 +32,8 @@ export type AdminProduct = {
   brand?: CatalogOption | null;
   primary_image?: {
     id: number;
-    path: string;
+    path?: string | null;
+    url?: string | null;
     alt_text: string | null;
   } | null;
 };

@@ -116,13 +116,12 @@ async function catalogFetch<T>(path: string): Promise<T> {
 export function mapApiProduct(product: ApiProduct): CatalogProduct {
   const imageList = Array.isArray(product.images) ? product.images : [];
   const images = imageList
-    .map((image) => image?.url ?? image?.path)
-    .filter((path): path is string => Boolean(path));
+    .map((image) => [image?.url, image?.path].find((path) => path?.trim()) ?? "")
+    .filter(Boolean);
   const primary =
-    product.primary_image?.url ??
-    product.primary_image?.path ??
-    images[0] ??
-    "/images/products/no-product-image.svg";
+    [product.primary_image?.url, product.primary_image?.path, images[0]].find(
+      (path) => path?.trim()
+    ) ?? "";
 
   return {
     id: String(product.id),
@@ -133,7 +132,7 @@ export function mapApiProduct(product: ApiProduct): CatalogProduct {
     compareAtPrice:
       product.compare_at_price != null ? Number(product.compare_at_price) : undefined,
     image: primary,
-    images: images.length > 0 ? images : [primary],
+    images,
     stockLeft: product.stock_quantity,
     rating: product.average_rating != null ? Number(product.average_rating) : undefined,
     category: product.category?.slug ?? "",
@@ -152,7 +151,7 @@ export async function fetchCategories(): Promise<CatalogListResult<CatalogCatego
         id: String(category.id),
         name: category.name,
         slug: category.slug,
-        image: category.image || "/images/products/no-product-image.svg",
+        image: category.image?.trim() ?? "",
         productCount: Number(category.product_count ?? 0),
       })),
       error: false,

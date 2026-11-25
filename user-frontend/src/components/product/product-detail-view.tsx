@@ -10,6 +10,7 @@ import type { CatalogProduct } from "@/data/demo-catalog.types";
 import { useFormatMoney } from "@/hooks/use-format-money";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
+import { getProductImageUrls } from "@/lib/product-images";
 
 type ProductDetailViewProps = {
   product: CatalogProduct;
@@ -33,8 +34,7 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
         )
       : null;
 
-  const galleryImages =
-    product.images?.length > 0 ? product.images : [product.image];
+  const galleryImages = getProductImageUrls(product);
 
   const maxQuantity =
     typeof product.stockLeft === "number" && product.stockLeft > 0

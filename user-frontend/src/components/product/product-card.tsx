@@ -6,16 +6,19 @@ import { type CatalogProduct } from "@/data/demo-catalog.types";
 import { useFormatMoney } from "@/hooks/use-format-money";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
-import { ImageWithFallback } from "@/components/product/image-with-fallback";
+import { ProductImage } from "@/components/product-image";
+import { getProductImageUrls } from "@/lib/product-images";
 
 type ProductCardProps = {
   product: CatalogProduct;
+  priority?: boolean;
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const formatMoney = useFormatMoney();
   const addItem = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggleItem);
+  const productImages = getProductImageUrls(product);
   const wishlisted = useWishlistStore((state) =>
     state.items.some((item) => item.id === product.id)
   );
@@ -28,16 +31,26 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
-      <div className="relative aspect-square overflow-hidden bg-muted">
+      <div className="relative aspect-[3/4] overflow-hidden bg-slate-100">
         <Link href={`/products/${product.slug}`} className="relative block h-full w-full">
-          <ImageWithFallback
-            src={product.image}
+          <ProductImage
+            src={productImages[0]}
             alt={product.name}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 20vw"
+            priority={priority}
             className="object-contain p-3 transition duration-500 ease-out group-hover:scale-105"
           />
         </Link>
+
+        {productImages.length > 0 ? (
+          <span
+            aria-label={`${productImages.length} photos`}
+            className="absolute bottom-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm"
+          >
+            {productImages.length} photos
+          </span>
+        ) : null}
 
         {discount ? (
           <span className="absolute left-3 top-3 rounded-md bg-accent px-2 py-1 text-xs font-semibold text-accent-foreground">

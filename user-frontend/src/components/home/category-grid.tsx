@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchCategories } from "@/lib/catalog-api";
 import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message";
-import { ImageWithFallback } from "@/components/product/image-with-fallback";
+import { ProductImage } from "@/components/product-image";
 
 export async function CategoryGrid() {
   const result = await fetchCategories();
@@ -35,20 +35,36 @@ export async function CategoryGrid() {
           <ScrollReveal key={category.id} delay={(index % 3) * 90}>
             <Link
               href={`/products?category=${category.slug}`}
-              className="group relative block min-h-48 overflow-hidden rounded-2xl"
+              className="group block overflow-hidden rounded-2xl"
             >
-              <ImageWithFallback
-                src={category.image}
-                alt={category.name}
-                fill
-                sizes="(max-width: 1024px) 50vw, 33vw"
-                className="object-contain p-6 transition duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                <h3 className="text-xl font-semibold">{category.name}</h3>
-                <p className="mt-1 text-sm text-white/80">{category.productCount} products</p>
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <ProductImage
+                  src={category.image}
+                  alt={category.name}
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 33vw"
+                  className="object-contain p-6 transition duration-500 group-hover:scale-105"
+                />
+                {category.image.trim() ? (
+                  <>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                      <h3 className="text-xl font-semibold">{category.name}</h3>
+                      <p className="mt-1 text-sm text-white/80">
+                        {category.productCount} products
+                      </p>
+                    </div>
+                  </>
+                ) : null}
               </div>
+              {!category.image.trim() ? (
+                <div className="border border-t-0 border-slate-200 bg-card p-4">
+                  <h3 className="text-lg font-semibold">{category.name}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {category.productCount} products
+                  </p>
+                </div>
+              ) : null}
             </Link>
           </ScrollReveal>
         ))}

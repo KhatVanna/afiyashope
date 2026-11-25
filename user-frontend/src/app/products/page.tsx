@@ -172,7 +172,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
                 {pageItems.map((product, index) => (
                   <ScrollReveal key={product.id} delay={(index % 5) * 70}>
-                    <ProductCard product={product} />
+                    <ProductCard product={product} priority={index === 0} />
                   </ScrollReveal>
                 ))}
               </div>

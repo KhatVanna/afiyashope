@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { ImageWithFallback } from "@/components/product/image-with-fallback";
+import { ProductImage } from "@/components/product-image";
 
 type ProductGalleryProps = {
   images: string[];
@@ -11,13 +11,13 @@ type ProductGalleryProps = {
 };
 
 export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
-  const gallery = images.length > 0 ? images : [];
+  const gallery = images.filter((image) => typeof image === "string" && image.trim());
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (gallery.length === 0) {
     return (
-      <div className="flex aspect-square items-center justify-center rounded-2xl border border-border bg-muted text-sm text-muted-foreground">
-        No image available
+      <div className="relative aspect-square overflow-hidden rounded-2xl">
+        <ProductImage src={null} alt={alt} fill sizes="(max-width: 1024px) 100vw, 50vw" />
       </div>
     );
   }
@@ -30,38 +30,44 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
   }
 
   return (
-    <div className="grid gap-3 sm:gap-4 lg:grid-cols-[72px_minmax(0,1fr)]">
-      {/* Desktop vertical thumbs */}
-      <div className="hidden max-h-[min(70vh,560px)] flex-col gap-2.5 overflow-y-auto lg:flex">
-        {gallery.map((image, index) => {
-          const isActive = index === activeIndex;
-          return (
-            <button
-              key={`desk-${image}-${index}`}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`View image ${index + 1}`}
-              className={`relative aspect-square w-full shrink-0 overflow-hidden rounded-lg border bg-white transition ${
-                isActive
-                  ? "border-foreground ring-1 ring-foreground"
-                  : "border-border hover:border-foreground/40"
-              }`}
-            >
-              <ImageWithFallback
-                src={image}
-                alt=""
-                fill
-                className="object-contain p-1.5"
-                sizes="72px"
-              />
-            </button>
-          );
-        })}
-      </div>
+    <div
+      className={`grid gap-3 sm:gap-4 ${
+        gallery.length > 1 ? "lg:grid-cols-[72px_minmax(0,1fr)]" : ""
+      }`}
+    >
+      {gallery.length > 1 ? (
+        <div className="hidden max-h-[min(70vh,560px)] flex-col gap-2.5 overflow-y-auto lg:flex">
+          {gallery.map((image, index) => {
+            const isActive = index === activeIndex;
+            return (
+              <button
+                key={`desk-${image}-${index}`}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`View image ${index + 1}`}
+                className={`relative aspect-square w-full shrink-0 overflow-hidden rounded-lg border bg-white transition ${
+                  isActive
+                    ? "border-foreground ring-1 ring-foreground"
+                    : "border-border hover:border-foreground/40"
+                }`}
+              >
+                <ProductImage
+                  src={image}
+                  alt=""
+                  fill
+                  compact
+                  className="object-contain p-1.5"
+                  sizes="72px"
+                />
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
 
       <div className="space-y-3 sm:space-y-4">
         <div className="relative aspect-square overflow-hidden rounded-xl border border-border bg-[#f1f9fd] sm:rounded-2xl">
-          <ImageWithFallback
+          <ProductImage
             key={activeImage}
             src={activeImage}
             alt={alt}
@@ -77,36 +83,36 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
           ) : null}
         </div>
 
-        {/* Mobile / tablet horizontal thumbs */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 lg:hidden">
-          <div className="-mx-1 flex min-w-0 flex-1 gap-2 overflow-x-auto px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {gallery.map((image, index) => {
-              const isActive = index === activeIndex;
-              return (
-                <button
-                  key={`mob-${image}-${index}`}
-                  type="button"
-                  onClick={() => setActiveIndex(index)}
-                  aria-label={`View image ${index + 1}`}
-                  className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border bg-white transition sm:h-20 sm:w-20 ${
-                    isActive
-                      ? "border-foreground ring-1 ring-foreground"
-                      : "border-border hover:border-foreground/40"
-                  }`}
-                >
-                  <ImageWithFallback
-                    src={image}
-                    alt=""
-                    fill
-                    className="object-contain p-1.5"
-                    sizes="80px"
-                  />
-                </button>
-              );
-            })}
-          </div>
+        {gallery.length > 1 ? (
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 lg:hidden">
+            <div className="-mx-1 flex min-w-0 flex-1 gap-2 overflow-x-auto px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {gallery.map((image, index) => {
+                const isActive = index === activeIndex;
+                return (
+                  <button
+                    key={`mob-${image}-${index}`}
+                    type="button"
+                    onClick={() => setActiveIndex(index)}
+                    aria-label={`View image ${index + 1}`}
+                    className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border bg-white transition sm:h-20 sm:w-20 ${
+                      isActive
+                        ? "border-foreground ring-1 ring-foreground"
+                        : "border-border hover:border-foreground/40"
+                    }`}
+                  >
+                    <ProductImage
+                      src={image}
+                      alt=""
+                      fill
+                      compact
+                      className="object-contain p-1.5"
+                      sizes="80px"
+                    />
+                  </button>
+                );
+              })}
+            </div>
 
-          {gallery.length > 1 ? (
             <div className="flex shrink-0 items-center justify-end gap-1.5">
               <button
                 type="button"
@@ -125,8 +131,8 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
