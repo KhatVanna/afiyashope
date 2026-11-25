@@ -14,6 +14,30 @@ class CategoryFeatureTest extends TestCase
 {
     use DatabaseMigrations;
 
+    public function test_featured_style_categories_exist_with_bilingual_names_and_no_product_assignments(): void
+    {
+        $categories = [
+            ['name' => 'Pastel Colors', 'name_km' => 'ពណ៌ប៉ាស្តែល', 'slug' => 'pastel-colors'],
+            ['name' => 'Luxury Styles', 'name_km' => 'ម៉ូដប្រណិត', 'slug' => 'luxury-styles'],
+            ['name' => 'Matching Sets', 'name_km' => 'ឈុតពេញ', 'slug' => 'matching-sets'],
+        ];
+
+        foreach ($categories as $attributes) {
+            $this->assertDatabaseHas('categories', $attributes + ['is_active' => true]);
+            $this->assertSame(
+                0,
+                Category::query()->where('slug', $attributes['slug'])->firstOrFail()->products()->count()
+            );
+        }
+
+        $this->getJson('/api/v1/catalog/categories')
+            ->assertOk()
+            ->assertJsonCount(3, 'data.items')
+            ->assertJsonFragment(['name' => 'Pastel Colors', 'name_km' => 'ពណ៌ប៉ាស្តែល'])
+            ->assertJsonFragment(['name' => 'Luxury Styles', 'name_km' => 'ម៉ូដប្រណិត'])
+            ->assertJsonFragment(['name' => 'Matching Sets', 'name_km' => 'ឈុតពេញ']);
+    }
+
     public function test_admin_can_list_create_and_update_bilingual_category_names_without_changing_products(): void
     {
         $admin = $this->userWithRole('admin');
