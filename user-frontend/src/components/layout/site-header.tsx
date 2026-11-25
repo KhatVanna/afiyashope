@@ -48,7 +48,11 @@ export function SiteHeader() {
             </div>
 
             <a
-              href={process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001"}
+              href={
+                process.env.NODE_ENV === "production"
+                  ? "https://afiyashope-dashboard.vercel.app"
+                  : process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001"
+              }
               className={`${iconButtonClass} border border-[#ff9999]/70 bg-card`}
               aria-label={isKhmer ? "ផ្ទាំងគ្រប់គ្រង" : "Admin dashboard"}
             >
