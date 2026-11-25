@@ -6,6 +6,8 @@ import { useAuthStore } from "@/stores/auth-store";
 export function AuthHydrator({ children }: { children: React.ReactNode }) {
   const hydrate = useAuthStore((state) => state.hydrate);
   const hydrated = useAuthStore((state) => state.hydrated);
+  const authUnavailable = useAuthStore((state) => state.authUnavailable);
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     void hydrate();
@@ -15,6 +17,23 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <p className="text-sm text-muted-foreground">Opening admin…</p>
+      </div>
+    );
+  }
+
+  if (authUnavailable && !user) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-background px-6 text-center">
+        <p className="text-sm text-muted-foreground" role="status">
+          The authentication service is temporarily unavailable. Please try again shortly.
+        </p>
+        <button
+          type="button"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          onClick={() => void hydrate()}
+        >
+          Retry
+        </button>
       </div>
     );
   }

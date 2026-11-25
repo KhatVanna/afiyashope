@@ -1,10 +1,13 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import {
+  clearAdminSessionCookies,
+  LARAVEL_API_ORIGIN,
+  setAdminSessionCookies,
+} from "@/lib/server/admin-session";
 
 export const maxDuration = 30;
 
-const API_ORIGIN = process.env.LARAVEL_API_ORIGIN ?? "http://127.0.0.1:8000";
-const TOKEN_COOKIE = "v2005_admin_token";
 const ADMIN_ROLES = new Set(["super-admin", "admin", "staff"]);
 const UPSTREAM_TIMEOUT_MS = 25_000;
 
@@ -18,32 +21,13 @@ type AuthSuccess = {
   data: {
     user: AuthUser;
     token: string;
+    refresh_token: string;
     token_type: string;
   };
 };
 
 function laravelUrl(path: string) {
-  return `${API_ORIGIN}/api/v1${path}`;
-}
-
-function setAuthCookie(response: NextResponse, token: string) {
-  response.cookies.set(TOKEN_COOKIE, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
-}
-
-function clearAuthCookie(response: NextResponse) {
-  response.cookies.set(TOKEN_COOKIE, "", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
-  });
+  return `${LARAVEL_API_ORIGIN}/api/v1${path}`;
 }
 
 function hasAdminRole(user: AuthUser) {
@@ -71,8 +55,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message:
-          "Laravel API unreachable (timeout). Check Railway service health and LARAVEL_API_ORIGIN.",
+        message: "Laravel API unreachable. Check the service and LARAVEL_API_ORIGIN.",
       },
       { status: 503 }
     );
@@ -101,6 +84,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (!payload.data.token || !payload.data.refresh_token) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "The authentication service did not return a valid admin session.",
+      },
+      { status: 502 },
+    );
+  }
+
   const response = NextResponse.json({
     success: true,
     message: payload.message,
@@ -109,29 +102,61 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  setAuthCookie(response, payload.data.token);
+  setAdminSessionCookies(response, {
+    accessToken: payload.data.token,
+    refreshToken: payload.data.refresh_token,
+  });
   return response;
 }
 
 export async function DELETE(request: NextRequest) {
-  const token = request.cookies.get(TOKEN_COOKIE)?.value;
+  const accessToken = request.cookies.get("v2005_admin_token")?.value;
+  const refreshToken = request.cookies.get("v2005_admin_refresh")?.value;
+  let status = 200;
+  let message = "Logged out successfully";
 
-  if (token) {
-    await fetch(laravelUrl("/auth/logout"), {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+  if (refreshToken || accessToken) {
+    const headers = new Headers({
+      Accept: "application/json",
+      "Content-Type": "application/json",
     });
+    if (accessToken) {
+      headers.set("Authorization", `Bearer ${accessToken}`);
+    }
+
+    try {
+      const upstream = refreshToken
+        ? await fetch(laravelUrl("/auth/admin-logout"), {
+            method: "POST",
+            headers,
+            body: JSON.stringify({ refresh_token: refreshToken }),
+            signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+          })
+        : await fetch(laravelUrl("/auth/logout"), {
+            method: "POST",
+            headers,
+            signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+          });
+
+      if (!upstream.ok && upstream.status !== 401) {
+        status = 503;
+        message = "Could not revoke the admin session. The local cookies were cleared.";
+      }
+    } catch {
+      status = 503;
+      message = "Authentication service unavailable. The local cookies were cleared.";
+    }
   }
 
-  const response = NextResponse.json({
-    success: true,
-    message: "Logged out successfully",
-    data: null,
-  });
+  const response = NextResponse.json(
+    {
+      success: status === 200,
+      message,
+      data: null,
+    },
+    { status },
+  );
 
-  clearAuthCookie(response);
+  clearAdminSessionCookies(response);
   return response;
 }

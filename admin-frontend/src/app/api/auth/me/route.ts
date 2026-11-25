@@ -1,40 +1,34 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import {
+  clearAdminSessionCookies,
+  fetchAdminWithRefresh,
+  LARAVEL_API_ORIGIN,
+  setAdminSessionCookies,
+} from "@/lib/server/admin-session";
 
 export const maxDuration = 30;
 
-const API_ORIGIN = process.env.LARAVEL_API_ORIGIN ?? "http://127.0.0.1:8000";
-const TOKEN_COOKIE = "v2005_admin_token";
 const ADMIN_ROLES = new Set(["super-admin", "admin", "staff"]);
-const UPSTREAM_TIMEOUT_MS = 25_000;
 
 type AuthUser = {
   roles?: Array<{ slug: string }>;
 };
 
 export async function GET(request: NextRequest) {
-  const token = request.cookies.get(TOKEN_COOKIE)?.value;
-
-  if (!token) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthenticated",
-      },
-      { status: 401 }
-    );
-  }
-
   try {
-    const upstream = await fetch(`${API_ORIGIN}/api/v1/auth/me`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
+    const result = await fetchAdminWithRefresh(
+      request,
+      `${LARAVEL_API_ORIGIN}/api/v1/auth/me`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+        signal: AbortSignal.timeout(25_000),
       },
-      cache: "no-store",
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
-    });
+    );
+    const upstream = result.response;
 
     let payload: unknown = null;
     try {
@@ -48,14 +42,10 @@ export async function GET(request: NextRequest) {
 
     if (!upstream.ok) {
       const response = NextResponse.json(payload, { status: upstream.status });
-      // Only clear the cookie on a real unauthorized response.
-      if (upstream.status === 401) {
-        response.cookies.set(TOKEN_COOKIE, "", {
-          httpOnly: true,
-          sameSite: "lax",
-          path: "/",
-          maxAge: 0,
-        });
+      if (result.clearCookies) {
+        clearAdminSessionCookies(response);
+      } else if (result.renewedTokens) {
+        setAdminSessionCookies(response, result.renewedTokens);
       }
       return response;
     }
@@ -74,18 +64,16 @@ export async function GET(request: NextRequest) {
         },
         { status: 403 }
       );
-      response.cookies.set(TOKEN_COOKIE, "", {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 0,
-      });
+      clearAdminSessionCookies(response);
       return response;
     }
 
-    return NextResponse.json(payload);
+    const response = NextResponse.json(payload);
+    if (result.renewedTokens) {
+      setAdminSessionCookies(response, result.renewedTokens);
+    }
+    return response;
   } catch {
-    // Keep the cookie on transient API/network failures (common during hot reload).
     return NextResponse.json(
       {
         success: false,

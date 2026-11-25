@@ -37,6 +37,8 @@ Route::get('/banners', [SiteBannerController::class, 'publicIndex']);
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('throttle:10,1');
+    Route::post('/admin-logout', [AuthController::class, 'adminLogout'])->middleware('throttle:10,1');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);

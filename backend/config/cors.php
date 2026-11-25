@@ -19,6 +19,7 @@ return [
     'allowed_origins' => array_filter([
         env('FRONTEND_USER_URL', 'http://localhost:3000'),
         env('FRONTEND_ADMIN_URL', 'http://localhost:3001'),
+        'http://localhost:3011',
     ]),
 
     'allowed_origins_patterns' => [],

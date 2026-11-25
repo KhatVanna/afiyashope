@@ -51,6 +51,10 @@ Customer storefront · Admin dashboard · REST API backend
               └───────────────────────┘
 ```
 
+For local development, open the admin app using `http://localhost` (normally
+port `3001`), not `http://127.0.0.1`. The admin session cookie is host-scoped;
+switching hostnames makes the browser treat it as a different session.
+
 ---
 
 ## 📁 Project Structure

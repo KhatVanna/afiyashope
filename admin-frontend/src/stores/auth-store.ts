@@ -10,6 +10,7 @@ const GUEST_UNLOCK_MS = 900;
 type AuthState = {
   user: AuthUser | null;
   hydrated: boolean;
+  authUnavailable: boolean;
   setUser: (user: AuthUser | null) => void;
   hydrate: () => Promise<void>;
   logout: () => Promise<void>;
@@ -50,27 +51,31 @@ async function fetchMe(): Promise<Response> {
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   hydrated: false,
+  authUnavailable: false,
   setUser: (user) => {
     writeCachedUser(user);
-    set({ user });
+    set({ user, authUnavailable: false });
   },
   hydrate: async () => {
-    if (get().hydrated) {
+    if (get().hydrated && !get().authUnavailable) {
       return;
     }
 
     const cachedUser = readCachedUser();
+    if (!cachedUser && get().authUnavailable) {
+      set({ hydrated: false, authUnavailable: false });
+    }
 
     // Cached session: open the portal immediately, revalidate in background.
     if (cachedUser) {
-      set({ user: cachedUser, hydrated: true });
+      set({ user: cachedUser, hydrated: true, authUnavailable: false });
     }
 
     const mePromise = fetchMe()
       .then(async (response) => {
         if (response.status === 401 || response.status === 403) {
           writeCachedUser(null);
-          set({ user: null, hydrated: true });
+          set({ user: null, hydrated: true, authUnavailable: false });
           return;
         }
 
@@ -78,6 +83,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           set({
             user: get().user ?? cachedUser,
             hydrated: true,
+            authUnavailable: true,
           });
           return;
         }
@@ -85,23 +91,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const payload = await response.json();
         const user = (payload?.data?.user as AuthUser | null) ?? null;
         writeCachedUser(user);
-        set({ user, hydrated: true });
+        set({ user, hydrated: true, authUnavailable: false });
       })
       .catch(() => {
         set({
           user: get().user ?? cachedUser,
           hydrated: true,
+          authUnavailable: true,
         });
       });
 
-    // No cache: unlock as guest quickly so login isn't blocked by cold API.
+    // Keep unavailable API states distinct from a genuinely unauthenticated user.
     if (!cachedUser) {
       await Promise.race([
         mePromise,
         new Promise<void>((resolve) => {
           window.setTimeout(() => {
             if (!get().hydrated) {
-              set({ user: null, hydrated: true });
+              set({ user: null, hydrated: true, authUnavailable: true });
             }
             resolve();
           }, GUEST_UNLOCK_MS);
@@ -117,6 +124,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       method: "DELETE",
       credentials: "include",
     });
-    set({ user: null });
+    set({ user: null, authUnavailable: false });
   },
 }));
