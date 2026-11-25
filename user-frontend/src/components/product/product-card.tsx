@@ -83,9 +83,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {product.brand}
-        </p>
+        {product.brand ? (
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {product.brand}
+          </p>
+        ) : null}
         <Link
           href={`/products/${product.slug}`}
           className="line-clamp-2 min-h-[2.75rem] text-sm font-semibold text-foreground transition hover:text-primary"

@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\V1\Account\AddressController as AccountAddressController;
 use App\Http\Controllers\Api\V1\Account\OrderController as AccountOrderController;
 use App\Http\Controllers\Api\V1\Account\ProfileController;
+use App\Http\Controllers\Api\V1\Admin\BrandController;
+use App\Http\Controllers\Api\V1\Admin\BrandLogoController;
 use App\Http\Controllers\Api\V1\Admin\CustomerController;
 use App\Http\Controllers\Api\V1\Admin\MediaController;
 use App\Http\Controllers\Api\V1\Admin\OrderController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\Api\V1\Admin\SiteMediaController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Catalog\BlogPostController as CatalogBlogPostController;
+use App\Http\Controllers\Api\V1\Catalog\BrandController as CatalogBrandController;
 use App\Http\Controllers\Api\V1\Catalog\CategoryController as CatalogCategoryController;
 use App\Http\Controllers\Api\V1\Catalog\ProductController as CatalogProductController;
 use App\Http\Controllers\Api\V1\HealthController;
@@ -24,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/health', HealthController::class);
 
 Route::prefix('catalog')->group(function () {
+    Route::get('/brands', [CatalogBrandController::class, 'index']);
     Route::get('/categories', [CatalogCategoryController::class, 'index']);
     Route::get('/products', [CatalogProductController::class, 'index']);
     Route::get('/products/{slug}', [CatalogProductController::class, 'show']);
@@ -66,6 +70,12 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/catalog/options', [ProductController::class, 'options']);
     Route::post('/media/cloudinary-signature', [MediaController::class, 'cloudinarySignature']);
     Route::post('/media/site-settings', [SiteMediaController::class, 'store']);
+
+    Route::get('/brands', [BrandController::class, 'index']);
+    Route::post('/brands', [BrandController::class, 'store']);
+    Route::put('/brands/{brand}', [BrandController::class, 'update']);
+    Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
+    Route::post('/brands/{brand}/logo', [BrandLogoController::class, 'store']);
 
     Route::get('/site-settings/{group}', [SiteSettingsController::class, 'showGroup']);
     Route::put('/site-settings/branding', [SiteSettingsController::class, 'updateBranding']);

@@ -4,7 +4,7 @@ import { CatalogErrorMessage } from "@/components/catalog/catalog-error-message"
 import { LocaleText } from "@/components/i18n/locale-text";
 import { ProductCard } from "@/components/product/product-card";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { fetchCategories, fetchProducts } from "@/lib/catalog-api";
+import { fetchBrands, fetchCategories, fetchProducts } from "@/lib/catalog-api";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -15,6 +15,7 @@ type ProductsPageProps = {
   searchParams: Promise<{
     q?: string;
     category?: string;
+    brand?: string;
     sort?: string;
     page?: string;
   }>;
@@ -24,14 +25,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
   const category = params.category ?? "";
+  const brand = params.brand ?? "";
   const sort = params.sort ?? "latest";
   const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
 
-  const [categoryResult, catalog] = await Promise.all([
+  const [categoryResult, brandResult, catalog] = await Promise.all([
     fetchCategories(),
+    fetchBrands(),
     fetchProducts({
       q: query || undefined,
       category: category || undefined,
+      brand: brand || undefined,
       sort,
       page,
       perPage: 20,
@@ -39,6 +43,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   ]);
 
   const categories = categoryResult.items;
+  const brands = brandResult.items;
   const total = catalog.total;
   const totalPages = Math.max(1, catalog.lastPage);
   const currentPage = Math.min(page, totalPages);
@@ -46,13 +51,28 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const allCount = categories.reduce((sum, item) => sum + item.productCount, 0);
 
   const categoryName = categories.find((item) => item.slug === category)?.name;
+  const brandName = brands.find((item) => item.slug === brand)?.name;
 
   function buildHref(nextPage: number) {
     const search = new URLSearchParams();
     if (query) search.set("q", params.q ?? "");
     if (category) search.set("category", category);
+    if (brand) search.set("brand", brand);
     if (sort && sort !== "latest") search.set("sort", sort);
     if (nextPage > 1) search.set("page", String(nextPage));
+    const value = search.toString();
+    return value ? `/products?${value}` : "/products";
+  }
+
+  function buildFilterHref(next: { category?: string; brand?: string; sort?: string }) {
+    const search = new URLSearchParams();
+    if (query) search.set("q", params.q ?? "");
+    const nextCategory = next.category ?? category;
+    const nextBrand = next.brand ?? brand;
+    const nextSort = next.sort ?? sort;
+    if (nextCategory) search.set("category", nextCategory);
+    if (nextBrand) search.set("brand", nextBrand);
+    if (nextSort && nextSort !== "latest") search.set("sort", nextSort);
     const value = search.toString();
     return value ? `/products?${value}` : "/products";
   }
@@ -75,7 +95,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight text-navy">
-              {categoryName ?? <LocaleText en="All products" km="ទំនិញទាំងអស់" />}
+              {brandName ?? categoryName ?? <LocaleText en="All products" km="ទំនិញទាំងអស់" />}
             </h1>
             {catalog.error ? (
               <CatalogErrorMessage className="mt-3" />
@@ -112,7 +132,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="/products"
+                    href={buildFilterHref({ category: "" })}
                     className={`text-sm ${!category ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground"}`}
                   >
                     <LocaleText en={`All (${allCount})`} km={`ទាំងអស់ (${allCount})`} />
@@ -125,7 +145,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 ) : categories.map((item) => (
                   <li key={item.id}>
                     <Link
-                      href={`/products?category=${item.slug}`}
+                      href={buildFilterHref({ category: item.slug })}
                       className={`text-sm ${category === item.slug ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       {item.name} ({item.productCount})
@@ -135,6 +155,44 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </ul>
             </div>
 
+            {brands.length > 0 ? (
+                <div>
+                  <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide">
+                    <LocaleText en="Brands" km="ម៉ាក" />
+                  </h2>
+                  <ul className="flex flex-wrap gap-2">
+                    <li>
+                      <Link
+                        href={buildFilterHref({ brand: "" })}
+                        aria-current={!brand ? "page" : undefined}
+                        className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-medium ${
+                          !brand
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <LocaleText en="All brands" km="គ្រប់ម៉ាក" />
+                      </Link>
+                    </li>
+                    {brands.map((item) => (
+                      <li key={item.id}>
+                        <Link
+                          href={buildFilterHref({ brand: item.slug })}
+                          aria-current={brand === item.slug ? "page" : undefined}
+                          className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-medium ${
+                            brand === item.slug
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+            ) : null}
+
             <div>
               <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide">
                 <LocaleText en="Sort" km="តម្រៀប" />
@@ -143,31 +201,31 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 <SortLink
                   labelEn="Latest"
                   labelKm="ថ្មីបំផុត"
-                  href={category ? `/products?category=${category}` : "/products"}
+                  href={buildFilterHref({ sort: "latest" })}
                   active={sort === "latest" || !params.sort}
                 />
                 <SortLink
                   labelEn="Popular"
                   labelKm="ពេញនិយម"
-                  href={`/products?sort=popular${category ? `&category=${category}` : ""}`}
+                  href={buildFilterHref({ sort: "popular" })}
                   active={sort === "popular"}
                 />
                 <SortLink
                   labelEn="Price: Low to High"
                   labelKm="តម្លៃ៖ ពីទាបទៅខ្ពស់"
-                  href={`/products?sort=price-asc${category ? `&category=${category}` : ""}`}
+                  href={buildFilterHref({ sort: "price-asc" })}
                   active={sort === "price-asc"}
                 />
                 <SortLink
                   labelEn="Price: High to Low"
                   labelKm="តម្លៃ៖ ពីខ្ពស់ទៅទាប"
-                  href={`/products?sort=price-desc${category ? `&category=${category}` : ""}`}
+                  href={buildFilterHref({ sort: "price-desc" })}
                   active={sort === "price-desc"}
                 />
                 <SortLink
                   labelEn="Offers"
                   labelKm="ការផ្តល់ជូន"
-                  href={`/products?sort=offers${category ? `&category=${category}` : ""}`}
+                  href={buildFilterHref({ sort: "offers" })}
                   active={sort === "offers"}
                 />
               </ul>

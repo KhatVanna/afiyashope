@@ -28,8 +28,8 @@ export const metadata: Metadata = {
   description: "Afiya Shope administration dashboard for products, orders, and store settings.",
   applicationName: "Afiya Shope Admin",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/images/afiya-icon.png",
+    icon: "/icon.png",
+    apple: "/brand/logo-mark.png",
   },
   robots: {
     index: false,

@@ -19,15 +19,16 @@ import {
   Settings,
   ShoppingCart,
   Sun,
+  Tag,
   Users,
   UserCog,
   X,
 } from "lucide-react";
-import { Logo } from "@/components/logo";
 import {
   AdminLanguageSelector,
   useAdminText,
 } from "@/components/layout/admin-language-selector";
+import { SidebarBrand } from "@/components/layout/sidebar-brand";
 import { getNavForUser, type AdminNavItem } from "@/lib/admin-nav";
 import { useAuthStore } from "@/stores/auth-store";
 
@@ -85,6 +86,7 @@ function getServerSidebarCollapsedSnapshot() {
 const ICONS = {
   dashboard: LayoutDashboard,
   products: Package,
+  brands: Tag,
   orders: ShoppingCart,
   customers: Users,
   reports: BarChart3,
@@ -238,21 +240,23 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-[270px] flex-col border-r border-[#d6e8f2] bg-white shadow-[0_0_40px_rgba(15,23,42,0.04)] transition-[width,transform] lg:translate-x-0 ${
-          sidebarCollapsed ? "lg:w-[76px]" : "lg:w-[270px]"
+          sidebarCollapsed ? "lg:w-[96px]" : "lg:w-[270px]"
         } ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div
-          className={`flex items-center py-5 ${
-            sidebarCollapsed ? "justify-center px-2" : "justify-between px-5"
+          className={`relative grid h-16 shrink-0 grid-cols-[1fr_auto] items-center border-b border-[#d6e8f2] px-4 ${
+            sidebarCollapsed ? "lg:grid-cols-[1fr_40px_1fr] lg:px-0" : ""
           }`}
         >
-          <Logo
-            href="/dashboard"
-            height={40}
-            showAdminLabel={false}
-            className={sidebarCollapsed ? "lg:hidden" : ""}
+          <SidebarBrand
+            collapsed={sidebarCollapsed}
+            className={
+              sidebarCollapsed
+                ? "col-start-1 lg:col-start-2 lg:justify-self-center"
+                : "col-start-1"
+            }
           />
           <button
             type="button"
@@ -264,7 +268,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               );
               window.dispatchEvent(new Event(SIDEBAR_CHANGE_EVENT));
             }}
-            className="hidden rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:inline-flex"
+            className={`hidden rounded-lg text-slate-500 hover:bg-slate-100 lg:inline-flex ${
+              sidebarCollapsed
+                ? "col-start-3 h-7 w-7 justify-self-end p-1.5"
+                : "col-start-2 ml-3 p-2"
+            }`}
             aria-label={
               sidebarCollapsed ? t("Expand sidebar") : t("Collapse sidebar")
             }
@@ -308,7 +316,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <div
         className={`flex min-w-0 flex-1 flex-col ${
-          sidebarCollapsed ? "lg:ml-[76px]" : "lg:ml-[270px]"
+          sidebarCollapsed ? "lg:ml-[96px]" : "lg:ml-[270px]"
         }`}
       >
         <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[#d6e8f2] bg-white/90 px-4 py-3 backdrop-blur sm:px-6">

@@ -19,6 +19,7 @@ Desktop.ini
 .env.*.local
 .env.production
 .env.staging
+**/.env.neon
 !**/.env.example
 !**/.env.*.example
 

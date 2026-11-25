@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if (
                 $request->is('api/v1/admin/site-settings*')
                 || $request->is('api/v1/admin/banners*')
+                || $request->is('api/v1/admin/brands*')
                 || $request->is('api/v1/admin/media/site-settings')
             ) {
                 return ApiResponse::error('Unauthenticated.', 401);

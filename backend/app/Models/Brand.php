@@ -14,14 +14,17 @@ class Brand extends Model
         'name',
         'slug',
         'description',
-        'logo',
+        'logo_url',
+        'logo_public_id',
         'is_active',
+        'sort_order',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'sort_order' => 'integer',
         ];
     }
 

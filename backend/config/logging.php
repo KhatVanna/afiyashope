@@ -1,5 +1,6 @@
 <?php
 
+use App\Logging\DatabaseUrlSanitizerTap;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -56,6 +57,7 @@ return [
             'driver' => 'stack',
             'channels' => explode(',', (string) env('LOG_STACK', 'single')),
             'ignore_exceptions' => false,
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'single' => [
@@ -63,6 +65,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'daily' => [
@@ -71,6 +74,7 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'max_files' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'monthly' => [
@@ -79,6 +83,7 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'max_files' => 3,
             'replace_placeholders' => true,
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'slack' => [
@@ -88,6 +93,7 @@ return [
             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
             'level' => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'papertrail' => [
@@ -100,6 +106,7 @@ return [
                 'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
             ],
             'processors' => [PsrLogMessageProcessor::class],
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'stderr' => [
@@ -111,12 +118,14 @@ return [
             ],
             'formatter' => env('LOG_STDERR_FORMATTER'),
             'processors' => [PsrLogMessageProcessor::class],
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'syslog' => [
             'driver' => 'syslog',
             'level' => env('LOG_LEVEL', 'debug'),
             'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
+            'tap' => [DatabaseUrlSanitizerTap::class],
             'replace_placeholders' => true,
         ],
 
@@ -124,11 +133,13 @@ return [
             'driver' => 'errorlog',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
+            'tap' => [DatabaseUrlSanitizerTap::class],
         ],
 
         'emergency' => [

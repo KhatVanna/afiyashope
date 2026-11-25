@@ -67,9 +67,11 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
       </nav>
 
       <div className="apple-reveal__item apple-reveal__item--2 mb-4 sm:mb-6">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {product.brand}
-        </p>
+        {product.brand ? (
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {product.brand}
+          </p>
+        ) : null}
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-navy sm:mt-2 sm:text-4xl">
           {product.name}
         </h1>
@@ -248,19 +250,26 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
           </h2>
           <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
             {product.description ||
-              t(
-                `Experience premium quality with the ${product.name} from ${product.brand}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`,
-                `ស្វែងយល់ពីគុណភាពល្អរបស់ ${product.name} ពី ${product.brand}។ រចនាឡើងសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ ជាមួយនឹងរូបរាងស្អាត និងគុណភាពជឿទុកចិត្តបាន។`
-              )}
+              (product.brand
+                ? t(
+                    `Experience premium quality with the ${product.name} from ${product.brand}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`,
+                    `ស្វែងយល់ពីគុណភាពល្អរបស់ ${product.name} ពី ${product.brand}។ រចនាឡើងសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ ជាមួយនឹងរូបរាងស្អាត និងគុណភាពជឿទុកចិត្តបាន។`
+                  )
+                : t(
+                    `Experience premium quality with the ${product.name}. Designed for everyday performance with a clean finish and reliable build — a strong pick for customers who want value without compromise.`,
+                    `ស្វែងយល់ពីគុណភាពល្អរបស់ ${product.name}។ រចនាឡើងសម្រាប់ការប្រើប្រាស់ប្រចាំថ្ងៃ ជាមួយនឹងរូបរាងស្អាត និងគុណភាពជឿទុកចិត្តបាន។`
+                  ))}
           </p>
         </div>
 
         <div className="border-t border-border pt-8">
           <h3 className="text-xl font-semibold text-navy">{t("Highlights", "ចំណុចសំខាន់ៗ")}</h3>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-            <li>
-              <strong className="text-foreground">{t("Trusted brand:", "ម៉ាកដែលគួរឱ្យទុកចិត្ត៖")}</strong> {product.brand}
-            </li>
+            {product.brand ? (
+              <li>
+                <strong className="text-foreground">{t("Trusted brand:", "ម៉ាកដែលគួរឱ្យទុកចិត្ត៖")}</strong> {product.brand}
+              </li>
+            ) : null}
             <li>
               <strong className="text-foreground">{t("Customer rating:", "ការវាយតម្លៃពីអតិថិជន៖")}</strong>{" "}
               {product.rating?.toFixed(1) ?? t("N/A", "មិនមានទិន្នន័យ")} / 5

@@ -12,7 +12,7 @@ type ApiProduct = {
   is_featured?: boolean;
   short_description?: string | null;
   description?: string | null;
-  brand?: { name?: string | null } | null;
+  brand?: { name?: string | null; slug?: string | null } | null;
   category?: { slug?: string | null } | null;
   primary_image?: { path?: string | null; url?: string | null } | null;
   images?: Array<{ path?: string | null; url?: string | null }> | null;
@@ -24,6 +24,14 @@ type ApiCategory = {
   slug: string;
   image?: string | null;
   product_count?: number;
+};
+
+export type CatalogBrand = {
+  id: string;
+  name: string;
+  slug: string;
+  logoUrl: string;
+  productCount: number;
 };
 
 export type CatalogListResult<T> = {
@@ -127,7 +135,7 @@ export function mapApiProduct(product: ApiProduct): CatalogProduct {
     id: String(product.id),
     slug: product.slug,
     name: product.name,
-    brand: product.brand?.name ?? "Afiya Shope",
+    brand: product.brand?.name ?? null,
     price: Number(product.price),
     compareAtPrice:
       product.compare_at_price != null ? Number(product.compare_at_price) : undefined,
@@ -165,9 +173,41 @@ export async function fetchCategories(): Promise<CatalogListResult<CatalogCatego
   }
 }
 
+export async function fetchBrands(): Promise<CatalogListResult<CatalogBrand>> {
+  try {
+    const data = await catalogFetch<{
+      items: Array<{
+        id: number;
+        name: string;
+        slug: string;
+        logo_url?: string | null;
+        product_count?: number;
+      }>;
+    }>("/catalog/brands");
+
+    return {
+      items: (data.items ?? []).map((brand) => ({
+        id: String(brand.id),
+        name: brand.name,
+        slug: brand.slug,
+        logoUrl: brand.logo_url?.trim() ?? "",
+        productCount: Number(brand.product_count ?? 0),
+      })),
+      error: false,
+    };
+  } catch (error) {
+    if (!(error instanceof CatalogApiFailure)) {
+      throw error;
+    }
+
+    return { items: [], error: true };
+  }
+}
+
 export async function fetchProducts(params: {
   q?: string;
   category?: string;
+  brand?: string;
   sort?: string;
   page?: number;
   perPage?: number;
@@ -177,6 +217,7 @@ export async function fetchProducts(params: {
     const search = new URLSearchParams();
     if (params.q) search.set("q", params.q);
     if (params.category) search.set("category", params.category);
+    if (params.brand) search.set("brand", params.brand);
     if (params.sort) search.set("sort", params.sort);
     if (params.page) search.set("page", String(params.page));
     if (params.perPage) search.set("per_page", String(params.perPage));

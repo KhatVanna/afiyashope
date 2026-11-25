@@ -22,6 +22,7 @@ class ProductController extends Controller
         $params = [
             'q' => trim((string) $request->query('q', $request->query('search', ''))),
             'category' => trim((string) $request->query('category', '')),
+            'brand' => trim((string) $request->query('brand', '')),
             'featured' => $request->boolean('featured'),
             'sort' => (string) $request->query('sort', 'latest'),
             'page' => max((int) $request->query('page', 1), 1),
@@ -58,7 +59,13 @@ class ProductController extends Controller
         // avoids a large extra round trip to Neon for every listing request.
         $query = Product::query()
             ->where('is_active', true)
-            ->with(['category:id,name,slug', 'brand:id,name,slug', 'primaryImage']);
+            ->with([
+                'category:id,name,slug',
+                'brand' => fn ($brand) => $brand
+                    ->where('is_active', true)
+                    ->select('brands.id', 'brands.name', 'brands.slug'),
+                'primaryImage',
+            ]);
 
         if ($params['q'] !== '') {
             $search = $params['q'];
@@ -73,6 +80,12 @@ class ProductController extends Controller
 
         if ($params['category'] !== '') {
             $query->whereHas('category', fn ($builder) => $builder->where('slug', $params['category']));
+        }
+
+        if ($params['brand'] !== '') {
+            $query->whereHas('brand', fn ($builder) => $builder
+                ->where('slug', $params['brand'])
+                ->where('is_active', true));
         }
 
         if ($params['featured']) {
@@ -108,14 +121,27 @@ class ProductController extends Controller
         $product = Product::query()
             ->where('slug', $slug)
             ->where('is_active', true)
-            ->with(['category:id,name,slug', 'brand:id,name,slug', 'primaryImage', 'images'])
+            ->with([
+                'category:id,name,slug',
+                'brand' => fn ($brand) => $brand
+                    ->where('is_active', true)
+                    ->select('brands.id', 'brands.name', 'brands.slug'),
+                'primaryImage',
+                'images',
+            ])
             ->firstOrFail();
 
         $related = Product::query()
             ->where('is_active', true)
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
-            ->with(['category:id,name,slug', 'brand:id,name,slug', 'primaryImage'])
+            ->with([
+                'category:id,name,slug',
+                'brand' => fn ($brand) => $brand
+                    ->where('is_active', true)
+                    ->select('brands.id', 'brands.name', 'brands.slug'),
+                'primaryImage',
+            ])
             ->latest('id')
             ->limit(4)
             ->get();

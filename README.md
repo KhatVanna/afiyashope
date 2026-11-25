@@ -47,7 +47,7 @@ Customer storefront · Admin dashboard · REST API backend
                          ▼
               ┌───────────────────────┐
               │  PostgreSQL           │
-              │  v2005_data           │
+              │  afiya_shope_db       │
               └───────────────────────┘
 ```
 
@@ -115,15 +115,15 @@ cd afiyashope
 Open `psql` or pgAdmin and run:
 
 ```sql
-CREATE DATABASE v2005_data;
+CREATE DATABASE afiya_shope_db;
 ```
 
 ### 3. Backend Setup
 
 ```bash
 cd backend
-copy .env.example .env
-# Edit .env — set DB_USERNAME and DB_PASSWORD to match your PostgreSQL credentials
+copy .env.local.example .env
+# Set DB_PASSWORD to your local PostgreSQL password.
 php artisan key:generate
 php artisan migrate
 php artisan serve
@@ -203,9 +203,9 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
-DB_DATABASE=v2005_data
+DB_DATABASE=afiya_shope_db
 DB_USERNAME=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=replace_with_local_postgres_password
 DB_SSLMODE=prefer
 
 CLOUDINARY_CLOUD_NAME=v2005
@@ -214,27 +214,23 @@ CLOUDINARY_API_SECRET=your_api_secret
 CLOUDINARY_FOLDER=v2005/products
 ```
 
-### Backend — Production / Neon (`.env.production`)
+### Backend — Production database credentials
 
-```env
-DB_CONNECTION=pgsql
-DB_URL=postgresql://neondb_owner:PASSWORD@HOST/neondb?sslmode=require
-# Migration-only direct connection; keep the pooled URL in DB_URL for runtime.
-DB_DIRECT_URL=
-DB_SSLMODE=require
-OWNER_EMAIL=
-OWNER_PASSWORD=
+Store Neon connection strings only in Railway Variables or the gitignored
+`backend/.env.neon`. Do not copy them into tracked templates, documentation,
+or local `.env` files. Keep the pooled runtime connection separate from the
+direct migration connection.
 
-CLOUDINARY_CLOUD_NAME=v2005
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-CLOUDINARY_FOLDER=v2005/products
+The console guard refuses database commands when the selected host contains
+`neon.tech`, unless `ALLOW_NEON_COMMANDS=true` is explicitly set for that one
+command. For any approved manual Neon migration, use both the one-command flag
+and the direct connection:
+
+```powershell
+$env:ALLOW_NEON_COMMANDS = 'true'
+php artisan migrate --database=pgsql_direct --force
+Remove-Item Env:\ALLOW_NEON_COMMANDS
 ```
-
-After the first deploy, run migrations using the direct connection:
-`php artisan migrate --database=pgsql_direct --force`.
-Keep `DB_URL` set to the pooled connection for the running application and
-provide `DB_DIRECT_URL` only for migration operations.
 
 ---
 
@@ -248,7 +244,7 @@ The `backend/` directory is fully configured for Railway deployment via Docker.
 |---|---|
 | `Dockerfile` | FrankenPHP (PHP 8.4) concurrent server image |
 | `railway.toml` | Health check endpoint `/up` |
-| `docker/entrypoint.sh` | Runs `migrate --force` then serves on `$PORT` |
+| `docker/entrypoint.sh` | Runs production migrations on `pgsql_direct` then serves on `$PORT` |
 | `docker/Caddyfile` | Laravel public front controller |
 
 **Step-by-step deployment:**
@@ -268,17 +264,18 @@ APP_URL=https://YOUR-SERVICE.up.railway.app
 LOG_CHANNEL=stderr
 
 DB_CONNECTION=pgsql
-DB_URL=postgresql://neondb_owner:PASSWORD@ep-...neon.tech/neondb?sslmode=require
-# Optional when DB_URL is direct; required if DB_URL uses a pooler.
-DB_DIRECT_URL=YOUR_NEON_DIRECT_CONNECTION_STRING
-DB_HOST=ep-your-host.ap-southeast-1.aws.neon.tech
+DB_URL=<set privately in Railway Variables>
+DB_DIRECT_URL=<set privately in Railway Variables>
+DB_HOST=<set privately in Railway Variables>
 DB_PORT=5432
 DB_DATABASE=neondb
-DB_USERNAME=neondb_owner
-DB_PASSWORD=YOUR_NEON_PASSWORD
+DB_USERNAME=<set privately in Railway Variables>
+DB_PASSWORD=<set privately in Railway Variables>
 DB_SSLMODE=require
 DB_PERSISTENT=true
 DB_CONNECT_TIMEOUT=10
+# Set to true only while explicitly approving a deployment migration; remove afterward.
+ALLOW_NEON_COMMANDS=true
 
 CLOUDINARY_CLOUD_NAME=v2005
 CLOUDINARY_API_KEY=your_api_key
@@ -296,7 +293,10 @@ QUEUE_CONNECTION=sync
 
 > **💡 Tip:** Choose the Railway region closest to your Neon region to minimize latency. This project uses `ap-southeast-1` (Singapore). Cross-region connections can add ~2s per database call on cold queries.
 
-6. **Redeploy.** The entrypoint runs migrations with `DB_DIRECT_URL` and refuses to serve if they fail.
+6. **Redeploy.** The entrypoint migrates using `pgsql_direct` and refuses a
+   Neon migration unless `ALLOW_NEON_COMMANDS=true` is explicitly set. Set it
+   only for an approved deployment migration, then remove it afterward. Never
+   put connection values in this README.
 7. Verify health endpoints:
    - `https://YOUR-SERVICE.up.railway.app/up`
    - `https://YOUR-SERVICE.up.railway.app/api/v1/health`
@@ -360,13 +360,12 @@ rate.
 Before removing demo records, inspect the scope with
 `php artisan products:remove-demo --dry-run`. The removal command asks for
 confirmation and deletes the Cloudinary assets as well as demo database rows.
-For Neon, create a database backup or branch in the Neon console first. Set the
-pooled connection in `DB_URL`, the direct connection in `DB_DIRECT_URL`, and
-the private owner credentials in `OWNER_EMAIL` and `OWNER_PASSWORD`. Then run
-these commands in order:
+For Neon, create a database backup or branch in the Neon console first. Keep
+connection strings only in Railway Variables or the gitignored
+`backend/.env.neon`. For an approved migration, run:
 
 ```bash
-php artisan migrate --database=pgsql_direct --force
+ALLOW_NEON_COMMANDS=true php artisan migrate --database=pgsql_direct --force
 php artisan app:seed-owner-settings --allow-remote
 php artisan products:sync-demo --allow-remote
 ```
@@ -416,7 +415,7 @@ Afiya Shope uses a consistent design token system with full **light / dark mode*
 - ✅ Laravel Sanctum installed
 - ✅ Versioned API (`/api/v1/health`)
 - ✅ CORS configured for both frontends
-- ✅ PostgreSQL connection targeting `v2005_data`
+- ✅ PostgreSQL connection targeting `afiya_shope_db`
 
 ---
 

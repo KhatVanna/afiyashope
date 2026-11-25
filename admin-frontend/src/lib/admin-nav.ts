@@ -6,6 +6,7 @@ export type AdminNavItem = {
   icon:
     | "dashboard"
     | "products"
+    | "brands"
     | "orders"
     | "customers"
     | "reports"
@@ -27,6 +28,12 @@ export const ADMIN_NAV: AdminNavItem[] = [
     label: "Products",
     icon: "products",
     roles: ["super-admin", "admin", "staff"],
+  },
+  {
+    href: "/brands",
+    label: "Brands",
+    icon: "brands",
+    roles: ["super-admin"],
   },
   {
     href: "/orders",

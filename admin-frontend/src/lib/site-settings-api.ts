@@ -147,6 +147,14 @@ export async function loadSiteSettings(): Promise<SiteSettingsData> {
   return Object.fromEntries(groups) as SiteSettingsData;
 }
 
+export async function loadSeoSettings(): Promise<SeoSettings> {
+  const result = await requestData<{
+    group: "seo";
+    data: SeoSettings;
+  }>("/admin/site-settings/seo");
+  return result.data;
+}
+
 export async function saveSiteSettings<K extends SettingsGroup>(
   group: K,
   data: SiteSettingsData[K]
