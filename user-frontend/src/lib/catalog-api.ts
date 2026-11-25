@@ -9,6 +9,7 @@ type ApiProduct = {
   id: number;
   slug: string;
   name: string;
+  sku?: string;
   price: number;
   currency?: ProductCurrency | null;
   compare_at_price?: number | null;
@@ -18,7 +19,7 @@ type ApiProduct = {
   short_description?: string | null;
   description?: string | null;
   brand?: { name?: string | null; slug?: string | null } | null;
-  category?: { slug?: string | null } | null;
+  category?: { name?: string | null; slug?: string | null } | null;
   primary_image?: { path?: string | null; url?: string | null } | null;
   images?: Array<{ path?: string | null; url?: string | null }> | null;
 };
@@ -141,6 +142,7 @@ export function mapApiProduct(product: ApiProduct): CatalogProduct {
     id: String(product.id),
     slug: product.slug,
     name: product.name,
+    sku: product.sku,
     brand: product.brand?.name ?? null,
     price: Number(product.price),
     currency: product.currency ?? null,
@@ -151,6 +153,7 @@ export function mapApiProduct(product: ApiProduct): CatalogProduct {
     stockLeft: product.stock_quantity,
     rating: product.average_rating != null ? Number(product.average_rating) : undefined,
     category: product.category?.slug ?? "",
+    categoryName: product.category?.name ?? null,
     featured: Boolean(product.is_featured),
     shortDescription: product.short_description ?? undefined,
     description: product.description ?? undefined,

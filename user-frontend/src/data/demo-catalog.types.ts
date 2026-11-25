@@ -4,6 +4,7 @@ export type CatalogProduct = {
   id: string;
   slug: string;
   name: string;
+  sku?: string;
   brand: string | null;
   price: number;
   currency?: ProductCurrency | null;
@@ -13,6 +14,7 @@ export type CatalogProduct = {
   stockLeft?: number;
   rating?: number;
   category: string;
+  categoryName?: string | null;
   featured?: boolean;
   shortDescription?: string;
   description?: string;

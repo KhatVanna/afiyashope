@@ -24,6 +24,11 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
           ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
         )
       : null;
+  const currencyLabel = product.currency
+    ? product.currency === "KHR"
+      ? "KHR (៛)"
+      : "USD ($)"
+    : t("Based on visitor's region", "តាមតំបន់របស់អ្នកទស្សនា");
 
   const galleryImages = getProductImageUrls(product);
 
@@ -59,22 +64,63 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
 
         <div className="apple-reveal__item apple-reveal__item--4 space-y-4 sm:space-y-5">
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:rounded-2xl sm:p-5">
-            <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-              <span className="text-2xl font-bold sm:text-3xl">{formatMoney(product.price, product.currency)}</span>
-              {product.compareAtPrice ? (
-                <span className="text-base text-muted-foreground line-through sm:text-lg">
-                  {formatMoney(product.compareAtPrice, product.currency)}
-                </span>
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">
+                  {discount
+                    ? t("Discounted price", "តម្លៃបញ្ចុះ")
+                    : t("Price", "តម្លៃ")}
+                </p>
+                <p className="mt-1 text-2xl font-bold text-foreground sm:text-3xl">
+                  {formatMoney(product.price, product.currency)}
+                </p>
+              </div>
+              {product.compareAtPrice !== undefined &&
+              product.compareAtPrice > product.price ? (
+                <div className="text-right">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {t("Regular price", "តម្លៃដើម")}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground line-through sm:text-base">
+                    {formatMoney(product.compareAtPrice, product.currency)}
+                  </p>
+                </div>
               ) : null}
             </div>
 
-            {typeof product.stockLeft === "number" ? (
-              <p className="mt-3 text-sm text-accent">
-                {product.stockLeft > 0
-                  ? t(`In stock — only ${product.stockLeft} left`, `មានក្នុងស្តុក — នៅសល់តែ ${product.stockLeft} មុខ`)
-                  : t("Out of stock", "អស់ពីស្តុក")}
-              </p>
-            ) : null}
+            <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-4 border-t border-border pt-4 text-sm">
+              <div className="min-w-0">
+                <dt className="text-xs text-muted-foreground">{t("SKU", "លេខកូដទំនិញ")}</dt>
+                <dd className="mt-1 break-words font-medium text-foreground">{product.sku || "—"}</dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="text-xs text-muted-foreground">{t("Currency", "រូបិយប័ណ្ណ")}</dt>
+                <dd className="mt-1 font-medium text-foreground">{currencyLabel}</dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="text-xs text-muted-foreground">{t("Stock quantity", "ចំនួនក្នុងស្តុក")}</dt>
+                <dd className="mt-1 font-medium text-foreground">
+                  {typeof product.stockLeft === "number" ? (
+                    <>
+                      {product.stockLeft}{" "}
+                      <span className="font-normal text-muted-foreground">
+                        {product.stockLeft > 0
+                          ? t("In stock", "មានក្នុងស្តុក")
+                          : t("Out of stock", "អស់ពីស្តុក")}
+                      </span>
+                    </>
+                  ) : (
+                    "—"
+                  )}
+                </dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="text-xs text-muted-foreground">{t("Category", "ប្រភេទ")}</dt>
+                <dd className="mt-1 break-words font-medium text-foreground">
+                  {product.categoryName || t("Uncategorized", "មិនទាន់មានប្រភេទ")}
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>
@@ -82,7 +128,7 @@ export function ProductDetailView({ product, related }: ProductDetailViewProps) 
       <ScrollReveal as="section" variant="apple" className="mt-12 max-w-3xl space-y-8">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight text-navy sm:text-3xl">
-            {product.name}
+            {t("Description", "ការពិពណ៌នា")}
           </h2>
           <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
             {product.description ||
