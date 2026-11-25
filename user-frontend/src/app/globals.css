@@ -251,8 +251,9 @@ button[class~="rounded-3xl"] {
 }
 
 .site-splash__logo {
-  width: auto !important;
-  height: 2.75rem !important;
+  width: 4.5rem !important;
+  height: 4.5rem !important;
+  border-radius: 9999px;
   object-fit: contain;
   filter: drop-shadow(0 8px 18px rgba(0, 119, 182, 0.16));
 }

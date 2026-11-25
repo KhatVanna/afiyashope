@@ -21,24 +21,22 @@ export function Logo({
   showAdminLabel = true,
 }: LogoProps) {
   const t = useAdminText();
-  const width = Math.round(height * (2045 / 769));
-
   return (
     <Link
       href={href}
       className={`inline-flex items-center gap-3 ${className}`}
       aria-label={`Afiya Shope ${t("Admin home")}`}
     >
-      <span className="brand-logo-plate inline-flex items-center justify-center rounded-2xl border px-2 py-1">
+      <span className="brand-logo-plate inline-flex items-center justify-center rounded-full border p-1">
         <Image
           src="/images/afiyashope_logo.png"
           alt="Afiya Shope"
-          width={width}
+          width={height}
           height={height}
           priority={priority}
           unoptimized
-          className="h-auto w-auto rounded-md object-contain"
-          style={{ height, width: "auto" }}
+          className="rounded-full object-contain"
+          style={{ width: height, height }}
         />
       </span>
       {showAdminLabel ? (

@@ -55,14 +55,14 @@ export function SidebarBrand({
       aria-label={`${shopName} Dashboard`}
       title={collapsed ? `${shopName} Admin Panel` : undefined}
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white ring-1 ring-black/10 dark:ring-white/10">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-black/10 dark:ring-white/10">
         <Image
           src="/brand/logo-mark.png"
           alt=""
           width={40}
           height={40}
           priority
-          className="h-10 w-10 rounded-xl object-contain p-0.5"
+          className="h-10 w-10 rounded-full object-contain p-0.5"
         />
       </span>
       <span className={`min-w-0 leading-tight ${collapsed ? "lg:hidden" : ""}`}>

@@ -81,8 +81,8 @@ export function SiteSplash() {
           <Image
             src="/images/afiyashope_logo.png"
             alt="Afiya Shope"
-            width={2045}
-            height={769}
+            width={768}
+            height={768}
             priority
             unoptimized
             className="site-splash__logo"
