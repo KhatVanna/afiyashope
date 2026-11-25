@@ -33,10 +33,14 @@ const paymentMethods = [
 ] as const;
 
 const socialLinks = [
-  { label: "Facebook", href: "https://www.facebook.com/share/1E66nep5tC/?mibextid=wwXIfr", icon: "facebook" },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/share/1E66nep5tC/?mibextid=wwXIfr",
+    icon: "facebook",
+  },
   { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
-  { label: "YouTube", href: "https://youtube.com", icon: "youtube" },
   { label: "TikTok", href: "https://tiktok.com", icon: "tiktok" },
+  { label: "Telegram", href: "https://t.me/", icon: "telegram" },
 ] as const;
 
 const snowflakePattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.07' stroke-width='1'%3E%3Cpath d='M40 12v56M18 26l44 28M18 54l44-28'/%3E%3Cpath d='M40 20l4 6-4 2-4-2zM40 54l4 6-4 2-4-2zM24 30l7 1-1 4-5 1zM49 45l7 1-1 4-5 1zM24 50l7-1-1-4-5-1zM49 35l7-1-1-4-5-1z'/%3E%3C/g%3E%3C/svg%3E")`;
@@ -168,17 +172,27 @@ function SocialGlyph({ name }: { name: (typeof socialLinks)[number]["icon"] }) {
     );
   }
 
-  if (name === "youtube") {
+  if (name === "tiktok") {
     return (
       <svg viewBox="0 0 24 24" className={className} aria-hidden>
-        <path d="M23 12.2s0-3.2-.4-4.7c-.2-.9-.9-1.6-1.8-1.8C18.5 5.2 12 5.2 12 5.2s-6.5 0-8.8.5c-.9.2-1.6.9-1.8 1.8C1 9 1 12.2 1 12.2s0 3.2.4 4.7c.2.9.9 1.6 1.8 1.8 2.3.5 8.8.5 8.8.5s6.5 0 8.8-.5c.9-.2 1.6-.9 1.8-1.8.4-1.5.4-4.7.4-4.7zM9.8 15.5v-6.6l5.7 3.3-5.7 3.3z" />
+        <path d="M16.6 5.8c-.7.3-1.4.6-2.2.6h-.2V14a3.4 3.4 0 1 1-2.3-3.2v2.1a1.4 1.4 0 1 0 1 .3V4.5h2.1c.1 1.2.8 2.3 1.6 3.1z" />
       </svg>
     );
   }
 
   return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path d="M16.6 5.8c-.7.3-1.4.6-2.2.6h-.2V14a3.4 3.4 0 1 1-2.3-3.2v2.1a1.4 1.4 0 1 0 1 .3V4.5h2.1c.1 1.2.8 2.3 1.6 3.1z" />
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="m22 2-7 20-4-9-9-4Z" />
+      <path d="M22 2 11 13" />
     </svg>
   );
 }
