@@ -730,35 +730,37 @@ export function ProductsManager() {
                   <span className="text-sm font-medium text-slate-700">
                     {t("Currency")}
                   </span>
-                  <div
-                    role="group"
-                    aria-label={t("Currency")}
-                    className="flex h-11 items-center gap-2"
-                  >
-                    {(["USD", "KHR"] as const).map((currency) => {
-                      const selected = form.currency === currency;
-                      return (
-                        <button
-                          key={currency}
-                          type="button"
-                          aria-pressed={selected}
-                          onClick={() =>
-                            setForm((current) => ({
-                              ...current,
-                              currency:
-                                current.currency === currency ? "" : currency,
-                            }))
-                          }
-                          className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
-                            selected
-                              ? "border-[#0077b6] bg-[#e2f5fc] text-[#075985]"
-                              : "border-[#d6e8f2] bg-[#f1f9fd] text-slate-600 hover:bg-white"
-                          }`}
-                        >
-                          {currency === "USD" ? t("USD ($)") : t("KHR (៛)")}
-                        </button>
-                      );
-                    })}
+                  <div className="flex gap-2">
+                    <select
+                      aria-label={t("Currency")}
+                      value={form.currency}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setForm((current) => ({
+                          ...current,
+                          currency:
+                            value === "USD" || value === "KHR" ? value : "",
+                        }));
+                      }}
+                      className={`${inputClass} min-w-0 flex-1`}
+                    >
+                      <option value="" disabled hidden>
+                        {t("Select currency")}
+                      </option>
+                      <option value="USD">{t("USD ($)")}</option>
+                      <option value="KHR">{t("KHR (៛)")}</option>
+                    </select>
+                    {form.currency ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm((current) => ({ ...current, currency: "" }))
+                        }
+                        className="shrink-0 rounded-xl border border-[#d6e8f2] px-3 text-sm font-semibold text-slate-600 hover:bg-[#f1f9fd]"
+                      >
+                        {t("Clear")}
+                      </button>
+                    ) : null}
                   </div>
                   {formErrors.currency?.[0] ? (
                     <span className="block text-xs text-[#fa896b]">
