@@ -41,6 +41,7 @@ import { useAuthStore } from "@/stores/auth-store";
 
 const SIDEBAR_STORAGE_KEY = "afiya-admin-sidebar-collapsed";
 const SIDEBAR_CHANGE_EVENT = "afiya-admin-sidebar-change";
+const HIDDEN_SIDEBAR_HREFS = new Set(["/orders", "/customers", "/reports"]);
 
 function subscribeToSidebar(onChange: () => void) {
   window.addEventListener(SIDEBAR_CHANGE_EVENT, onChange);
@@ -180,6 +181,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   const navItems = getNavForUser(user);
+  const sidebarItems = navItems.filter((item) => !HIDDEN_SIDEBAR_HREFS.has(item.href));
   const accountLinks = navItems.filter((item) =>
     ["/settings", "/users", "/site-settings"].includes(item.href)
   );
@@ -268,7 +270,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
-          {navItems.map((item) => (
+          {sidebarItems.map((item) => (
             <SidebarLink
               key={item.href}
               item={item}
