@@ -191,6 +191,10 @@ button[class~="rounded-3xl"] {
   border-radius: 9999px;
 }
 
+button.product-gallery-thumbnail {
+  border-radius: 0 !important;
+}
+
 :lang(km) {
   font-family: var(--font-kantumruy-pro), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }

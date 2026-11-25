@@ -47,7 +47,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
                 type="button"
                 onClick={() => setActiveIndex(index)}
                 aria-label={t(`View image ${index + 1}`, `មើលរូបភាពទី ${index + 1}`)}
-                className={`relative aspect-square w-full shrink-0 overflow-hidden rounded-lg border bg-white transition ${
+                className={`product-gallery-thumbnail relative aspect-square w-full shrink-0 overflow-hidden rounded-lg border bg-white transition ${
                   isActive
                     ? "border-foreground ring-1 ring-foreground"
                     : "border-border hover:border-foreground/40"
@@ -96,7 +96,7 @@ export function ProductGallery({ images, alt, discount }: ProductGalleryProps) {
                     type="button"
                     onClick={() => setActiveIndex(index)}
                     aria-label={t(`View image ${index + 1}`, `មើលរូបភាពទី ${index + 1}`)}
-                    className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border bg-white transition sm:h-20 sm:w-20 ${
+                    className={`product-gallery-thumbnail relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border bg-white transition sm:h-20 sm:w-20 ${
                       isActive
                         ? "border-foreground ring-1 ring-foreground"
                         : "border-border hover:border-foreground/40"
