@@ -29,7 +29,6 @@ import type {
 const EMPTY_FORM: ProductFormValues = {
   category_id: "",
   name: "",
-  slug: "",
   sku: "",
   description: "",
   price: "",
@@ -59,7 +58,6 @@ function toFormValues(product: AdminProduct): ProductFormValues {
   return {
     category_id: product.category_id?.toString() ?? "",
     name: product.name,
-    slug: product.slug,
     sku: product.sku,
     description: product.description ?? "",
     price: String(product.price),
@@ -71,7 +69,6 @@ function toPayload(form: ProductFormValues) {
   return {
     category_id: form.category_id ? Number(form.category_id) : null,
     name: form.name.trim(),
-    slug: form.slug.trim() || undefined,
     sku: form.sku.trim(),
     description: form.description.trim() || null,
     price: Number(form.price),
@@ -664,19 +661,6 @@ export function ProductsManager() {
                         sku: event.target.value,
                       }))
                     }
-                    className={inputClass}
-                  />
-                </Field>
-                <Field label="Slug" error={formErrors.slug?.[0]}>
-                  <input
-                    value={form.slug}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        slug: event.target.value,
-                      }))
-                    }
-                    placeholder={t("Auto-generated if empty")}
                     className={inputClass}
                   />
                 </Field>

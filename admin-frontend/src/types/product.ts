@@ -41,7 +41,6 @@ export type AdminProduct = {
 export type ProductFormValues = {
   category_id: string;
   name: string;
-  slug: string;
   sku: string;
   description: string;
   price: string;
