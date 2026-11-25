@@ -6,6 +6,6 @@ class UpdateSiteBannerRequest extends SiteBannerRequest
 {
     public function rules(): array
     {
-        return $this->bannerRules(creating: false);
+        return $this->bannerRules();
     }
 }

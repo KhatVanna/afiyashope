@@ -101,13 +101,164 @@ class SiteSettingsApiTest extends TestCase
         $this->actingAs($admin, 'sanctum')
             ->postJson('/api/v1/admin/banners', [
                 ...$this->bannerAttributes('Unsafe banner'),
-                'media_url' => 'javascript:alert(1)',
+                'media_url' => 'http://cdn.example.test/banner.jpg',
                 'button_url' => 'http://example.test',
                 'text_align' => 'justify',
             ])
             ->assertUnprocessable()
             ->assertJsonPath('success', false)
             ->assertJsonStructure(['errors' => ['media_url', 'button_url', 'text_align']]);
+    }
+
+    public function test_banner_saves_uploaded_image_and_derives_media_type_from_the_url(): void
+    {
+        $admin = $this->userWithRole('admin');
+
+        $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/v1/admin/banners', [
+                ...$this->bannerAttributes('Uploaded image'),
+                'media_url' => 'https://res.cloudinary.com/test-cloud/image/upload/banner.webp',
+                'media_type' => 'video',
+            ])
+            ->assertCreated()
+            ->assertJsonPath('data.banner.media_type', 'image')
+            ->assertJsonPath('data.banner.media_url', 'https://res.cloudinary.com/test-cloud/image/upload/banner.webp');
+    }
+
+    public function test_banner_saves_image_and_video_links_with_type_derived_from_extension(): void
+    {
+        $admin = $this->userWithRole('admin');
+        $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/v1/admin/banners', [
+                ...$this->bannerAttributes('Image link'),
+                'media_url' => 'https://cdn.example.test/banners/sale.jpg?width=1200',
+                'button_url' => '/products',
+                'media_type' => 'video',
+            ])
+            ->assertCreated()
+            ->assertJsonPath('data.banner.media_type', 'image');
+
+        $this->postJson('/api/v1/admin/banners', [
+            ...$this->bannerAttributes('Video link'),
+            'media_url' => 'https://cdn.example.test/banners/campaign.mp4?quality=auto',
+            'media_type' => 'image',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('data.banner.media_type', 'video');
+    }
+
+    public function test_banner_media_type_is_derived_and_both_headlines_are_optional(): void
+    {
+        $admin = $this->userWithRole('admin');
+        $payload = $this->bannerAttributes('Optional headlines', [
+            'headline_km' => '',
+            'headline_en' => '',
+        ]);
+        unset($payload['media_type']);
+
+        $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/v1/admin/banners', [
+                ...$payload,
+                'media_url' => 'https://cdn.example.test/banners/no-headline.webp',
+            ])
+            ->assertCreated()
+            ->assertJsonPath('data.banner.media_type', 'image')
+            ->assertJsonPath('data.banner.headline_km', '')
+            ->assertJsonPath('data.banner.headline_en', '');
+    }
+
+    public function test_banner_optional_empty_strings_are_stored_as_null(): void
+    {
+        $admin = $this->userWithRole('admin');
+        $id = $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/v1/admin/banners', [
+                ...$this->bannerAttributes('Optional fields', [
+                    'headline_km' => '',
+                    'headline_en' => 'English headline',
+                ]),
+                'media_url' => 'https://cdn.example.test/banners/optional.webp',
+                'mobile_media_url' => '',
+                'poster_url' => '',
+                'eyebrow_km' => '',
+                'eyebrow_en' => '<b>New</b>',
+                'subtitle_km' => '',
+                'subtitle_en' => '',
+                'button_text_km' => '',
+                'button_text_en' => '',
+                'button_url' => '',
+                'starts_at' => '',
+                'ends_at' => '',
+            ])
+            ->assertCreated()
+            ->json('data.banner.id');
+
+        $banner = SiteBanner::query()->findOrFail($id);
+        foreach ([
+            'mobile_media_url',
+            'poster_url',
+            'eyebrow_km',
+            'subtitle_km',
+            'subtitle_en',
+            'button_text_km',
+            'button_text_en',
+            'button_url',
+            'starts_at',
+            'ends_at',
+        ] as $field) {
+            $this->assertNull($banner->{$field}, $field);
+        }
+        $this->assertSame('New', $banner->eyebrow_en);
+        $this->assertSame('', $banner->headline_km);
+    }
+
+    public function test_banner_media_validation_rejects_bad_extensions_and_private_hosts(): void
+    {
+        $admin = $this->userWithRole('admin');
+        $this->actingAs($admin, 'sanctum');
+
+        $this->postJson('/api/v1/admin/banners', [
+            ...$this->bannerAttributes('Bad extension'),
+            'media_url' => 'https://cdn.example.test/banner.gif',
+        ])->assertUnprocessable()->assertJsonStructure(['errors' => ['media_url']]);
+
+        foreach ([
+            'https://127.0.0.1/banner.jpg',
+            'https://10.1.2.3/banner.jpg',
+            'https://172.31.0.4/banner.jpg',
+            'https://192.168.1.8/banner.jpg',
+            'https://169.254.5.6/banner.jpg',
+            'https://[::1]/banner.jpg',
+            'https://localhost/banner.jpg',
+        ] as $url) {
+            $this->postJson('/api/v1/admin/banners', [
+                ...$this->bannerAttributes('Private host'),
+                'media_url' => $url,
+            ])->assertUnprocessable()->assertJsonStructure(['errors' => ['media_url']]);
+        }
+    }
+
+    public function test_banner_schedule_must_not_end_before_start(): void
+    {
+        $admin = $this->userWithRole('admin');
+        $this->actingAs($admin, 'sanctum')->postJson('/api/v1/admin/banners', [
+            ...$this->bannerAttributes('Invalid schedule'),
+            'starts_at' => '2026-11-27T00:00:00Z',
+            'ends_at' => '2026-11-26T00:00:00Z',
+        ])
+            ->assertUnprocessable()
+            ->assertJsonStructure(['errors' => ['ends_at']]);
+    }
+
+    public function test_banner_requires_a_media_url(): void
+    {
+        $admin = $this->userWithRole('admin');
+        $attributes = $this->bannerAttributes('Media is required');
+        unset($attributes['media_url']);
+
+        $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/v1/admin/banners', $attributes)
+            ->assertUnprocessable()
+            ->assertJsonStructure(['errors' => ['media_url']]);
     }
 
     public function test_banner_partial_update_cannot_schedule_end_before_existing_start(): void
@@ -119,11 +270,31 @@ class SiteSettingsApiTest extends TestCase
 
         $this->actingAs($admin, 'sanctum')
             ->putJson('/api/v1/admin/banners/'.$banner->id, [
+                'media_url' => $banner->media_url,
                 'ends_at' => now()->addDay()->toAtomString(),
             ])
             ->assertUnprocessable()
             ->assertJsonPath('success', false)
             ->assertJsonStructure(['errors' => ['ends_at']]);
+    }
+
+    public function test_public_banner_cache_is_cleared_after_admin_save(): void
+    {
+        $banner = SiteBanner::query()->create($this->bannerAttributes('Before update'));
+        $admin = $this->userWithRole('admin');
+
+        $this->getJson('/api/v1/banners')
+            ->assertJsonPath('data.banners.0.headline_en', 'Before update');
+
+        $this->actingAs($admin, 'sanctum')
+            ->putJson('/api/v1/admin/banners/'.$banner->id, [
+                'media_url' => $banner->media_url,
+                'headline_en' => 'After update',
+            ])
+            ->assertOk();
+
+        $this->getJson('/api/v1/banners')
+            ->assertJsonPath('data.banners.0.headline_en', 'After update');
     }
 
     public function test_admin_can_create_update_reorder_and_delete_banners(): void
@@ -138,7 +309,10 @@ class SiteSettingsApiTest extends TestCase
             ->assertCreated()
             ->json('data.banner.id');
 
-        $this->putJson('/api/v1/admin/banners/'.$first, ['headline_en' => 'Updated first'])
+        $this->putJson('/api/v1/admin/banners/'.$first, [
+            'media_url' => 'https://cdn.example.test/images/banner.jpg',
+            'headline_en' => 'Updated first',
+        ])
             ->assertOk()
             ->assertJsonPath('data.banner.headline_en', 'Updated first');
 
@@ -221,7 +395,7 @@ class SiteSettingsApiTest extends TestCase
             SiteSettingsDefaults::defaultBanner(),
             [
                 'media_type' => 'image',
-                'media_url' => '/images/banner.jpg',
+                'media_url' => 'https://cdn.example.test/images/banner.jpg',
                 'headline_en' => $headline,
                 'headline_km' => 'ម៉ូដថ្មី',
                 'sort_order' => 1,

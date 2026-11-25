@@ -4,14 +4,21 @@ export async function adminApi<T>(
   path: string,
   init?: RequestInit
 ): Promise<{ ok: boolean; status: number; payload: ApiResponse<T> }> {
+  const headers = new Headers(init?.headers);
+  headers.set("Accept", "application/json");
+  const isFormData =
+    typeof FormData !== "undefined" && init?.body instanceof FormData;
+
+  if (isFormData) {
+    headers.delete("Content-Type");
+  } else if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
   const response = await fetch(`/api/proxy/v1${path}`, {
     ...init,
     credentials: "include",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      ...(init?.headers ?? {}),
-    },
+    headers,
     cache: "no-store",
   });
 

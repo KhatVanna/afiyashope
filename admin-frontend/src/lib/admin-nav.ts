@@ -3,7 +3,15 @@ import type { AuthUser } from "@/types/auth";
 export type AdminNavItem = {
   href: string;
   label: string;
-  icon: "dashboard" | "products" | "orders" | "customers" | "reports" | "settings" | "users";
+  icon:
+    | "dashboard"
+    | "products"
+    | "orders"
+    | "customers"
+    | "reports"
+    | "site-settings"
+    | "settings"
+    | "users";
   roles: Array<"super-admin" | "admin" | "staff">;
 };
 
@@ -36,6 +44,12 @@ export const ADMIN_NAV: AdminNavItem[] = [
     href: "/reports",
     label: "Reports",
     icon: "reports",
+    roles: ["super-admin", "admin"],
+  },
+  {
+    href: "/site-settings",
+    label: "Site Settings",
+    icon: "site-settings",
     roles: ["super-admin", "admin"],
   },
   {

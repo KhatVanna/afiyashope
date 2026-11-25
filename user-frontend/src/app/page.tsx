@@ -6,11 +6,13 @@ import { TrustBar } from "@/components/home/trust-bar";
 import { VideoBanner } from "@/components/home/video-banner";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { fetchProducts } from "@/lib/catalog-api";
+import { fetchSiteBanners } from "@/lib/site-content-api";
 
 export default async function HomePage() {
-  const [featured, catalog] = await Promise.all([
+  const [featured, catalog, banners] = await Promise.all([
     fetchProducts({ featured: true, perPage: 20, sort: "latest" }),
     fetchProducts({ perPage: 50, sort: "latest" }),
+    fetchSiteBanners(),
   ]);
 
   const featuredIds = new Set(featured.items.map((product) => product.id));
@@ -21,7 +23,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSlider />
+      <HeroSlider banners={banners} />
       <CategoryGrid />
       <div className="bg-muted/40">
         <ProductSection

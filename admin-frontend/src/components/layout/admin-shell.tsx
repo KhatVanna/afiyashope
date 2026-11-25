@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   Menu,
   Moon,
+  PanelsTopLeft,
   Package,
   Search,
   Settings,
@@ -27,6 +28,7 @@ const ICONS = {
   orders: ShoppingCart,
   customers: Users,
   reports: BarChart3,
+  "site-settings": PanelsTopLeft,
   settings: Settings,
   users: UserCog,
 } as const;

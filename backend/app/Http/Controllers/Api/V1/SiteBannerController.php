@@ -10,6 +10,7 @@ use App\Models\AdminActivityLog;
 use App\Models\SiteBanner;
 use App\Models\User;
 use App\Support\ApiResponse;
+use App\Support\SiteBannerMedia;
 use App\Support\SiteContentCache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -52,7 +53,11 @@ class SiteBannerController extends Controller
 
     public function store(StoreSiteBannerRequest $request): JsonResponse
     {
-        $banner = SiteBanner::query()->create($request->validated());
+        $data = $request->validated();
+        $data['media_type'] = SiteBannerMedia::typeFromUrl($data['media_url']);
+        $data['headline_km'] = $data['headline_km'] ?? '';
+        $data['headline_en'] = $data['headline_en'] ?? '';
+        $banner = SiteBanner::query()->create($data);
         $this->logChange($request, 'site_banner.created', $banner);
         SiteContentCache::clear();
 
@@ -61,7 +66,16 @@ class SiteBannerController extends Controller
 
     public function update(UpdateSiteBannerRequest $request, SiteBanner $banner): JsonResponse
     {
-        $banner->fill($request->validated());
+        $data = $request->validated();
+        $mediaUrl = $data['media_url'] ?? $banner->media_url;
+        $data['media_type'] = SiteBannerMedia::typeFromUrl($mediaUrl) ?? $banner->media_type;
+        $data['headline_km'] = array_key_exists('headline_km', $data)
+            ? ($data['headline_km'] ?? '')
+            : $banner->headline_km;
+        $data['headline_en'] = array_key_exists('headline_en', $data)
+            ? ($data['headline_en'] ?? '')
+            : $banner->headline_en;
+        $banner->fill($data);
         $banner->save();
         $this->logChange($request, 'site_banner.updated', $banner);
         SiteContentCache::clear();

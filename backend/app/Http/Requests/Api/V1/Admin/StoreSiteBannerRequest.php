@@ -6,6 +6,6 @@ class StoreSiteBannerRequest extends SiteBannerRequest
 {
     public function rules(): array
     {
-        return $this->bannerRules(creating: true);
+        return $this->bannerRules();
     }
 }
