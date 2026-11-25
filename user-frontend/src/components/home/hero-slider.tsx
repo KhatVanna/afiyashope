@@ -107,7 +107,8 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
   function renderMedia(
     src: string,
     type: "image" | "video",
-    ref: RefObject<HTMLVideoElement | null>
+    ref: RefObject<HTMLVideoElement | null>,
+    fit: "cover" | "contain" = "cover"
   ) {
     const canPlay = type === "video" && allowVideo;
     if (canPlay) {
@@ -125,7 +126,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
           aria-label={
             isKhmer ? "វីដេអូផ្សព្វផ្សាយរបស់ Afiya Shope" : "Afiya Shope promotional video"
           }
-          className="absolute inset-0 h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full ${fit === "contain" ? "object-contain" : "object-cover"}`}
         />
       );
     }
@@ -140,7 +141,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
         unoptimized
         sizes="100vw"
         onError={() => setMediaErrorKey(mediaKey)}
-        className="object-cover"
+        className={fit === "contain" ? "object-contain" : "object-cover"}
       />
     );
   }
@@ -149,13 +150,13 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
     <section
       aria-roledescription={hasCarousel ? "carousel" : undefined}
       aria-label={isKhmer ? "ផ្ទាំងផ្សព្វផ្សាយចម្បង" : "Storefront hero"}
-      className="relative isolate mx-auto my-5 min-h-[28rem] w-[calc(100%-1.5rem)] max-w-[1800px] overflow-hidden rounded-[2rem] border-2 border-[#e85d8b] bg-[#21A8D8] text-white shadow-[0_10px_30px_-10px_rgba(232,93,139,0.45)] dark:border-[#ff8ab4] sm:my-6 sm:w-[calc(100%-3rem)] sm:min-h-[32rem] lg:min-h-[36rem]"
+      className="relative isolate mx-auto my-5 aspect-[5/2] min-h-0 w-[calc(100%-1.5rem)] max-w-[1800px] overflow-hidden rounded-[2rem] border-2 border-[#e85d8b] bg-[#21A8D8] text-white shadow-[0_10px_30px_-10px_rgba(232,93,139,0.45)] dark:border-[#ff8ab4] sm:my-6 sm:aspect-auto sm:min-h-[32rem] sm:w-[calc(100%-3rem)] lg:min-h-[36rem]"
     >
       <div className="absolute inset-0 hidden sm:block">
         {renderMedia(banner.media_url, desktopType, desktopVideoRef)}
       </div>
       <div className="absolute inset-0 sm:hidden">
-        {renderMedia(mobileMedia, mobileType, mobileVideoRef)}
+        {renderMedia(mobileMedia, mobileType, mobileVideoRef, "contain")}
       </div>
       <div
         className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-transparent"
@@ -163,7 +164,7 @@ export function HeroSlider({ banners = [] }: { banners?: PublicSiteBanner[] }) {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#168DB5]/45 via-transparent to-white/10" />
 
-      <div className={`relative mx-auto flex min-h-[28rem] w-full max-w-7xl flex-col justify-center px-4 py-16 sm:min-h-[32rem] sm:px-6 lg:min-h-[36rem] lg:py-24 ${align}`}>
+      <div className={`relative mx-auto flex min-h-0 w-full max-w-7xl flex-col justify-center px-3 py-3 sm:min-h-[32rem] sm:px-6 sm:py-16 lg:min-h-[36rem] lg:py-24 ${align}`}>
         {eyebrow ? (
           <p lang={textLanguage} className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">
             {eyebrow}
