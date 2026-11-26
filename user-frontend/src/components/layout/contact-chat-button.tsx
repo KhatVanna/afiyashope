@@ -67,7 +67,7 @@ export function ContactChatButton() {
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-50"
+      className="fixed bottom-6 right-6 z-50 flex flex-col-reverse items-end gap-3"
       onPointerEnter={(event) => {
         if (event.pointerType === "mouse") setOpen(true);
       }}
@@ -80,7 +80,7 @@ export function ContactChatButton() {
     >
       {open ? (
         <div
-          className="absolute bottom-full right-0 mb-3 flex w-64 flex-col gap-2 rounded-2xl border border-border bg-card p-3 shadow-xl"
+          className="flex w-64 flex-col gap-2 rounded-2xl border border-border bg-card p-3 shadow-xl"
           aria-label={t("Contact links", "តំណភ្ជាប់ទំនាក់ទំនង")}
           role="group"
         >
